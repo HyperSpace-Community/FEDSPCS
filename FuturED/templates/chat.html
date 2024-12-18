@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat - FuturED Spaces</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #1a1a2e, #16213e);
+            min-height: 100vh;
+        }
+        
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body class="text-white">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold font-['Space_Grotesk'] mb-2">AI Assistant</h1>
+            <p class="text-gray-400">Ask me anything! I'm here to help.</p>
+        </div>
+
+        <div class="glass-morphism rounded-lg p-4 mb-4 h-[60vh] overflow-y-auto" id="chat-messages">
+            <!-- Messages will appear here -->
+        </div>
+
+        <form id="chat-form" class="flex gap-4">
+            <input type="text" id="message-input" class="flex-1 bg-white/10 border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500" placeholder="Type your message...">
+            <button type="submit" class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-lg transition-colors">
+                Send
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chat-messages');
+        const chatForm = document.getElementById('chat-form');
+        const messageInput = document.getElementById('message-input');
+
+        function appendMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `mb-4 ${isUser ? 'text-right' : ''}`;
+
+            const bubble = document.createElement('div');
+            bubble.className = `inline-block rounded-lg px-4 py-2 max-w-[80%] ${
+                isUser ? 'bg-purple-600' : 'bg-white/10'
+            }`;
+            bubble.textContent = message;
+
+            messageDiv.appendChild(bubble);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        chatForm.addEventListener('submit', async(e) => {
+            e.preventDefault();
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            // Clear input
+            messageInput.value = '';
+
+            // Show user message
+            appendMessage(message, true);
+
+            try {
+                const response = await fetch('/send_message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    appendMessage(data.response);
+                } else {
+                    appendMessage('Sorry, there was an error processing your message.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                appendMessage('Sorry, there was an error processing your message.');
+            }
+        });
+    </script>
+</body>
+
+</html>

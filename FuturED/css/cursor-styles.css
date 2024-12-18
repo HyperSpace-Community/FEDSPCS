@@ -1,0 +1,85 @@
+.custom-cursor {
+    pointer-events: none;
+    position: fixed;
+    z-index: 9999;
+}
+
+.cursor-ring {
+    position: fixed;
+    width: 30px;
+    height: 30px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s;
+    pointer-events: none;
+}
+
+.cursor-gradient {
+    width: 24px;
+    height: 24px;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: all 0.05s ease-out;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z'%3E%3C/path%3E%3C/svg%3E");
+    transform: translate(-3px, -3px);
+    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.5));
+    mix-blend-mode: difference;
+}
+
+.cursor-dot {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.cursor-ring.hover {
+    width: 50px;
+    height: 50px;
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+.cursor-ring.text {
+    width: 40px;
+    height: 40px;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.cursor-ring.clicking {
+    width: 20px;
+    height: 20px;
+    border-color: white;
+}
+
+.cursor-gradient.hover,
+.cursor-dot.hover {
+    transform: scale(1.5);
+}
+
+.cursor-gradient.text,
+.cursor-dot.text {
+    transform: scale(0.8);
+}
+
+.cursor-gradient.clicking,
+.cursor-dot.clicking {
+    transform: scale(0.7);
+}
+
+.custom-cursor.inactive,
+.cursor-dot.inactive {
+    opacity: 0;
+}
+
+.eraser-cursor {
+    border: 2px solid white;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    mix-blend-mode: difference;
+}

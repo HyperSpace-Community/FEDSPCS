@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FuturED Spaces</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        space: ['Space Grotesk', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'gradient': 'gradient 8s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'tilt': 'tilt 10s infinite linear',
+                    },
+                    keyframes: {
+                        gradient: {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            }
+                        },
+                        tilt: {
+                            '0%, 100%': {
+                                transform: 'rotate(-1deg)'
+                            },
+                            '50%': {
+                                transform: 'rotate(1deg)'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="cursor-styles.css">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+        
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .card-animate {
+            animation: cardFloat 6s ease-in-out infinite;
+            transition: all 0.5s ease;
+        }
+        
+        @keyframes cardFloat {
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-5px) rotate(1deg);
+            }
+            75% {
+                transform: translateY(5px) rotate(-1deg);
+            }
+        }
+        
+        .card-glow {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-glow::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(56, 189, 248, 0.3) 0%, transparent 50%);
+            animation: rotate 8s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            min-height: 100vh;
+        }
+        /* Add gradient borders to cards */
+        
+        .card-border-gradient {
+            position: relative;
+            border-radius: 1rem;
+            padding: 1px;
+            background: linear-gradient( 45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05) 30%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.05) 70%, rgba(255, 255, 255, 0.1));
+        }
+        /* Add new animation for gradient flow */
+        
+        @keyframes gradientFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .animate-gradient-slow {
+            background-size: 200% 200%;
+            animation: gradientFlow 8s ease infinite;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative">
+    <div class="fixed inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-900/20 via-slate-900/20 to-slate-900/30 pointer-events-none"></div>
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\" 30\ " height=\"30\ " viewBox=\"0 0 30 30\ " fill=\"none\ " xmlns=\"http://www.w3.org/2000/svg\ "%3E%3Cpath d=\"M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374
+        1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z\ " fill=\"rgba(255,255,255,0.05)\ "%3E%3C/path%3E%3C/svg%3E')] opacity-25"></div>
+
+    <nav class="fixed top-4 right-4 z-50">
+        <div class="glass-morphism rounded-full py-2 px-6 flex items-center gap-4">
+            <a href="notion.html" class="text-gray-300 hover:text-white transition-colors">Notes</a>
+            <a href="whiteboard.html" class="text-gray-300 hover:text-white transition-colors">Whiteboard</a>
+            <a href="/main/templates/chat.html" class="text-gray-300 hover:text-white transition-colors">AI Chat</a>
+        </div>
+    </nav>
+
+    <div class="custom-cursor">
+        <div class="cursor-ring"></div>
+        <div class="cursor-gradient"></div>
+    </div>
+    <div class="cursor-dot"></div>
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\" 20\ " height=\"20\ " xmlns=\"http://www.w3.org/2000/svg\ "%3E%3Cpath d=\"M0 0h1v1H0z\ " fill=\"rgba(255,255,255,0.03)\ "%3E%3C/path%3E%3C/svg%3E')] opacity-20"></div>
+
+    <div class="container mx-auto px-4 py-16 relative z-10">
+        <div class="text-center">
+            <div class="glass-morphism rounded-3xl p-8 mb-12 inline-block">
+                <h1 class="text-6xl md:text-7xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 text-transparent bg-clip-text animate-gradient tracking-tight">
+                    FuturED Spaces
+                </h1>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <!-- Notes Card -->
+                <a href="notion.html" class="transform perspective-1000">
+                    <div class="card-border-gradient">
+                        <div class="glass-card p-8 rounded-2xl card-animate card-glow h-full">
+                            <div class="text-5xl mb-4 animate-bounce">📝</div>
+                            <h2 class="text-2xl font-bold text-white mb-4 font-space tracking-tight">Notes</h2>
+                            <p class="text-gray-400 font-inter font-light">
+                                Capture and organize your thoughts with our powerful digital notebook.
+                            </p>
+                            <div class="mt-4">
+                                <span class="text-emerald-400 font-space font-medium tracking-wide animate-pulse">Explore →</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Whiteboard Card -->
+                <a href="whiteboard.html" class="transform perspective-1000">
+                    <div class="card-border-gradient">
+                        <div class="glass-card p-8 rounded-2xl card-animate card-glow" style="animation-delay: 0.3s;">
+                            <div class="text-5xl mb-4 animate-bounce" style="animation-delay: 0.1s;">🎨</div>
+                            <h2 class="text-2xl font-bold text-white mb-4 font-space tracking-tight">Whiteboard</h2>
+                            <p class="text-gray-400 font-inter font-light">
+                                Visualize your ideas with our interactive whiteboard canvas.
+                            </p>
+                            <div class="mt-4">
+                                <span class="text-cyan-400 font-space font-medium tracking-wide animate-pulse">Create →</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- AI Assistant Card -->
+                <a href="/main/templates/chat.html" class="transform perspective-1000">
+                    <div class="card-border-gradient">
+                        <div class="glass-card p-8 rounded-2xl card-animate card-glow" style="animation-delay: 0.6s;">
+                            <div class="text-5xl mb-4 animate-bounce" style="animation-delay: 0.2s;">🤖</div>
+                            <h2 class="text-2xl font-bold text-white mb-4 font-space tracking-tight">AI Assistant</h2>
+                            <p class="text-gray-400 font-inter font-light">
+                                Get intelligent help and answers with our AI-powered assistant.
+                            </p>
+                            <div class="mt-4">
+                                <span class="text-violet-400 font-space font-medium tracking-wide animate-pulse">Chat →</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- New Information Sections -->
+            <div class="mt-24 space-y-16 max-w-5xl mx-auto">
+                <!-- Notes Section -->
+                <div class="glass-card rounded-2xl p-8 hover:scale-[1.02] transition-all duration-500 group">
+                    <div class="flex items-center gap-6 mb-8">
+                        <div class="text-5xl group-hover:animate-bounce transition-all duration-300">📝</div>
+                        <h3 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 font-space animate-gradient-slow">
+                            Digital Note-Taking
+                        </h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-emerald-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Rich Text Formatting</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Advanced markdown support with real-time preview and custom styling options.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-emerald-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Nested Organization</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Create hierarchical structures with unlimited nesting.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-emerald-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Real-time Collaboration</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Work together with live updates and presence indicators.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-emerald-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Custom Templates</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Start quickly with pre-built templates.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex justify-end">
+                        <a href="notion.html" class="group inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors px-4 py-2 rounded-lg hover:bg-white/5">
+                            <span class="font-medium">Explore Features</span>
+                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Whiteboard Section -->
+                <div class="glass-card rounded-2xl p-8 hover:scale-[1.02] transition-all duration-500 group">
+                    <div class="flex items-center gap-6 mb-8">
+                        <div class="text-5xl group-hover:animate-bounce transition-all duration-300">🎨</div>
+                        <h3 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 font-space animate-gradient-slow">
+                            Interactive Whiteboard
+                        </h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-blue-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Infinite Canvas</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Boundless space with intuitive zoom and pan controls.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-blue-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Drawing Tools</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Professional-grade tools with customizable styles and presets.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-blue-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Media Integration</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Seamlessly import and manipulate images and documents.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-blue-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Live Collaboration</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Work together in real-time with cursor presence and changes sync.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex justify-end">
+                        <a href="whiteboard.html" class="group inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors px-4 py-2 rounded-lg hover:bg-white/5">
+                            <span class="font-medium">Try Whiteboard</span>
+                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- AI Assistant Section -->
+                <div class="glass-card rounded-2xl p-8 hover:scale-[1.02] transition-all duration-500 group">
+                    <div class="flex items-center gap-6 mb-8">
+                        <div class="text-5xl group-hover:animate-bounce transition-all duration-300">🤖</div>
+                        <h3 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-purple-400 font-space animate-gradient-slow">
+                            AI Assistant
+                        </h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-violet-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Instant Answers</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Get immediate, accurate responses to your questions with AI.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-violet-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Detailed Explanations</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Receive comprehensive breakdowns of complex topics.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-violet-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Practice Exercises</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Get personalized practice problems tailored to your level.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-violet-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Language Support</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Learn and communicate in your preferred language.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex justify-end">
+                        <a href="/main/templates/chat.html" class="group inline-flex items-center gap-2 text-violet-400 hover:text-violet-300 transition-colors px-4 py-2 rounded-lg hover:bg-white/5">
+                            <span class="font-medium">Start Chatting</span>
+                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-16 text-gray-400 text-sm glass-morphism py-3 px-6 rounded-full inline-block animate-pulse-slow">
+                <span class="font-space tracking-wide font-medium uppercase">Enhance The Way Of Learning</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="ai-section" class="hidden bg-gradient-to-br from-purple-900 via-indigo-800 to-blue-900 text-white">
+        <div class="container mx-auto px-4 py-16">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-4xl font-bold mb-6 font-space text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">
+                        AI-Powered Learning
+                    </h2>
+                    <p class="text-xl mb-8 text-gray-200">
+                        Unlock the potential of artificial intelligence in your educational journey. Our AI tools provide personalized learning experiences, intelligent tutoring, and adaptive content recommendations.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4 bg-white/10 p-4 rounded-lg hover:bg-white/20 transition">
+                            <svg class="w-10 h-10 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-lg">Intelligent Tutoring System</span>
+                        </div>
+                        <div class="flex items-center space-x-4 bg-white/10 p-4 rounded-lg hover:bg-white/20 transition">
+                            <svg class="w-10 h-10 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-lg">Adaptive Learning Paths</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="bg-white/10 p-8 rounded-2xl shadow-2xl backdrop-blur-lg">
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="bg-purple-600/30 h-24 rounded-lg animate-pulse"></div>
+                            <div class="bg-blue-600/30 h-24 rounded-lg animate-pulse delay-150"></div>
+                            <div class="bg-indigo-600/30 h-24 rounded-lg animate-pulse delay-300"></div>
+                            <div class="bg-blue-600/30 h-24 rounded-lg animate-pulse delay-75"></div>
+                            <div class="bg-purple-600/30 h-24 rounded-lg animate-pulse"></div>
+                            <div class="bg-indigo-600/30 h-24 rounded-lg animate-pulse delay-200"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cursor elements
+        const cursor = document.querySelector('.custom-cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+
+        // Mouse position variables
+        let mouseX = 0;
+        let mouseY = 0;
+        let cursorX = 0;
+        let cursorY = 0;
+
+        // Smooth cursor movement
+        function updateCursorPosition(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        }
+
+        function animateCursor() {
+            // Smooth interpolation
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+
+            // Update cursor positions with smooth movement
+            requestAnimationFrame(() => {
+                cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+                cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+            });
+
+            requestAnimationFrame(animateCursor);
+        }
+
+        // Start animation loop
+        animateCursor();
+
+        // Mouse movement listener
+        document.addEventListener('mousemove', updateCursorPosition);
+
+        // Hover effects for different elements
+        const interactiveElements = document.querySelectorAll('a, button, input, [role="button"]');
+        const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span');
+
+        // Add hover effects for interactive elements
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('hover');
+                cursorDot.classList.add('hover');
+
+                // Magnetic effect
+                el.addEventListener('mousemove', (e) => {
+                    const rect = el.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    const distanceX = e.clientX - centerX;
+                    const distanceY = e.clientY - centerY;
+
+                    mouseX = centerX + distanceX * 0.3;
+                    mouseY = centerY + distanceY * 0.3;
+                });
+            });
+
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hover');
+                cursorDot.classList.remove('hover');
+            });
+        });
+
+        // Add text hover effect
+        textElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('text');
+                cursorDot.classList.add('text');
+            });
+
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('text');
+                cursorDot.classList.remove('text');
+            });
+        });
+
+        // Click effects
+        document.addEventListener('mousedown', () => {
+            cursor.classList.add('clicking');
+            cursorDot.classList.add('clicking');
+        });
+
+        document.addEventListener('mouseup', () => {
+            cursor.classList.remove('clicking');
+            cursorDot.classList.remove('clicking');
+        });
+
+        // Cursor visibility
+        let cursorTimeout;
+
+        function showCursor() {
+            cursor.classList.remove('inactive');
+            cursorDot.classList.remove('inactive');
+        }
+
+        function hideCursor() {
+            cursor.classList.add('inactive');
+            cursorDot.classList.add('inactive');
+        }
+
+        // Hide cursor after 3 seconds of inactivity
+        document.addEventListener('mousemove', () => {
+            showCursor();
+            clearTimeout(cursorTimeout);
+            cursorTimeout = setTimeout(hideCursor, 3000);
+        });
+
+        // Hide when leaving window
+        document.addEventListener('mouseleave', hideCursor);
+        document.addEventListener('mouseenter', showCursor);
+
+        // Initialize cursor position
+        updateCursorPosition({
+            clientX: window.innerWidth / 2,
+            clientY: window.innerHeight / 2
+        });
+
+        // AI Section Toggle
+        function toggleAISection() {
+            const aiSection = document.getElementById('ai-section');
+            const mainSections = document.querySelectorAll('body > div:not(#ai-section):not(.custom-cursor)');
+
+            if (aiSection.classList.contains('hidden')) {
+                // Show AI Section
+                aiSection.classList.remove('hidden');
+                mainSections.forEach(section => section.classList.add('hidden'));
+            } else {
+                // Hide AI Section
+                aiSection.classList.add('hidden');
+                mainSections.forEach(section => section.classList.remove('hidden'));
+            }
+        }
+
+        // Add AI Section Navigation Button
+        function createAINavButton() {
+            const navContainer = document.querySelector('.nav-container'); // Adjust selector as needed
+            if (navContainer) {
+                const aiButton = document.createElement('button');
+                aiButton.innerHTML = `
+                    <span class="flex items-center space-x-2 text-white hover:text-purple-300 transition">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                        </svg>
+                        <span>AI Tools</span>
+                    </span>
+                `;
+                aiButton.classList.add('nav-button', 'ai-nav-button');
+                aiButton.addEventListener('click', toggleAISection);
+                navContainer.appendChild(aiButton);
+            }
+        }
+
+        // Call function to create AI nav button when DOM is ready
+        document.addEventListener('DOMContentLoaded', createAINavButton);
+
+        // Add this after your existing script
+        document.addEventListener('DOMContentLoaded', () => {
+            // Feature cards hover effect
+            const featureCards = document.querySelectorAll('.glass-morphism');
+
+            featureCards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    // Add subtle glow effect
+                    card.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.1)';
+                    // Scale up slightly
+                    card.style.transform = 'scale(1.02) translateY(-4px)';
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.boxShadow = '';
+                    card.style.transform = '';
+                });
+            });
+
+            // Section cards parallax effect
+            const sections = document.querySelectorAll('.glass-card');
+
+            window.addEventListener('mousemove', (e) => {
+                const {
+                    clientX,
+                    clientY
+                } = e;
+
+                sections.forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+
+                    const deltaX = (clientX - centerX) * 0.01;
+                    const deltaY = (clientY - centerY) * 0.01;
+
+                    section.style.transform = `perspective(1000px) rotateX(${-deltaY}deg) rotateY(${deltaX}deg)`;
+                });
+            });
+
+            // Reset transform on mouse leave
+            sections.forEach(section => {
+                section.addEventListener('mouseleave', () => {
+                    section.style.transform = '';
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
