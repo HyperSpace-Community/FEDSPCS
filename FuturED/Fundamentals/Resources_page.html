@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Resources</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Playfair+Display:wght@400;700&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #f9fafb 100%);
+            min-height: 100vh;
+        }
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+        p, span, button, input {
+            font-family: 'Roboto', sans-serif;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 
+                0 10px 30px -5px rgba(0, 0, 0, 0.08),
+                0 20px 50px -10px rgba(0, 0, 0, 0.05),
+                0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+            border-radius: 1rem;
+        }
+        .card-hover {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+        }
+        .card-hover:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.15),
+                0 12px 24px -8px rgba(0, 0, 0, 0.12),
+                0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(79, 70, 229, 0.15);
+        }
+        .search-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.1), 0 0 10px rgba(59, 130, 246, 0.1); }
+            50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.2), 0 0 30px rgba(59, 130, 246, 0.1); }
+            100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.1), 0 0 10px rgba(59, 130, 246, 0.1); }
+        }
+        @keyframes borderGlow {
+            0% { border-color: rgba(59, 130, 246, 0.2); }
+            50% { border-color: rgba(99, 102, 241, 0.4); }
+            100% { border-color: rgba(59, 130, 246, 0.2); }
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes searchIconFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(0, -4px) scale(1.05); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+        @keyframes searchBarFloat {
+            0% { transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0); }
+            25% { transform: perspective(1000px) rotateX(1deg) rotateY(-1deg) translateZ(10px); }
+            50% { transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(20px); }
+            75% { transform: perspective(1000px) rotateX(-1deg) rotateY(1deg) translateZ(10px); }
+            100% { transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0); }
+        }
+        .search-bar {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 0.75rem 3rem;
+            width: 100%;
+            max-width: 400px;
+            color: #1e293b;
+            font-size: 0.95rem;
+            letter-spacing: 0.02em;
+            backdrop-filter: blur(12px) saturate(160%);
+            -webkit-backdrop-filter: blur(12px) saturate(160%);
+            box-shadow: 
+                0 4px 16px -4px rgba(59, 130, 246, 0.1),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 0 40px rgba(255, 255, 255, 0.05);
+        }
+        .search-bar::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.7;
+        }
+        .search-bar:hover {
+            box-shadow: 
+                0 8px 30px -6px rgba(59, 130, 246, 0.2),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.2),
+                inset 0 0 60px rgba(255, 255, 255, 0.08);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        .search-bar:focus {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 12px 30px -8px rgba(59, 130, 246, 0.25),
+                inset 0 0 0 1px rgba(59, 130, 246, 0.3),
+                inset 0 0 80px rgba(59, 130, 246, 0.08);
+            outline: none;
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        .search-bar:focus::placeholder {
+            opacity: 0.5;
+            transform: translateX(10px) translateZ(20px);
+            transition-delay: 0.1s;
+        }
+        .search-icon {
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: rgba(148, 163, 184, 0.7);
+            font-size: 1.25rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+            animation: searchIconFloat 3s ease-in-out infinite;
+            will-change: transform;
+            position: absolute;
+            right: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+        .search-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        .search-container::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 18px;
+            padding: 2px;
+            background: linear-gradient(
+                135deg, 
+                rgba(59, 130, 246, 0.4), 
+                rgba(99, 102, 241, 0.4), 
+                rgba(255, 255, 255, 0.2), 
+                rgba(99, 102, 241, 0.4)
+            );
+            background-size: 300% 300%;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            animation: gradientMove 3s infinite linear;
+        }
+        .search-container:hover::before,
+        .search-container:focus-within::before {
+            opacity: 1;
+        }
+        .search-bar:focus + .search-icon {
+            color: #3b82f6;
+            animation: none;
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.5));
+        }
+        .search-wrapper {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+        }
+        .footer-gradient {
+            background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+            box-shadow: 
+                0 -10px 30px -5px rgba(0, 0, 0, 0.05),
+                0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+        }
+        /* Add smooth transitions for all interactive elements */
+        a, button {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Enhance tag styles */
+        .rounded-full {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .rounded-full:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .card-heading {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover .card-heading {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Search Bar Section -->
+    <div class="search-wrapper sticky top-0 z-50 py-6">
+        <div class="max-w-2xl mx-auto px-6">
+            <div class="flex justify-center">
+                <div class="search-container">
+                    <input type="text" 
+                        placeholder="Search resources..." 
+                        class="search-bar text-center"
+                    >
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 py-16">
+        <!-- Hero Section with Enhanced Design -->
+        <div class="text-center mb-24 relative overflow-hidden rounded-3xl hero-gradient">
+            <div class="py-20 px-6">
+                <span class="inline-block text-blue-600 text-sm font-semibold tracking-wider uppercase mb-4">Your Learning Journey Starts Here</span>
+                <h1 class="text-6xl font-bold gradient-text mb-8 tracking-tight">
+                    Educational Resources Hub
+                </h1>
+                <p class="text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-light">
+                    Empowering knowledge through carefully curated resources and expert insights
+                </p>
+                <div class="mt-8 flex justify-center gap-4">
+                    <button class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 hover:shadow-lg">
+                        Get Started
+                    </button>
+                    <button class="px-8 py-3 bg-white text-blue-600 rounded-lg border border-blue-200 hover:bg-blue-50 transition-all duration-300 hover:shadow-lg">
+                        Learn More
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resource Cards with Enhanced Design -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-blue-100 group-hover:bg-blue-200 transition-colors duration-300">
+                            <i class="fas fa-wallet text-2xl text-blue-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Finance</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Learn about personal finance management, budgeting, and investment strategies.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-sm font-medium hover:bg-blue-100 transition-colors duration-300">Budgeting</span>
+                        <span class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-sm font-medium hover:bg-blue-100 transition-colors duration-300">Investment</span>
+                    </div>
+                    <a href="resource_pages/finance.html" class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Stock Market Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-green-100 group-hover:bg-green-200 transition-colors duration-300">
+                            <i class="fas fa-chart-line text-2xl text-green-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Stock Market</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Understanding market trends, investment analysis, and trading fundamentals.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-4 py-1.5 bg-green-50 text-green-600 rounded-full text-sm font-medium hover:bg-green-100 transition-colors duration-300">Trading</span>
+                        <span class="px-4 py-1.5 bg-green-50 text-green-600 rounded-full text-sm font-medium hover:bg-green-100 transition-colors duration-300">Analysis</span>
+                    </div>
+                    <a href="resource_pages/stock_market.html" class="inline-block px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Computer Fundamentals Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-purple-100 group-hover:bg-purple-200 transition-colors duration-300">
+                            <i class="fas fa-laptop-code text-2xl text-purple-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Computer Fundamentals</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Basic computer concepts, programming principles, and digital literacy.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-4 py-1.5 bg-purple-50 text-purple-600 rounded-full text-sm font-medium hover:bg-purple-100 transition-colors duration-300">Programming</span>
+                        <span class="px-4 py-1.5 bg-purple-50 text-purple-600 rounded-full text-sm font-medium hover:bg-purple-100 transition-colors duration-300">Digital Skills</span>
+                    </div>
+                    <a href="resource_pages/computer_fundamentals.html" class="inline-block px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Sex Education Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-red-100 group-hover:bg-red-200 transition-colors duration-300">
+                            <i class="fas fa-heart text-2xl text-red-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Sex Education</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Comprehensive information about reproductive health and relationships.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-red-50 text-red-600 rounded-full text-sm font-medium hover:bg-red-100 transition-colors duration-300">Health</span>
+                        <span class="px-4 py-1.5 bg-red-50 text-red-600 rounded-full text-sm font-medium hover:bg-red-100 transition-colors duration-300">Relationships</span>
+                    </div>
+                    <a href="resource_pages/sex_education.html" class="inline-block px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Self Repairing Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-indigo-100 group-hover:bg-indigo-200 transition-colors duration-300">
+                            <i class="fas fa-brain text-2xl text-indigo-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Self Repairing</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Mental health resources, self-improvement techniques, and personal development.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-full text-sm font-medium hover:bg-indigo-100 transition-colors duration-300">Mental Health</span>
+                        <span class="px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-full text-sm font-medium hover:bg-indigo-100 transition-colors duration-300">Self Growth</span>
+                    </div>
+                    <a href="resource_pages/self_repairing.html" class="inline-block px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Fake News Detection Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-yellow-100 group-hover:bg-yellow-200 transition-colors duration-300">
+                            <i class="fas fa-search text-2xl text-yellow-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Fake News Detection</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Tools and techniques for fact-checking and identifying misinformation.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-yellow-50 text-yellow-600 rounded-full text-sm font-medium hover:bg-yellow-100 transition-colors duration-300">Fact-checking</span>
+                        <span class="px-4 py-1.5 bg-yellow-50 text-yellow-600 rounded-full text-sm font-medium hover:bg-yellow-100 transition-colors duration-300">Media Literacy</span>
+                    </div>
+                    <a href="resource_pages/fake_news_detection.html" class="inline-block px-6 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Constitutional Rights Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-gray-100 group-hover:bg-gray-200 transition-colors duration-300">
+                            <i class="fas fa-gavel text-2xl text-gray-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Constitutional Rights</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Understanding fundamental rights, legal frameworks, and civic responsibilities.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-gray-50 text-gray-600 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors duration-300">Legal Rights</span>
+                        <span class="px-4 py-1.5 bg-gray-50 text-gray-600 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors duration-300">Civic Duties</span>
+                    </div>
+                    <a href="resource_pages/constitutional_rights.html" class="inline-block px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- First Aid and Emergency Response Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-red-100 group-hover:bg-red-200 transition-colors duration-300">
+                            <i class="fas fa-first-aid text-2xl text-red-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">First Aid and Emergency Response</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Learn essential first aid techniques and emergency response strategies.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-red-50 text-red-600 rounded-full text-sm font-medium hover:bg-red-100 transition-colors duration-300">First Aid</span>
+                        <span class="px-4 py-1.5 bg-red-50 text-red-600 rounded-full text-sm font-medium hover:bg-red-100 transition-colors duration-300">Emergency Response</span>
+                    </div>
+                    <a href="resource_pages/first_aid_and_emergency_response.html" class="inline-block px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Negotiation Skills Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-blue-100 group-hover:bg-blue-200 transition-colors duration-300">
+                            <i class="fas fa-handshake text-2xl text-blue-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Negotiation Skills</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Master the art of negotiation and conflict resolution.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-sm font-medium hover:bg-blue-100 transition-colors duration-300">Negotiation</span>
+                        <span class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-sm font-medium hover:bg-blue-100 transition-colors duration-300">Conflict Resolution</span>
+                    </div>
+                    <a href="resource_pages/negotiation_skills.html" class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Public Speaking Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-green-100 group-hover:bg-green-200 transition-colors duration-300">
+                            <i class="fas fa-microphone text-2xl text-green-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Public Speaking</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Develop confidence and skills for effective public speaking.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-green-50 text-green-600 rounded-full text-sm font-medium hover:bg-green-100 transition-colors duration-300">Confidence</span>
+                        <span class="px-4 py-1.5 bg-green-50 text-green-600 rounded-full text-sm font-medium hover:bg-green-100 transition-colors duration-300">Communication</span>
+                    </div>
+                    <a href="resource_pages/public_speaking.html" class="inline-block px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Project Management Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-purple-100 group-hover:bg-purple-200 transition-colors duration-300">
+                            <i class="fas fa-tasks text-2xl text-purple-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Project Management</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Learn the fundamentals of project management and team leadership.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-purple-50 text-purple-600 rounded-full text-sm font-medium hover:bg-purple-100 transition-colors duration-300">Leadership</span>
+                        <span class="px-4 py-1.5 bg-purple-50 text-purple-600 rounded-full text-sm font-medium hover:bg-purple-100 transition-colors duration-300">Management</span>
+                    </div>
+                    <a href="resource_pages/project_management.html" class="inline-block px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Creativity and Innovation Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-pink-100 group-hover:bg-pink-200 transition-colors duration-300">
+                            <i class="fas fa-lightbulb text-2xl text-pink-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Creativity and Innovation</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Develop creative thinking and innovative problem-solving skills.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-pink-50 text-pink-600 rounded-full text-sm font-medium hover:bg-pink-100 transition-colors duration-300">Creativity</span>
+                        <span class="px-4 py-1.5 bg-pink-50 text-pink-600 rounded-full text-sm font-medium hover:bg-pink-100 transition-colors duration-300">Innovation</span>
+                    </div>
+                    <a href="resource_pages/creativity_and_innovation.html" class="inline-block px-6 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Entrepreneurship Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-orange-100 group-hover:bg-orange-200 transition-colors duration-300">
+                            <i class="fas fa-rocket text-2xl text-orange-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Entrepreneurship</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Gain insights into starting and managing your own business.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-orange-50 text-orange-600 rounded-full text-sm font-medium hover:bg-orange-100 transition-colors duration-300">Business</span>
+                        <span class="px-4 py-1.5 bg-orange-50 text-orange-600 rounded-full text-sm font-medium hover:bg-orange-100 transition-colors duration-300">Startup</span>
+                    </div>
+                    <a href="resource_pages/entrepreneurship.html" class="inline-block px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Communication Skills Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-teal-100 group-hover:bg-teal-200 transition-colors duration-300">
+                            <i class="fas fa-comments text-2xl text-teal-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Communication Skills</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Enhance your communication skills for personal and professional success.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-teal-50 text-teal-600 rounded-full text-sm font-medium hover:bg-teal-100 transition-colors duration-300">Listening</span>
+                        <span class="px-4 py-1.5 bg-teal-50 text-teal-600 rounded-full text-sm font-medium hover:bg-teal-100 transition-colors duration-300">Speaking</span>
+                    </div>
+                    <a href="resource_pages/communication_skills.html" class="inline-block px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Organizational Skills Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-cyan-100 group-hover:bg-cyan-200 transition-colors duration-300">
+                            <i class="fas fa-calendar-alt text-2xl text-cyan-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Organizational Skills</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Improve your ability to organize tasks and manage time effectively.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-cyan-50 text-cyan-600 rounded-full text-sm font-medium hover:bg-cyan-100 transition-colors duration-300">Time Management</span>
+                        <span class="px-4 py-1.5 bg-cyan-50 text-cyan-600 rounded-full text-sm font-medium hover:bg-cyan-100 transition-colors duration-300">Task Prioritization</span>
+                    </div>
+                    <a href="resource_pages/organizational_skills.html" class="inline-block px-6 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Ethical Decision Making Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-pink-100 group-hover:bg-pink-200 transition-colors duration-300">
+                            <i class="fas fa-balance-scale text-2xl text-pink-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Ethical Decision Making</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Learn to make decisions that align with ethical standards and values.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-pink-50 text-pink-600 rounded-full text-sm font-medium hover:bg-pink-100 transition-colors duration-300">Ethics</span>
+                        <span class="px-4 py-1.5 bg-pink-50 text-pink-600 rounded-full text-sm font-medium hover:bg-pink-100 transition-colors duration-300">Values</span>
+                    </div>
+                    <a href="resource_pages/ethical_decision_making.html" class="inline-block px-6 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Leadership Skills Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-indigo-100 group-hover:bg-indigo-200 transition-colors duration-300">
+                            <i class="fas fa-users text-2xl text-indigo-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Leadership Skills</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Develop skills to lead teams and projects effectively.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-full text-sm font-medium hover:bg-indigo-100 transition-colors duration-300">Leadership</span>
+                        <span class="px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-full text-sm font-medium hover:bg-indigo-100 transition-colors duration-300">Teamwork</span>
+                    </div>
+                    <a href="resource_pages/leadership_skills.html" class="inline-block px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Conflict Resolution Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-orange-100 group-hover:bg-orange-200 transition-colors duration-300">
+                            <i class="fas fa-balance-scale text-2xl text-orange-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Conflict Resolution</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Learn effective strategies for managing and resolving conflicts.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-orange-50 text-orange-600 rounded-full text-sm font-medium hover:bg-orange-100 transition-colors duration-300">Mediation</span>
+                        <span class="px-4 py-1.5 bg-orange-50 text-orange-600 rounded-full text-sm font-medium hover:bg-orange-100 transition-colors duration-300">Resolution</span>
+                    </div>
+                    <a href="resource_pages/conflict_resolution.html" class="inline-block px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Gender Bias Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-teal-100 group-hover:bg-teal-200 transition-colors duration-300">
+                            <i class="fas fa-venus-mars text-2xl text-teal-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Gender Bias</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Understanding and addressing gender bias in society.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-teal-50 text-teal-600 rounded-full text-sm font-medium hover:bg-teal-100 transition-colors duration-300">Equality</span>
+                        <span class="px-4 py-1.5 bg-teal-50 text-teal-600 rounded-full text-sm font-medium hover:bg-teal-100 transition-colors duration-300">Awareness</span>
+                    </div>
+                    <a href="resource_pages/gender_bias.html" class="inline-block px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Feminism Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-purple-100 group-hover:bg-purple-200 transition-colors duration-300">
+                            <i class="fas fa-fist-raised text-2xl text-purple-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Feminism</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Explore the history, principles, and impact of feminist movements.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-purple-50 text-purple-600 rounded-full text-sm font-medium hover:bg-purple-100 transition-colors duration-300">Movement</span>
+                        <span class="px-4 py-1.5 bg-purple-50 text-purple-600 rounded-full text-sm font-medium hover:bg-purple-100 transition-colors duration-300">Rights</span>
+                    </div>
+                    <a href="resource_pages/feminism.html" class="inline-block px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Politics Card -->
+            <div class="glass-effect rounded-xl shadow-lg overflow-hidden group card-hover gradient-border">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-full bg-blue-100 group-hover:bg-blue-200 transition-colors duration-300">
+                            <i class="fas fa-landmark text-2xl text-blue-500 group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h2 class="text-2xl card-heading ml-4">Politics</h2>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed mb-6">Understanding political systems, governance, and civic participation.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-sm font-medium hover:bg-blue-100 transition-colors duration-300">Government</span>
+                        <span class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-sm font-medium hover:bg-blue-100 transition-colors duration-300">Democracy</span>
+                    </div>
+                    <a href="resource_pages/politics.html" class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 mt-4">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="glass-effect border-t border-white/40 mt-24 footer-gradient rounded-2xl">
+        <div class="max-w-7xl mx-auto px-6 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">About</h3>
+                    <p class="text-gray-600">Dedicated to providing quality educational resources for everyone.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 hover:text-blue-600">Home</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-blue-600">Resources</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-blue-600">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Connect</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-600 hover:text-blue-600"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-600 hover:text-blue-600"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-600 hover:text-blue-600"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Enhanced intersection observer for fade-in animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                    
+                    // Add a slight delay for each card
+                    const delay = Array.from(entry.target.parentElement.children).indexOf(entry.target) * 100;
+                    entry.target.style.transitionDelay = `${delay}ms`;
+                }
+            });
+        }, { 
+            threshold: 0.1,
+            rootMargin: '50px'
+        });
+
+        document.querySelectorAll('.card-hover').forEach(card => {
+            card.classList.add('opacity-0', 'translate-y-10', 'transition-all', 'duration-700');
+            observer.observe(card);
+        });
+
+        // Enhanced search functionality with debounce
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        const searchInput = document.querySelector('input[type="text"]');
+        const performSearch = debounce(function(query) {
+            document.querySelectorAll('.card-hover').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                const matches = text.includes(query);
+                
+                card.style.display = matches ? '' : 'none';
+                if (matches) {
+                    card.classList.add('animate-fadeIn');
+                } else {
+                    card.classList.remove('animate-fadeIn');
+                }
+            });
+        }, 300);
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            performSearch(query);
+        });
+
+        // Add parallax effect to hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                hero.style.transform = `translateY(${scrolled * 0.4}px)`;
+            }
+        });
+    </script>
+</body>
+</html>

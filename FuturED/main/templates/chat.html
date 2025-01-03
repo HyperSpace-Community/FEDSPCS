@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FuturED AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'bounce-slow': 'bounce 1.4s infinite',
+                        'fade-in': 'fadeIn 0.3s ease forwards',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'spin-reverse-slow': 'spin 12s linear infinite reverse',
+                        'pulse-slower': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'particle-float': 'particleFloat 4s ease-in-out infinite',
+                        'ping': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            'from': {
+                                opacity: '0',
+                                transform: 'translateY(20px)'
+                            },
+                            'to': {
+                                opacity: '1',
+                                transform: 'translateY(0)'
+                            }
+                        },
+                        float: {
+                            '0%, 100%': {
+                                transform: 'translateY(0) scale(1)'
+                            },
+                            '50%': {
+                                transform: 'translateY(-20px) scale(1.05)'
+                            }
+                        },
+                        particleFloat: {
+                            '0%, 100%': {
+                                transform: 'translateY(0) translateX(0)',
+                                opacity: '0.3'
+                            },
+                            '50%': {
+                                transform: 'translateY(-20px) translateX(10px)',
+                                opacity: '1'
+                            }
+                        },
+                        ping: {
+                            '75%, 100%': {
+                                transform: 'scale(2)',
+                                opacity: '0',
+                            },
+                        },
+                        rotateParticle: {
+                            '0%': {
+                                transform: 'rotate(0deg) translateX(12px) rotate(0deg)',
+                            },
+                            '100%': {
+                                transform: 'rotate(360deg) translateX(12px) rotate(calc(var(--rotation) - 360deg))',
+                            },
+                        },
+                        cursorPulse: {
+                            '0%': {
+                                transform: 'scale(1)',
+                                opacity: '0.8',
+                            },
+                            '50%': {
+                                transform: 'scale(1.1)',
+                                opacity: '0.5',
+                            },
+                            '100%': {
+                                transform: 'scale(1)',
+                                opacity: '0.8',
+                            },
+                        },
+                        rotateGradient: {
+                            '0%': {
+                                transform: 'rotate(0deg)',
+                            },
+                            '100%': {
+                                transform: 'rotate(360deg)',
+                            },
+                        },
+                        cursorDotPulse: {
+                            '0%, 100%': {
+                                transform: 'translate(-50%, -50%) scale(1)',
+                                background: 'linear-gradient(45deg, #3b82f6, #8b5cf6)',
+                            },
+                            '50%': {
+                                transform: 'translate(-50%, -50%) scale(1.2)',
+                                background: 'linear-gradient(45deg, #8b5cf6, #ec4899)',
+                            },
+                        },
+                        pulseRing: {
+                            '0%': {
+                                transform: 'scale(1)',
+                                opacity: '0.8',
+                            },
+                            '50%': {
+                                transform: 'scale(1.1)',
+                                opacity: '0.4',
+                            },
+                            '100%': {
+                                transform: 'scale(1)',
+                                opacity: '0.8',
+                            },
+                        },
+                        pulseRingHover: {
+                            '0%': {
+                                transform: 'scale(1)',
+                                opacity: '0.6',
+                            },
+                            '50%': {
+                                transform: 'scale(1.2)',
+                                opacity: '0.3',
+                            },
+                            '100%': {
+                                transform: 'scale(1)',
+                                opacity: '0.6',
+                            },
+                        },
+                        rotate: {
+                            '0%': {
+                                transform: 'rotate(0deg)',
+                            },
+                            '100%': {
+                                transform: 'rotate(360deg)',
+                            },
+                        },
+                    },
+                    colors: {
+                        'chat-bg': '#ffffff',
+                        'message-bg': '#f3f4f6',
+                        'user-message': '#10B981',
+                    },
+                    fontFamily: {
+                        'sans': ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'message': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        'input': '0 2px 4px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05)',
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar */
+        
+         ::-webkit-scrollbar {
+            width: 0px;
+            display: none;
+        }
+        /* Hide scrollbar for Firefox */
+        
+        * {
+            scrollbar-width: none;
+        }
+        /* Hide scrollbar for IE/Edge */
+        
+        * {
+            -ms-overflow-style: none;
+        }
+        /* Remove other scrollbar styles since they're no longer needed */
+        
+         ::-webkit-scrollbar-track,
+         ::-webkit-scrollbar-thumb,
+         ::-webkit-scrollbar-thumb:hover {
+            display: none;
+        }
+        /* Keep the other existing styles */
+        
+        .bg-gradient-radial {
+            background-image: radial-gradient(circle at center, var(--tw-gradient-from) 0%, var(--tw-gradient-via) 50%, var(--tw-gradient-to) 100%);
+        }
+        
+        .bg-gradient-conic {
+            background-image: conic-gradient(from 0deg, var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to));
+        }
+        
+        .prose pre {
+            background-color: rgba(17, 24, 39, 0.98);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .prose code {
+            color: #e5e7eb;
+            background-color: rgba(31, 41, 55, 0.5);
+            padding: 0.2em 0.4em;
+            border-radius: 0.375rem;
+            font-size: 0.875em;
+        }
+        
+        .prose pre code {
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .message.assistant .message-content {
+            line-height: 1.6;
+            font-size: 0.95rem;
+            letter-spacing: -0.01em;
+        }
+        
+        .message.user .message-content {
+            color: white;
+        }
+        
+        .message.assistant .message-content a {
+            color: #3B82F6;
+            text-decoration: underline;
+        }
+        
+        .message.user .message-content a {
+            color: white;
+            text-decoration: underline;
+        }
+        
+        .message-bubble {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .message-bubble:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.1);
+        }
+        
+        #message-input {
+            letter-spacing: -0.01em;
+            box-shadow: var(--tw-shadow-input);
+        }
+        /* Animations */
+        
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.3;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+        }
+        /* Glow effects */
+        
+        .glow-effect {
+            position: relative;
+        }
+        
+        .glow-effect::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(45deg, #60a5fa, #93c5fd, #3b82f6);
+            border-radius: inherit;
+            filter: blur(15px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .glow-effect:hover::before {
+            opacity: 0.5;
+        }
+        /* Message glow effects - enhanced */
+        
+        .message.assistant .message-bubble {
+            position: relative;
+            overflow: visible;
+        }
+        
+        .message.assistant .message-bubble::before {
+            display: none;
+        }
+        
+        .message.user .message-bubble {
+            position: relative;
+            overflow: visible;
+        }
+        
+        .message.user .message-bubble::before {
+            display: none;
+        }
+        
+        .message-bubble {
+            transition: none;
+        }
+        
+        .message-bubble:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        /* Input glow effect - enhanced */
+        
+        #message-input:focus {
+            box-shadow: 0 0 30px rgba(37, 99, 235, 0.15), 0 0 15px rgba(29, 78, 216, 0.1), 0 0 5px rgba(59, 130, 246, 0.05);
+        }
+        /* Header logo glow - enhanced */
+        
+        .logo-container {
+            position: relative;
+            overflow: visible;
+        }
+        
+        .logo-glow {
+            position: absolute;
+            inset: -8px;
+            background: linear-gradient( 45deg, rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.4));
+            border-radius: inherit;
+            filter: blur(20px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: -1;
+        }
+        
+        .logo-container:hover .logo-glow {
+            opacity: 0.8;
+            inset: -12px;
+        }
+        /* Submit button glow - enhanced */
+        
+        .submit-button-glow {
+            position: relative;
+            overflow: visible;
+        }
+        
+        .submit-button-glow::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            background: linear-gradient( 45deg, rgba(59, 130, 246, 0.3), rgba(96, 165, 250, 0.3));
+            border-radius: 50%;
+            filter: blur(15px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: -1;
+        }
+        
+        .submit-button-glow:hover::before {
+            opacity: 0.8;
+            inset: -12px;
+            filter: blur(20px);
+        }
+        /* Add ambient glow to the chat container */
+        
+        #chat-container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            background: radial-gradient( circle at center, rgba(96, 165, 250, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        /* Enhanced message transitions */
+        
+        .message {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .message-bubble {
+            transform: translateY(0) scale(1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .message-bubble:hover {
+            transform: translateY(-2px) scale(1.01);
+        }
+        /* Enhanced loading animation */
+        
+        .animate-bounce-slow {
+            animation: bounceSlow 1.4s infinite cubic-bezier(0.45, 0, 0.55, 1);
+        }
+        
+        @keyframes bounceSlow {
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-6px) scale(1.1);
+            }
+        }
+        /* Enhanced background particles */
+        
+        .animate-particle-float {
+            animation: particleFloat 8s infinite cubic-bezier(0.45, 0, 0.55, 1);
+        }
+        
+        @keyframes particleFloat {
+            0%,
+            100% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-30px) translateX(20px) scale(1.2);
+                opacity: 0.6;
+            }
+        }
+        /* Enhanced input focus styles */
+        
+        #message-input:focus {
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1), 0 2px 10px rgba(59, 130, 246, 0.05);
+        }
+        /* Enhanced scrollbar (only visible on hover) */
+        
+        #chat-messages:hover::-webkit-scrollbar {
+            width: 6px;
+            display: block;
+        }
+        
+        #chat-messages:hover::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 3px;
+        }
+        
+        #chat-messages:hover::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        /* Add these new styles in the existing <style> section */
+        
+        @keyframes rotateParticle {
+            0% {
+                transform: rotate(0deg) translateX(12px) rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg) translateX(12px) rotate(calc(var(--rotation) - 360deg));
+            }
+        }
+        
+        .rotate-particle {
+            transform-origin: center;
+            animation: rotateParticle 4s linear infinite, particleFloat 8s infinite cubic-bezier(0.45, 0, 0.55, 1);
+            border-radius: 1px;
+            /* Makes particles square with slightly rounded corners */
+        }
+        /* Custom cursor styles */
+        
+        * {
+            cursor: none !important;
+        }
+        
+        .custom-cursor {
+            width: 40px;
+            height: 40px;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+            mix-blend-mode: normal;
+        }
+        
+        .cursor-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(99, 102, 241, 0.6);
+            /* indigo-500 with opacity */
+            border-radius: 50%;
+            animation: pulseRing 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+            transition: all 0.3s ease;
+        }
+        
+        .cursor-gradient {
+            position: absolute;
+            inset: -4px;
+            background: conic-gradient( from 0deg, rgba(79, 70, 229, 0.8), /* indigo-600 */
+            rgba(139, 92, 246, 0.8), /* violet-500 */
+            rgba(236, 72, 153, 0.8), /* pink-500 */
+            rgba(139, 92, 246, 0.8), /* violet-500 */
+            rgba(79, 70, 229, 0.8)/* indigo-600 */
+            );
+            border-radius: 50%;
+            filter: blur(8px);
+            opacity: 0.4;
+            animation: rotate 4s linear infinite;
+            transition: all 0.3s ease;
+            mix-blend-mode: soft-light;
+        }
+        
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: #6366f1;
+            /* indigo-500 */
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 100000;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+            /* indigo-500 with glow */
+        }
+        /* Hover effects */
+        
+        .custom-cursor.hover {
+            width: 80px;
+            height: 80px;
+            background: rgba(99, 102, 241, 0.08);
+            /* indigo-500 with low opacity */
+            backdrop-filter: blur(4px);
+        }
+        
+        .custom-cursor.hover .cursor-ring {
+            border-color: rgba(99, 102, 241, 0.9);
+            /* indigo-500 more opaque */
+            animation: pulseRingHover 1.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+        
+        .custom-cursor.hover .cursor-gradient {
+            opacity: 0.6;
+            filter: blur(12px);
+            background: conic-gradient( from 0deg, rgba(99, 102, 241, 0.9), /* indigo-500 */
+            rgba(139, 92, 246, 0.9), /* violet-500 */
+            rgba(236, 72, 153, 0.9), /* pink-500 */
+            rgba(139, 92, 246, 0.9), /* violet-500 */
+            rgba(99, 102, 241, 0.9)/* indigo-500 */
+            );
+        }
+        /* Click effects */
+        
+        .custom-cursor.clicking {
+            width: 35px;
+            height: 35px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .custom-cursor.clicking .cursor-gradient {
+            filter: blur(4px);
+            opacity: 0.8;
+            animation-duration: 2s;
+            background: conic-gradient( from 0deg, rgba(67, 56, 202, 1), /* indigo-700 */
+            rgba(124, 58, 237, 1), /* violet-600 */
+            rgba(219, 39, 119, 1), /* pink-600 */
+            rgba(124, 58, 237, 1), /* violet-600 */
+            rgba(67, 56, 202, 1)/* indigo-700 */
+            );
+        }
+        
+        .cursor-dot.clicking {
+            transform: translate(-50%, -50%) scale(0.5);
+            background: #4f46e5;
+            /* indigo-600 */
+            opacity: 0.9;
+        }
+        /* Text input effects */
+        
+        .custom-cursor.text {
+            width: 30px;
+            height: 30px;
+            background: rgba(99, 102, 241, 0.1);
+            /* indigo-500 with very low opacity */
+            backdrop-filter: blur(2px);
+        }
+        
+        .cursor-dot.text {
+            width: 2px;
+            height: 15px;
+            border-radius: 1px;
+            background: #6366f1;
+            /* indigo-500 */
+            animation: cursorBlink 1s infinite;
+        }
+        /* Enhanced animations */
+        
+        @keyframes pulseRing {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.4;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes pulseRingHover {
+            0% {
+                transform: scale(1);
+                opacity: 0.9;
+                border-color: rgba(99, 102, 241, 0.9);
+            }
+            50% {
+                transform: scale(1.15);
+                opacity: 0.5;
+                border-color: rgba(139, 92, 246, 0.9);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.9;
+                border-color: rgba(99, 102, 241, 0.9);
+            }
+        }
+        
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        @keyframes cursorBlink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Enhanced input styling */
+        #message-input {
+            letter-spacing: -0.01em;
+            background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+        }
+
+        #message-input:focus {
+            background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
+            box-shadow: 
+                0 4px 20px rgba(59, 130, 246, 0.12),
+                0 2px 10px rgba(59, 130, 246, 0.08),
+                inset 0 0 0 2px rgba(59, 130, 246, 0.2),
+                inset 0 -2px 4px rgba(255, 255, 255, 1);
+        }
+
+        #message-form {
+            background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.95));
+            box-shadow: 
+                0 -10px 30px rgba(0, 0, 0, 0.05),
+                0 -1px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        /* Enhanced placeholder styling */
+        #message-input::placeholder {
+            color: rgba(107, 114, 128, 0.5);
+            transition: color 0.2s ease;
+        }
+
+        #message-input:focus::placeholder {
+            color: rgba(107, 114, 128, 0.7);
+        }
+
+        /* Add a subtle animation when input field is focused */
+        @keyframes inputFocus {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-1px); }
+            100% { transform: translateY(0); }
+        }
+
+        #message-input:focus {
+            animation: inputFocus 0.3s ease-out;
+        }
+
+        /* Input box animations and effects */
+        @keyframes inputFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2px); }
+        }
+
+        @keyframes inputGlow {
+            0%, 100% { 
+                box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1),
+                        0 2px 10px rgba(59, 130, 246, 0.05); 
+            }
+            50% { 
+                box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15),
+                        0 4px 15px rgba(59, 130, 246, 0.1); 
+            }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #message-input {
+            animation: inputFloat 3s ease-in-out infinite;
+            background: linear-gradient(
+                120deg,
+                rgba(255, 255, 255, 0.95),
+                rgba(244, 247, 254, 0.95),
+                rgba(239, 246, 255, 0.95)
+            );
+            background-size: 200% 200%;
+            animation: gradientShift 5s ease infinite, inputFloat 3s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        #message-input:focus {
+            animation: inputGlow 2s ease-in-out infinite;
+            transform: translateY(-1px);
+            background: linear-gradient(
+                120deg,
+                rgba(255, 255, 255, 0.98),
+                rgba(244, 247, 254, 0.98),
+                rgba(239, 246, 255, 0.98)
+            );
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        /* Animated submit button */
+        .submit-button-glow {
+            animation: buttonPulse 2s infinite;
+        }
+
+        @keyframes buttonPulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
+        }
+
+        /* Form container animation */
+        #message-form {
+            position: relative;
+            overflow: hidden;
+        }
+
+        #message-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(59, 130, 246, 0.05),
+                transparent
+            );
+            animation: formShine 8s linear infinite;
+        }
+
+        @keyframes formShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Input focus ring animation */
+        #message-input:focus {
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1),
+                        0 0 0 4px rgba(59, 130, 246, 0.1),
+                        0 4px 20px rgba(59, 130, 246, 0.12);
+        }
+
+        /* Placeholder text animation */
+        @keyframes placeholderFade {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+
+        #message-input::placeholder {
+            animation: placeholderFade 3s ease-in-out infinite;
+        }
+
+        /* Enhanced message bubble styling */
+        .message-bubble {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .message-bubble::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .message-bubble:hover {
+            transform: translateY(-2px) scale(1.01);
+        }
+
+        .message-bubble:hover::before {
+            transform: translateX(100%);
+        }
+
+        /* Enhanced gradient animations */
+        .bg-gradient-radial {
+            background-size: 200% 200%;
+            animation: gradientPosition 15s ease infinite;
+        }
+
+        @keyframes gradientPosition {
+            0%, 100% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+        }
+
+        /* Floating particles enhancement */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: floatParticle 20s linear infinite;
+            opacity: 0.5;
+            filter: blur(1px);
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translate(var(--translate-x), var(--translate-y)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Enhanced input field */
+        #message-input {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #message-input:focus {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 
+                0 0 0 2px rgba(59, 130, 246, 0.2),
+                0 4px 20px rgba(59, 130, 246, 0.15),
+                0 0 40px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Glass morphism effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 8px 32px rgba(31, 38, 135, 0.15),
+                0 4px 8px rgba(31, 38, 135, 0.1);
+        }
+
+        /* Typing indicator enhancement */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .typing-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #3B82F6;
+            animation: typingBounce 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+
+        /* Message transitions */
+        .message {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .message.new {
+            animation: messageAppear 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header enhancement */
+        header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 4px 20px rgba(148, 163, 184, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-chat-bg text-gray-900 min-h-screen flex flex-col">
+    <div class="fixed inset-0 -z-10 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/90 via-white/90 to-indigo-50/90 animate-pulse-slow"></div>
+        <div class="absolute inset-0">
+            <div class="absolute h-4 w-4 rounded-full bg-blue-200/40 animate-particle-float" style="top: 15%; left: 25%"></div>
+            <div class="absolute h-6 w-6 rounded-full bg-indigo-200/40 animate-particle-float" style="top: 45%; left: 75%; animation-delay: -2s"></div>
+            <div class="absolute h-3 w-3 rounded-full bg-blue-200/40 animate-particle-float" style="top: 65%; left: 35%; animation-delay: -1s"></div>
+            <div class="absolute h-5 w-5 rounded-full bg-indigo-200/40 animate-particle-float" style="top: 85%; left: 65%; animation-delay: -3s"></div>
+            <div class="absolute h-4 w-4 rounded-full bg-blue-200/40 animate-particle-float" style="top: 25%; left: 85%; animation-delay: -2.5s"></div>
+        </div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_rgba(255,255,255,0.6)_100%)]"></div>
+    </div>
+    <header class="relative z-10 border-b border-gray-200/50 bg-white/70 backdrop-blur-md">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="relative w-16 h-16 group logo-container">
+                    <svg class="w-16 h-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Enhanced Quantum Field Background with Dynamic Waves -->
+                        <g class="quantum-field" filter="url(#quantumGlowChat)">
+                            <!-- Outer Field -->
+                            <circle cx="12" cy="12" r="11" fill="url(#quantumFieldGradientChat)" opacity="0.15">
+                                <animate attributeName="opacity" values="0.15;0.25;0.15" dur="4s" repeatCount="indefinite"/>
+                                <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="30s" repeatCount="indefinite"/>
+                            </circle>
+                            <!-- Inner Field with Wave Effect -->
+                            <circle cx="12" cy="12" r="9" fill="url(#innerFieldGradientChat)" opacity="0.2">
+                                <animate attributeName="r" values="8.5;9;8.5" dur="3s" repeatCount="indefinite"/>
+                                <animate attributeName="opacity" values="0.2;0.3;0.2" dur="3s" repeatCount="indefinite"/>
+                                <animateTransform attributeName="transform" type="rotate" from="360 12 12" to="0 12 12" dur="20s" repeatCount="indefinite"/>
+                            </circle>
+                        </g>
+
+                        <!-- Enhanced Energy Grid with Dynamic Flow -->
+                        <g class="energy-grid" opacity="0.15">
+                            <!-- Horizontal Lines -->
+                            <path d="M4,8 h16 M4,12 h16 M4,16 h16" stroke="url(#gridGradientChat)" stroke-width="0.5" stroke-dasharray="1,2">
+                                <animate attributeName="stroke-dashoffset" values="0;3" dur="2s" repeatCount="indefinite"/>
+                                <animate attributeName="opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite"/>
+                            </path>
+                            <!-- Vertical Lines -->
+                            <path d="M8,4 v16 M12,4 v16 M16,4 v16" stroke="url(#gridGradientChat)" stroke-width="0.5" stroke-dasharray="1,2">
+                                <animate attributeName="stroke-dashoffset" values="0;3" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+                                <animate attributeName="opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite" begin="0.5s"/>
+                            </path>
+                        </g>
+
+                        <!-- Enhanced Quantum Core -->
+                        <g class="quantum-core" filter="url(#coreGlowChat)">
+                            <!-- Core Rings with Dynamic Rotation -->
+                            <g class="core-rings">
+                                <!-- Outer Ring -->
+                                <circle cx="12" cy="12" r="6" stroke="url(#ringGradient1Chat)" stroke-width="0.5" fill="none">
+                                    <animate attributeName="r" values="5.8;6.2;5.8" dur="3s" repeatCount="indefinite"/>
+                                    <animate attributeName="stroke-opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite"/>
+                                    <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="10s" repeatCount="indefinite"/>
+                                </circle>
+                                <!-- Middle Ring -->
+                                <circle cx="12" cy="12" r="5" stroke="url(#ringGradient2Chat)" stroke-width="0.5" fill="none">
+                                    <animate attributeName="r" values="4.8;5.2;4.8" dur="3s" repeatCount="indefinite"/>
+                                    <animate attributeName="stroke-opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite"/>
+                                    <animateTransform attributeName="transform" type="rotate" from="360 12 12" to="0 12 12" dur="8s" repeatCount="indefinite"/>
+                                </circle>
+                                <!-- Inner Ring -->
+                                <circle cx="12" cy="12" r="4" stroke="url(#ringGradient3Chat)" stroke-width="0.5" fill="none">
+                                    <animate attributeName="r" values="3.8;4.2;3.8" dur="3s" repeatCount="indefinite"/>
+                                    <animate attributeName="stroke-opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite"/>
+                                    <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="12s" repeatCount="indefinite"/>
+                                </circle>
+                            </g>
+
+                            <!-- Enhanced Core Hexagon -->
+                            <path d="M12,7 L15.5,9 L15.5,13 L12,15 L8.5,13 L8.5,9 Z" 
+                                  fill="url(#coreGradientChat)"
+                                  filter="url(#innerGlowChat)">
+                                <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+                                <animateTransform attributeName="transform" 
+                                                type="rotate"
+                                                from="0 12 12"
+                                                to="360 12 12"
+                                                dur="15s"
+                                                repeatCount="indefinite"/>
+                            </path>
+                        </g>
+
+                        <!-- Enhanced Quantum Particles -->
+                        <g class="quantum-particles" filter="url(#particleGlowChat)">
+                            <!-- Orbital Particles -->
+                            <g class="orbital-particles">
+                                <!-- Primary Orbital -->
+                                <circle r="0.4" fill="url(#particleGradient1Chat)">
+                                    <animateMotion path="M12,6 A6,6 0 1,1 12,18 A6,6 0 1,1 12,6" 
+                                                  dur="4s" 
+                                                  repeatCount="indefinite"/>
+                                    <animate attributeName="r" values="0.3;0.5;0.3" dur="2s" repeatCount="indefinite"/>
+                                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+                                </circle>
+                                <!-- Secondary Orbital -->
+                                <circle r="0.4" fill="url(#particleGradient2Chat)">
+                                    <animateMotion path="M6,12 A6,6 0 1,1 18,12 A6,6 0 1,1 6,12" 
+                                                  dur="4s" 
+                                                  repeatCount="indefinite"
+                                                  begin="1s"/>
+                                    <animate attributeName="r" values="0.3;0.5;0.3" dur="2s" repeatCount="indefinite" begin="1s"/>
+                                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" begin="1s"/>
+                                </circle>
+                                <!-- Tertiary Orbital -->
+                                <circle r="0.35" fill="url(#particleGradient3Chat)">
+                                    <animateMotion path="M12,8 A4,4 0 1,1 12,16 A4,4 0 1,1 12,8" 
+                                                  dur="3s" 
+                                                  repeatCount="indefinite"
+                                                  begin="0.5s"/>
+                                    <animate attributeName="r" values="0.25;0.45;0.25" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+                                    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+                                </circle>
+                            </g>
+
+                            <!-- Enhanced Energy Bursts -->
+                            <g class="energy-bursts">
+                                <!-- Primary Burst -->
+                                <circle cx="12" cy="12" r="0.1" fill="url(#burstGradient1Chat)">
+                                    <animate attributeName="r" values="0.1;4;0.1" dur="3s" repeatCount="indefinite"/>
+                                    <animate attributeName="opacity" values="0.8;0;0.8" dur="3s" repeatCount="indefinite"/>
+                                </circle>
+                                <!-- Secondary Burst -->
+                                <circle cx="12" cy="12" r="0.1" fill="url(#burstGradient2Chat)">
+                                    <animate attributeName="r" values="0.1;3;0.1" dur="3s" repeatCount="indefinite" begin="1.5s"/>
+                                    <animate attributeName="opacity" values="0.6;0;0.6" dur="3s" repeatCount="indefinite" begin="1.5s"/>
+                                </circle>
+                            </g>
+
+                            <!-- Enhanced Quantum Entanglement Lines -->
+                            <g class="entanglement-lines">
+                                <!-- Primary Entanglement -->
+                                <path d="M9,9 Q12,12 15,15" stroke="url(#entanglementGradient1Chat)" stroke-width="0.3" fill="none">
+                                    <animate attributeName="d" 
+                                            values="M9,9 Q12,12 15,15;M15,9 Q12,12 9,15;M9,9 Q12,12 15,15" 
+                                            dur="6s" 
+                                            repeatCount="indefinite"/>
+                                    <animate attributeName="stroke-opacity" values="0.2;0.8;0.2" dur="6s" repeatCount="indefinite"/>
+                                </path>
+                                <!-- Secondary Entanglement -->
+                                <path d="M15,9 Q12,12 9,15" stroke="url(#entanglementGradient2Chat)" stroke-width="0.3" fill="none">
+                                    <animate attributeName="d" 
+                                            values="M15,9 Q12,12 9,15;M9,9 Q12,12 15,15;M15,9 Q12,12 9,15" 
+                                            dur="6s" 
+                                            repeatCount="indefinite"/>
+                                    <animate attributeName="stroke-opacity" values="0.2;0.8;0.2" dur="6s" repeatCount="indefinite"/>
+                                </path>
+                            </g>
+                        </g>
+
+                        <!-- Enhanced Gradients and Filters -->
+                        <defs>
+                            <!-- Enhanced Field Gradients -->
+                            <radialGradient id="quantumFieldGradientChat" cx="0.5" cy="0.5" r="0.5">
+                                <stop offset="0%" stop-color="#C084FC" stop-opacity="0.4">
+                                    <animate attributeName="stop-color" 
+                                        values="#C084FC;#8B5CF6;#C084FC" 
+                                        dur="6s" 
+                                        repeatCount="indefinite"/>
+                                </stop>
+                                <stop offset="100%" stop-color="#6366F1" stop-opacity="0">
+                                    <animate attributeName="stop-color" 
+                                        values="#6366F1;#4F46E5;#6366F1" 
+                                        dur="6s" 
+                                        repeatCount="indefinite"/>
+                                </stop>
+                            </radialGradient>
+
+                            <radialGradient id="innerFieldGradientChat" cx="0.5" cy="0.5" r="0.5">
+                                <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.3">
+                                    <animate attributeName="stop-opacity" 
+                                        values="0.3;0.5;0.3" 
+                                        dur="4s" 
+                                        repeatCount="indefinite"/>
+                                </stop>
+                                <stop offset="100%" stop-color="#4F46E5" stop-opacity="0"/>
+                            </radialGradient>
+
+                            <!-- Enhanced Ring Gradients -->
+                            <linearGradient id="ringGradient1Chat" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#C084FC">
+                                    <animate attributeName="stop-color" 
+                                        values="#C084FC;#818CF8;#C084FC" 
+                                        dur="4s" 
+                                        repeatCount="indefinite"/>
+                                </stop>
+                                <stop offset="100%" stop-color="#818CF8">
+                                    <animate attributeName="stop-color" 
+                                        values="#818CF8;#C084FC;#818CF8" 
+                                        dur="4s" 
+                                        repeatCount="indefinite"/>
+                                </stop>
+                            </linearGradient>
+
+                            <linearGradient id="ringGradient2Chat" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#A78BFA"/>
+                                <stop offset="100%" stop-color="#6366F1"/>
+                            </linearGradient>
+
+                            <linearGradient id="ringGradient3Chat" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#818CF8"/>
+                                <stop offset="100%" stop-color="#4F46E5"/>
+                            </linearGradient>
+
+                            <!-- Enhanced Core Gradient -->
+                            <linearGradient id="coreGradientChat" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#9333EA">
+                                    <animate attributeName="stop-color" 
+                                        values="#9333EA;#7C3AED;#9333EA" 
+                                        dur="3s" 
+                                        repeatCount="indefinite"/>
+                                </stop>
+                                <stop offset="100%" stop-color="#6366F1">
+                                    <animate attributeName="stop-color" 
+                                        values="#6366F1;#818CF8;#6366F1" 
+                                        dur="3s" 
+                                        repeatCount="indefinite"/>
+                                </stop>
+                            </linearGradient>
+
+                            <!-- Enhanced Particle Gradients -->
+                            <linearGradient id="particleGradient1Chat">
+                                <stop offset="0%" stop-color="#F0ABFC"/>
+                                <stop offset="100%" stop-color="#C084FC"/>
+                            </linearGradient>
+
+                            <linearGradient id="particleGradient2Chat">
+                                <stop offset="0%" stop-color="#818CF8"/>
+                                <stop offset="100%" stop-color="#6366F1"/>
+                            </linearGradient>
+
+                            <linearGradient id="particleGradient3Chat">
+                                <stop offset="0%" stop-color="#A78BFA"/>
+                                <stop offset="100%" stop-color="#7C3AED"/>
+                            </linearGradient>
+
+                            <!-- Enhanced Burst Gradients -->
+                            <radialGradient id="burstGradient1Chat">
+                                <stop offset="0%" stop-color="#C084FC" stop-opacity="0.8"/>
+                                <stop offset="100%" stop-color="#6366F1" stop-opacity="0"/>
+                            </radialGradient>
+
+                            <radialGradient id="burstGradient2Chat">
+                                <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.6"/>
+                                <stop offset="100%" stop-color="#4F46E5" stop-opacity="0"/>
+                            </radialGradient>
+
+                            <!-- Enhanced Entanglement Gradients -->
+                            <linearGradient id="entanglementGradient1Chat">
+                                <stop offset="0%" stop-color="#C084FC"/>
+                                <stop offset="100%" stop-color="#6366F1"/>
+                            </linearGradient>
+
+                            <linearGradient id="entanglementGradient2Chat">
+                                <stop offset="0%" stop-color="#A78BFA"/>
+                                <stop offset="100%" stop-color="#4F46E5"/>
+                            </linearGradient>
+
+                            <!-- Enhanced Grid Gradient -->
+                            <linearGradient id="gridGradientChat">
+                                <stop offset="0%" stop-color="#C084FC" stop-opacity="0.3"/>
+                                <stop offset="100%" stop-color="#6366F1" stop-opacity="0.1"/>
+                            </linearGradient>
+
+                            <!-- Enhanced Filters -->
+                            <filter id="quantumGlowChat" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="1.5" result="blur"/>
+                                <feFlood flood-color="#C084FC" flood-opacity="0.3" result="color"/>
+                                <feComposite in="color" in2="blur" operator="in" result="glow"/>
+                                <feMerge>
+                                    <feMergeNode in="glow"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+
+                            <filter id="coreGlowChat" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="1" result="blur"/>
+                                <feFlood flood-color="#C084FC" flood-opacity="0.5" result="color"/>
+                                <feComposite in="color" in2="blur" operator="in" result="glow"/>
+                                <feMerge>
+                                    <feMergeNode in="glow"/>
+                                    <feMergeNode in="glow"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+
+                            <filter id="innerGlowChat" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="0.5" result="blur"/>
+                                <feFlood flood-color="#C084FC" flood-opacity="0.8" result="color"/>
+                                <feComposite in="color" in2="blur" operator="in" result="glow"/>
+                                <feMerge>
+                                    <feMergeNode in="glow"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+
+                            <filter id="particleGlowChat" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="0.3" result="blur"/>
+                                <feFlood flood-color="#C084FC" flood-opacity="0.3" result="color"/>
+                                <feComposite in="color" in2="blur" operator="in" result="glow"/>
+                                <feMerge>
+                                    <feMergeNode in="glow"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 bg-clip-text text-transparent"> FuturED AI </h1>
+                    <p class="text-sm text-gray-500 mt-1">Powered by LATMO</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div id="chat-container" class="flex-1 overflow-hidden relative max-w-5xl mx-auto w-full px-4 bg-transparent">
+        <div id="chat-messages" class="max-w-3xl mx-auto py-8 px-4 h-[calc(100vh-12rem)] overflow-y-auto scroll-smooth space-y-6">
+            <div class="message assistant opacity-0 transform translate-y-5 animate-fade-in" data-role="LATMO">
+                <div class="max-w-[85%] bg-white rounded-2xl rounded-bl-sm p-5 shadow-md mb-8 border border-gray-200">
+                    <span class="inline-block text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-xl mb-3 font-medium tracking-wide"> LATMO </span>
+                    <div class="message-content prose">
+                        <p>Hello! How can I help you today?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form id="message-form" class="relative p-6 bg-white/90 backdrop-blur-md border-t border-gray-200/50 shadow-xl">
+        <div class="max-w-3xl mx-auto relative">
+            <textarea id="message-input" class="w-full pl-7 pr-16 py-4 min-h-[3.75rem] max-h-[150px] bg-white rounded-2xl text-gray-700 placeholder-gray-400 text-[0.95rem] resize-none focus:outline-none focus:border-blue-400/60 focus:ring-4 focus:ring-blue-400/20 transition-all duration-300 border-2 border-gray-100 hover:border-blue-200 shadow-lg backdrop-blur-xl hover:shadow-[0_8px_25px_rgba(59,130,246,0.15)]"
+                placeholder="Type your message..." rows="1" autofocus></textarea>
+            <button type="submit" class="submit-button-glow absolute right-4 bottom-4 p-2.5 text-blue-600 hover:text-blue-500 transition-all hover:scale-110 duration-300 bg-blue-50/50 hover:bg-blue-100/50 rounded-xl">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                </svg>
+            </button>
+            <button type="button" id="saveChat" class="absolute right-16 bottom-4 p-2.5 text-blue-600 hover:text-blue-500 transition-all hover:scale-110 duration-300 bg-blue-50/50 hover:bg-blue-100/50 rounded-xl">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+                </svg>
+            </button>
+        </div>
+    </form>
+    <script>
+        const messageInput = document.getElementById('message-input');
+        const chatMessages = document.getElementById('chat-messages');
+        let currentChatMessages = [];
+
+        function appendMessage(role, content) {
+            const messageDiv = document.createElement('div');
+            const isAssistant = role.toLowerCase() === 'latmo';
+            messageDiv.className = `message ${isAssistant ? 'assistant' : 'user'} opacity-0 transform translate-y-5 animate-fade-in`;
+            messageDiv.setAttribute('data-role', role);
+            let messageContent = content;
+            let toolsContent = '';
+            if (isAssistant && content.includes('\n\nTools used:')) {
+                const [message, tools] = content.split('\n\nTools used:');
+                messageContent = message;
+                toolsContent = tools;
+            }
+            let parsedContent;
+            try {
+                parsedContent = marked.parse(messageContent);
+            } catch (error) {
+                console.error('Markdown parsing error:', error);
+                parsedContent = messageContent; // Fallback to plain text
+            }
+
+            // Store message in current chat
+            currentChatMessages.push({
+                role: role,
+                content: messageContent,
+                timestamp: new Date().toISOString()
+            });
+
+            messageDiv.innerHTML = `
+                <div class="message-bubble max-w-[85%] ${isAssistant ? 'bg-white/95 backdrop-blur-sm rounded-2xl rounded-bl-lg border border-gray-200/60' : 'bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 rounded-2xl rounded-br-lg ml-auto border border-blue-400/20'} p-6 shadow-lg hover:shadow-xl transition-all duration-300 mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-sm ${isAssistant ? 'text-gray-600' : 'text-white/90'} font-medium tracking-wide">${role}</span>
+                </div>
+                <div class="message-content prose ${isAssistant ? '' : 'prose-invert'} max-w-none">
+                    ${parsedContent}
+                </div>
+                ${toolsContent ? `
+                    <div class="mt-4 pt-4 border-t border-gray-200/10">
+                        <div class="text-sm text-gray-500 font-medium">Tools used:</div>
+                        <div class="text-sm text-gray-400 mt-1">
+                            ${marked.parse(toolsContent)}
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function adjustTextareaHeight() {
+            messageInput.style.height = 'auto';
+            const newHeight = Math.min(messageInput.scrollHeight, 150);
+            messageInput.style.height = newHeight + 'px';
+        }
+        
+        messageInput.addEventListener('input', adjustTextareaHeight);
+        messageInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                document.getElementById('message-form').dispatchEvent(new Event('submit'));
+            }
+        });
+        document.getElementById('message-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = messageInput.value.trim();
+            if (!message) return;
+            messageInput.disabled = true;
+            appendMessage('User', message);
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message assistant';
+            loadingDiv.innerHTML = `
+                <div class="max-w-[85%] bg-white/80 backdrop-blur rounded-2xl p-4 mb-8 flex items-center gap-3 border border-gray-200 shadow-md">
+                    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center animate-pulse">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <span class="text-gray-600 font-medium">LATMO is thinking</span>
+                    <div class="flex gap-1.5">
+                        <div class="w-2 h-2 bg-blue-500/80 rounded-full animate-bounce-slow" style="animation-delay: -0.32s"></div>
+                        <div class="w-2 h-2 bg-blue-500/80 rounded-full animate-bounce-slow" style="animation-delay: -0.16s"></div>
+                        <div class="w-2 h-2 bg-blue-500/80 rounded-full animate-bounce-slow"></div>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(loadingDiv);
+            try {
+                const response = await fetch('/send_message', {
+                    method: 'POST', headers: {
+                        'Content-Type': 'application/json'
+                    }
+                    , body: JSON.stringify({
+                        message
+                    })
+                });
+                loadingDiv.remove();
+                if (response.ok) {
+                    const data = await response.json();
+                    appendMessage('LATMO', data.response);
+                }
+                else {
+                    appendMessage('LATMO', 'Sorry, there was an error processing your message.');
+                }
+            }
+            catch (error) {
+                console.error('Error:', error);
+                loadingDiv.remove();
+                appendMessage('LATMO', 'Sorry, there was an error processing your message.');
+            }
+            finally {
+                messageInput.disabled = false;
+                messageInput.focus();
+            }
+        });
+
+        // Save chat functionality
+        document.getElementById('saveChat').addEventListener('click', () => {
+            console.log('Save button clicked');
+            console.log('Current chat messages:', currentChatMessages);
+
+            if (currentChatMessages.length === 0) {
+                alert('No messages to save!');
+                return;
+            }
+
+            // Clean up messages to ensure they're in the correct format
+            const cleanedMessages = currentChatMessages.map(msg => ({
+                role: msg.role === 'LATMO' ? 'Assistant' : msg.role,
+                content: msg.content,
+                timestamp: msg.timestamp || new Date().toISOString()
+            }));
+
+            const chatData = {
+                id: Date.now().toString(),
+                messages: cleanedMessages,
+                timestamp: new Date().toISOString(),
+                title: cleanedMessages[0].content.slice(0, 50) + '...' // Use first message as title
+            };
+
+            console.log('Chat data to save:', chatData);
+
+            // Get existing chats or initialize empty object
+            let savedChats;
+            try {
+                const existingChats = localStorage.getItem('futurED_chats');
+                console.log('Raw existing chats from localStorage:', existingChats);
+                savedChats = JSON.parse(existingChats || '{}');
+                console.log('Parsed existing chats:', savedChats);
+            } catch (error) {
+                console.error('Error parsing existing chats:', error);
+                savedChats = {};
+            }
+
+            // Add new chat
+            savedChats[chatData.id] = chatData;
+            
+            try {
+                const chatString = JSON.stringify(savedChats);
+                console.log('Stringified chats to save:', chatString);
+                localStorage.setItem('futurED_chats', chatString);
+                
+                // Verify the save
+                const savedData = localStorage.getItem('futurED_chats');
+                console.log('Verification - Raw data in localStorage:', savedData);
+                console.log('Verification - Parsed data:', JSON.parse(savedData));
+                
+                alert('Chat saved successfully! You can view it in the Database page under Saved Chats tab.');
+            } catch (error) {
+                console.error('Error saving chat:', error);
+                alert('Error saving chat: ' + error.message);
+            }
+        });
+
+        // Custom cursor implementation
+        document.addEventListener('DOMContentLoaded', () => {
+            const cursor = document.querySelector('.custom-cursor');
+            const cursorDot = document.querySelector('.cursor-dot');
+            let isHidden = false;
+            let timeout;
+            let mousePos = { x: 0, y: 0 };
+            let currentPos = { x: 0, y: 0 };
+
+            if (!cursor || !cursorDot) {
+                console.error('Cursor elements not found');
+                return;
+            }
+
+            // Initialize cursor position
+            cursor.style.opacity = '1';
+            cursorDot.style.opacity = '1';
+
+            function lerp(start, end, factor) {
+                return start + (end - start) * factor;
+            }
+
+            function updateCursorPosition(e) {
+                mousePos.x = e.clientX;
+                mousePos.y = e.clientY;
+
+                // Show cursor when moving
+                if (isHidden) {
+                    cursor.style.opacity = '1';
+                    cursorDot.style.opacity = '1';
+                    isHidden = false;
+                }
+
+                // Reset inactivity timer
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    cursor.style.opacity = '0';
+                    cursorDot.style.opacity = '0';
+                    isHidden = true;
+                }, 3000);
+            }
+
+            function animateCursor() {
+                // Smooth cursor movement
+                currentPos.x = lerp(currentPos.x, mousePos.x, 0.15);
+                currentPos.y = lerp(currentPos.y, mousePos.y, 0.15);
+
+                cursor.style.left = `${currentPos.x}px`;
+                cursor.style.top = `${currentPos.y}px`;
+                cursorDot.style.left = `${mousePos.x}px`;
+                cursorDot.style.top = `${mousePos.y}px`;
+
+                requestAnimationFrame(animateCursor);
+            }
+
+            function addClickEffect() {
+                cursor.classList.add('clicking');
+                cursorDot.classList.add('clicking');
+                setTimeout(() => {
+                    cursor.classList.remove('clicking');
+                    cursorDot.classList.remove('clicking');
+                }, 300);
+            }
+
+            function addHoverEffect(e) {
+                const target = e.target;
+                if (
+                    target.tagName.toLowerCase() === 'button' ||
+                    target.tagName.toLowerCase() === 'a' ||
+                    target.closest('button') ||
+                    target.closest('a') ||
+                    target.classList.contains('message-bubble')
+                ) {
+                    cursor.classList.add('hover');
+                    cursorDot.classList.add('hover');
+                }
+            }
+
+            function removeHoverEffect() {
+                cursor.classList.remove('hover');
+                cursorDot.classList.remove('hover');
+            }
+
+            // Event listeners
+            document.addEventListener('mousemove', updateCursorPosition);
+            document.addEventListener('mousedown', addClickEffect);
+            document.addEventListener('mouseup', () => cursor.classList.remove('clicking'));
+            document.addEventListener('mouseover', addHoverEffect);
+            document.addEventListener('mouseout', removeHoverEffect);
+
+            // Add text effect for input areas
+            document.querySelectorAll('input, textarea').forEach(element => {
+                element.addEventListener('mouseover', () => {
+                    cursor.classList.add('text');
+                    cursorDot.classList.add('text');
+                });
+                element.addEventListener('mouseout', () => {
+                    cursor.classList.remove('text');
+                    cursorDot.classList.remove('text');
+                });
+            });
+
+            // Start animation loop
+            animateCursor();
+        });
+
+        // Create floating particles
+        function createParticles() {
+            const container = document.querySelector('#chat-container');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.setProperty('--translate-x', `${Math.random() * 100 - 50}px`);
+                particle.style.setProperty('--translate-y', `${Math.random() * 100 - 50}px`);
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.width = `${Math.random() * 4 + 2}px`;
+                particle.style.height = particle.style.width;
+                particle.style.background = `hsl(${Math.random() * 60 + 200}, 70%, 70%)`;
+                particle.style.animationDelay = `${Math.random() * 20}s`;
+                container.appendChild(particle);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', createParticles);
+    </script>
+    <div class="custom-cursor">
+        <div class="cursor-gradient"></div>
+        <div class="cursor-ring"></div>
+    </div>
+    <div class="cursor-dot"></div>
+</body>
+
+</html>

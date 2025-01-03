@@ -1,0 +1,2590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FuturED Spaces</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        space: ['Space Grotesk', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'gradient': 'gradient 8s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'tilt': 'tilt 10s infinite linear',
+                    },
+                    keyframes: {
+                        gradient: {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            }
+                        },
+                        tilt: {
+                            '0%, 100%': {
+                                transform: 'rotate(-1deg)'
+                            },
+                            '50%': {
+                                transform: 'rotate(1deg)'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="cursor-styles.css">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+        
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 12px 48px 0 rgba(31, 38, 135, 0.5);
+            transform: scale(1.05);
+        }
+        
+        .card-animate {
+            animation: cardFloat 6s ease-in-out infinite;
+            transition: all 0.5s ease;
+        }
+        
+        @keyframes cardFloat {
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-5px) rotate(1deg);
+            }
+            75% {
+                transform: translateY(5px) rotate(-1deg);
+            }
+        }
+        
+        .card-glow {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-glow::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(56, 189, 248, 0.3) 0%, transparent 50%);
+            animation: rotate 8s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #1f1c2c, #928dab);
+        }
+        
+        .container {
+            min-height: 100vh;
+        }
+        /* Add gradient borders to cards */
+        
+        .card-border-gradient {
+            position: relative;
+            border-radius: 1rem;
+            padding: 1px;
+            background: linear-gradient( 45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05) 30%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.05) 70%, rgba(255, 255, 255, 0.1));
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card-border-gradient:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+        }
+        /* Add new animation for gradient flow */
+        
+        @keyframes gradientFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .animate-gradient-slow {
+            background-size: 200% 200%;
+            animation: gradientFlow 6s ease infinite;
+        }
+
+        /* Welcome Popup Styles */
+        .welcome-popup {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .welcome-popup.active {
+            opacity: 1;
+            pointer-events: auto;
+            animation: popupFade 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .welcome-content {
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+            text-align: center;
+            transform: scale(0.9);
+            opacity: 0;
+            position: relative;
+            overflow: hidden;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .welcome-popup.active .welcome-content {
+            animation: welcomeIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+                       welcomeOut 0.6s cubic-bezier(0.4, 0, 0.2, 1) 3s forwards;
+        }
+
+        .welcome-content::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: conic-gradient(
+                from 0deg at 50% 50%,
+                rgba(52, 211, 153, 0.1),
+                rgba(6, 182, 212, 0.1),
+                rgba(124, 58, 237, 0.1),
+                rgba(52, 211, 153, 0.1)
+            );
+            filter: blur(50px);
+            z-index: -1;
+            animation: gradientSpin 4s linear infinite;
+        }
+
+        @keyframes gradientSpin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes popupFade {
+            0%, 75% {
+                opacity: 1;
+                backdrop-filter: blur(12px);
+            }
+            100% {
+                opacity: 0;
+                backdrop-filter: blur(0px);
+                pointer-events: none;
+            }
+        }
+
+        @keyframes welcomeIn {
+            0% {
+                transform: scale(0.9) translateY(40px);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes welcomeOut {
+            0% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.1) translateY(-40px);
+                opacity: 0;
+            }
+        }
+
+        .welcome-text {
+            background: linear-gradient(135deg, #34d399, #06b6d4, #7c3aed);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: textReveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards,
+                       gradientFlow 3s linear infinite;
+        }
+
+        .welcome-subtext {
+            color: #9ca3af;
+            font-size: 1.25rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: textReveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s forwards;
+            position: relative;
+            display: inline-block;
+        }
+
+        .welcome-subtext::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, #34d399, #06b6d4, #7c3aed);
+            transform: translateX(-50%);
+            animation: lineExpand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s forwards;
+        }
+
+        @keyframes lineExpand {
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes textReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-emoji {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            opacity: 0;
+            transform: scale(0.5) rotate(-45deg);
+            animation: emojiPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards;
+        }
+
+        @keyframes emojiPop {
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        /* Card Info Popup Styles */
+        .card-info-popup {
+            position: absolute;
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(16px);
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            width: max-content;
+            max-width: 300px;
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 60;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-info-popup.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .info-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #34d399, #06b6d4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .info-description {
+            color: #9ca3af;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .info-features {
+            margin-top: 0.75rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .info-feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            color: #d1d5db;
+        }
+
+        .welcome-features {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: textReveal 0.5s ease 0.7s forwards;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 1rem;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        .feature-text {
+            color: #d1d5db;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .welcome-tip {
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: textReveal 0.5s ease 0.9s forwards;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(45deg, rgba(52, 211, 153, 0.1), rgba(6, 182, 212, 0.1));
+            border-radius: 1rem;
+        }
+
+        .tip-icon {
+            font-size: 1.25rem;
+            animation: tipPulse 2s ease-in-out infinite;
+        }
+
+        .tip-text {
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        @keyframes tipPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        /* Update welcome content max-width for new content */
+        .welcome-content {
+            max-width: 600px;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative">
+    <script>
+        // Check if user is logged in
+        if (!sessionStorage.getItem('userLoggedIn')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <!-- Welcome Popup -->
+    <div class="welcome-popup">
+        <div class="welcome-content">
+            <div class="welcome-emoji">👋</div>
+            <div class="welcome-text">Hi <span id="userName"></span></div>
+            <div class="welcome-subtext">Welcome to FuturED Spaces</div>
+            
+            <!-- Added Features Section -->
+            <div class="welcome-features">
+                <div class="feature-item">
+                    <div class="feature-icon">📝</div>
+                    <div class="feature-text">Take smart notes with Notex</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🎨</div>
+                    <div class="feature-text">Visualize ideas on VBoard</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🤖</div>
+                    <div class="feature-text">Get help from LATMOv1</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📚</div>
+                    <div class="feature-text">Access learning resources</div>
+                </div>
+            </div>
+
+            <div class="welcome-tip">
+                <div class="tip-icon">💡</div>
+                <div class="tip-text">Hover over cards to discover more features!</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-900/20 via-slate-900/20 to-slate-900/30 pointer-events-none"></div>
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\" 30\ " height=\"30\ " viewBox=\"0 0 30 30\ " fill=\"none\ " xmlns=\"http://www.w3.org/2000/svg\ "%3E%3Cpath d=\"M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374
+        1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z\ " fill=\"rgba(255,255,255,0.05)\ "%3E%3C/path%3E%3C/svg%3E')] opacity-25"></div>
+
+    <nav class="fixed top-4 right-4 z-50">
+        <div class="glass-morphism rounded-full py-2 px-6 flex items-center gap-4">
+            <a href="notion.html" class="text-gray-300 hover:text-white transition-colors">Notex</a>
+            <a href="whiteboard.html" class="text-gray-300 hover:text-white transition-colors">VBoard</a>
+            <a href="http://localhost:5000" class="text-gray-300 hover:text-white transition-colors">LATMOv1</a>
+            <a href="database.html" class="text-gray-300 hover:text-white transition-colors">Database</a>
+            <a href="/Fundamentals/Resources_page.html" class="text-gray-300 hover:text-white transition-colors">Resources</a>
+            <div class="w-px h-4 bg-gray-600"></div>
+            <button onclick="handleLogout()" class="text-red-400 hover:text-red-300 transition-colors flex items-center gap-2">
+                <span>Logout</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <div class="custom-cursor">
+        <div class="cursor-ring"></div>
+        <div class="cursor-gradient"></div>
+    </div>
+    <div class="cursor-dot"></div>
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\" 20\ " height=\"20\ " xmlns=\"http://www.w3.org/2000/svg\ "%3E%3Cpath d=\"M0 0h1v1H0z\ " fill=\"rgba(255,255,255,0.03)\ "%3E%3C/path%3E%3C/svg%3E')] opacity-20"></div>
+
+    <div class="container mx-auto px-4 py-16 relative z-10">
+        <div class="text-center">
+            <div class="glass-morphism rounded-3xl p-8 mb-12 inline-block">
+                <h1 class="text-6xl md:text-7xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 text-transparent bg-clip-text animate-gradient tracking-tight">
+                    FuturED Spaces
+                </h1>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Notex Card -->
+                <a href="notion.html" class="transform perspective-1000 relative group">
+                    <div class="card-border-gradient">
+                        <div class="glass-card p-8 rounded-2xl card-animate card-glow h-full">
+                            <div class="text-5xl mb-4">
+                                <svg class="w-16 h-16 mx-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- Enhanced Paper Background with Dynamic Gradient -->
+                                    <rect x="2" y="2" width="20" height="20" rx="3" fill="url(#noteGradient)" class="paper">
+                                        <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+                                        <animateTransform attributeName="transform" 
+                                            type="scale" 
+                                            values="1;1.02;1" 
+                                            dur="2s" 
+                                            repeatCount="indefinite"
+                                            additive="sum"/>
+                                    </rect>
+
+                                    <!-- Enhanced Animated Lines with Glow Effect -->
+                                    <g class="lines" filter="url(#glow)">
+                                        <!-- First line with wave effect -->
+                                        <path d="M6 8H18" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" stroke-linecap="round">
+                                            <animate id="line1" attributeName="d" 
+                                                values="M6 8H18;M6 8 Q12 7 18 8;M6 8H18" 
+                                                dur="2s" 
+                                                begin="0s;line3.end+0.5s" 
+                                                fill="freeze"/>
+                                            <animate attributeName="stroke-dasharray" from="0 12" to="12 0" dur="0.8s" begin="0s;line3.end+0.5s" fill="freeze"/>
+                                            <animate attributeName="stroke-dashoffset" from="12" to="0" dur="0.8s" begin="0s;line3.end+0.5s" fill="freeze"/>
+                                        </path>
+                                        <!-- Second line with wave effect -->
+                                        <path d="M6 12H18" stroke="rgba(255,255,255,0.8)" stroke-width="1.5" stroke-linecap="round">
+                                            <animate id="line2" attributeName="d" 
+                                                values="M6 12H18;M6 12 Q12 11 18 12;M6 12H18" 
+                                                dur="2s" 
+                                                begin="line1.end+0.2s" 
+                                                fill="freeze"/>
+                                            <animate attributeName="stroke-dasharray" from="0 12" to="12 0" dur="0.8s" begin="line1.end+0.2s" fill="freeze"/>
+                                            <animate attributeName="stroke-dashoffset" from="12" to="0" dur="0.8s" begin="line1.end+0.2s" fill="freeze"/>
+                                        </path>
+                                        <!-- Third line with wave effect -->
+                                        <path d="M6 16H14" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round">
+                                            <animate id="line3" attributeName="d" 
+                                                values="M6 16H14;M6 16 Q10 15 14 16;M6 16H14" 
+                                                dur="2s" 
+                                                begin="line2.end+0.2s" 
+                                                fill="freeze"/>
+                                            <animate attributeName="stroke-dasharray" from="0 8" to="8 0" dur="0.6s" begin="line2.end+0.2s" fill="freeze"/>
+                                            <animate attributeName="stroke-dashoffset" from="8" to="0" dur="0.6s" begin="line2.end+0.2s" fill="freeze"/>
+                                        </path>
+                                    </g>
+
+                                    <!-- Enhanced Writing Pen with Glow -->
+                                    <g class="pen" filter="url(#penGlow)">
+                                        <g transform="translate(6, 8)">
+                                            <!-- Pen body -->
+                                            <path d="M-0.5,-4 L0.5,-4 L0.5,-2 L1,0 L0,3 L-1,0 L-0.5,-2 Z" fill="url(#penGradient)">
+                                                <!-- Smoother pen tilt animation -->
+                                                <animateTransform attributeName="transform"
+                                                    type="rotate"
+                                                    values="0 0 0;-3 0 0;0 0 0;3 0 0;0 0 0"
+                                                    dur="0.4s"
+                                                    repeatCount="indefinite"
+                                                    additive="sum"
+                                                    calcMode="spline"
+                                                    keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1"/>
+                                            </path>
+                                            <!-- Pen tip -->
+                                            <path d="M-0.2,3 L0.2,3 L0,3.5 Z" fill="url(#penTipGradient)"/>
+                                            <!-- Pen grip -->
+                                            <path d="M-0.5,-3.8 L0.5,-3.8 L0.4,-2.8 L-0.4,-2.8 Z" fill="url(#penGripGradient)" opacity="0.9"/>
+                                            
+                                            <!-- Writing animations with fixed coordinates -->
+                                            <animateMotion id="pen1" dur="1.2s" begin="0s;pen6.end+0.5s" fill="freeze"
+                                                path="M0,0 L12,0"
+                                                keyPoints="0;1"
+                                                keyTimes="0;1"
+                                                calcMode="spline"
+                                                keySplines="0.4 0 0.2 1"/>
+                                                
+                                            <animateMotion id="pen2" dur="0.4s" begin="pen1.end" fill="freeze"
+                                                path="M12,0 Q12,2 0,4"
+                                                keyPoints="0;1"
+                                                keyTimes="0;1"
+                                                calcMode="spline"
+                                                keySplines="0.4 0 0.2 1"/>
+                                                
+                                            <animateMotion id="pen3" dur="1.2s" begin="pen2.end" fill="freeze"
+                                                path="M0,4 L12,4"
+                                                keyPoints="0;1"
+                                                keyTimes="0;1"
+                                                calcMode="spline"
+                                                keySplines="0.4 0 0.2 1"/>
+                                                
+                                            <animateMotion id="pen4" dur="0.4s" begin="pen3.end" fill="freeze"
+                                                path="M12,4 Q12,6 0,8"
+                                                keyPoints="0;1"
+                                                keyTimes="0;1"
+                                                calcMode="spline"
+                                                keySplines="0.4 0 0.2 1"/>
+                                                
+                                            <animateMotion id="pen5" dur="0.8s" begin="pen4.end" fill="freeze"
+                                                path="M0,8 L8,8"
+                                                keyPoints="0;1"
+                                                keyTimes="0;1"
+                                                calcMode="spline"
+                                                keySplines="0.4 0 0.2 1"/>
+                                                
+                                            <animateMotion id="pen6" dur="0.6s" begin="pen5.end" fill="freeze"
+                                                path="M8,8 Q4,4 0,0"
+                                                keyPoints="0;1"
+                                                keyTimes="0;1"
+                                                calcMode="spline"
+                                                keySplines="0.4 0 0.2 1">
+                                                <animate attributeName="opacity" 
+                                                    values="1;0.6;1" 
+                                                    dur="0.6s" 
+                                                    begin="pen5.end"
+                                                    calcMode="spline"
+                                                    keySplines="0.4 0 0.2 1"/>
+                                            </animateMotion>
+                                        </g>
+                                    </g>
+
+                                    <!-- Adjust the active line path to match new pen movement -->
+                                    <path id="activeLine" d="M6,8 L18,8" stroke="transparent">
+                                        <animate attributeName="d" 
+                                            values="M6,8 L18,8;
+                                                   M6,12 L18,12;
+                                                   M6,16 L14,16" 
+                                            dur="3.6s" 
+                                            repeatCount="indefinite"
+                                            calcMode="spline"
+                                            keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"/>
+                                    </path>
+
+                                    <!-- Enhanced Ink Flow Effect -->
+                                    <g class="ink-drops" filter="url(#inkGlow)">
+                                        <circle r="0.2" fill="white" opacity="0.8">
+                                            <animate attributeName="r" values="0.1;0.3;0.1" dur="0.8s" repeatCount="indefinite"/>
+                                            <animate attributeName="opacity" values="0.8;0.4;0.8" dur="0.8s" repeatCount="indefinite"/>
+                                            <animateMotion dur="0.8s" repeatCount="indefinite">
+                                                <mpath href="#activeLine"/>
+                                            </animateMotion>
+                                        </circle>
+                                        <!-- Additional ink particles -->
+                                        <circle r="0.15" fill="white" opacity="0.6">
+                                            <animate attributeName="r" values="0.1;0.25;0.1" dur="1s" repeatCount="indefinite"/>
+                                            <animate attributeName="opacity" values="0.6;0.3;0.6" dur="1s" repeatCount="indefinite"/>
+                                            <animateMotion dur="1s" repeatCount="indefinite" begin="0.2s">
+                                                <mpath href="#activeLine"/>
+                                            </animateMotion>
+                                        </circle>
+                                    </g>
+
+                                    <!-- Enhanced Filter Effects -->
+                                    <defs>
+                                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                            <feGaussianBlur stdDeviation="0.5" result="blur"/>
+                                            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                                        </filter>
+                                        
+                                        <filter id="penGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                            <feGaussianBlur stdDeviation="0.3" result="blur"/>
+                                            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                                        </filter>
+                                        
+                                        <filter id="inkGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                            <feGaussianBlur stdDeviation="0.2" result="blur"/>
+                                            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                                        </filter>
+
+                                        <!-- Enhanced Gradients -->
+                                        <linearGradient id="noteGradient" x1="0" y1="0" x2="1" y2="1">
+                                            <stop offset="0%" stop-color="#34d399">
+                                                <animate attributeName="stop-color" 
+                                                    values="#34d399;#10b981;#34d399" 
+                                                    dur="3s" 
+                                                    repeatCount="indefinite"/>
+                                            </stop>
+                                            <stop offset="100%" stop-color="#10b981">
+                                                <animate attributeName="stop-color" 
+                                                    values="#10b981;#34d399;#10b981" 
+                                                    dur="3s" 
+                                                    repeatCount="indefinite"/>
+                                            </stop>
+                                            <animate attributeName="x1" values="0;1;0" dur="5s" repeatCount="indefinite"/>
+                                            <animate attributeName="y1" values="0;1;0" dur="5s" repeatCount="indefinite"/>
+                                        </linearGradient>
+                                        
+                                        <linearGradient id="penGradient" x1="0" y1="0" x2="1" y2="1">
+                                            <stop offset="0%" stop-color="#8B5CF6">
+                                                <animate attributeName="stop-color" 
+                                                    values="#8B5CF6;#6EE7B7;#8B5CF6" 
+                                                    dur="2s" 
+                                                    repeatCount="indefinite"/>
+                                            </stop>
+                                            <stop offset="100%" stop-color="#6EE7B7">
+                                                <animate attributeName="stop-color" 
+                                                    values="#6EE7B7;#8B5CF6;#6EE7B7" 
+                                                    dur="2s" 
+                                                    repeatCount="indefinite"/>
+                                            </stop>
+                                        </linearGradient>
+
+                                        <linearGradient id="penTipGradient" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stop-color="#4B5563"/>
+                                            <stop offset="100%" stop-color="#1F2937"/>
+                                        </linearGradient>
+
+                                        <linearGradient id="penGripGradient" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stop-color="#9CA3AF"/>
+                                            <stop offset="100%" stop-color="#6B7280"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-white mb-4 font-space tracking-tight">Notex</h2>
+                            <p class="text-gray-400 font-inter font-light">
+                                Dont <b>EVER</b> <i>Copy Paste</i> Notes <b>AGAIN</b></p>
+                            <div class="mt-4">
+                                <span class="text-emerald-400 font-space font-medium tracking-wide animate-pulse">Explore →</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-info-popup">
+                        <div class="info-title">Smart Note-Taking</div>
+                        <div class="info-description">Transform your note-taking experience with AI-powered features and real-time collaboration.</div>
+                        <div class="info-features">
+                            <span class="info-feature">Auto-formatting</span>
+                            <span class="info-feature">Smart Templates</span>
+                            <span class="info-feature">Real-time Sync</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Whiteboard Card -->
+                <a href="whiteboard.html" class="transform perspective-1000 relative group">
+                    <div class="card-border-gradient">
+                        <div class="glass-card p-8 rounded-2xl card-animate card-glow" style="animation-delay: 0.3s;">
+                            <div class="text-5xl mb-4 flex justify-center items-center">
+                                <!-- VBoard Custom Logo -->
+                                <svg class="w-16 h-16 mx-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- Background Canvas with 3D Effect -->
+                                    <g class="canvas-container">
+                                        <!-- Back panel for 3D effect -->
+                                        <rect x="3" y="3" width="18" height="18" rx="2" fill="url(#backPanelGradient2)"/>
+                                        
+                                        <!-- Main canvas -->
+                                        <rect x="2" y="2" width="20" height="20" rx="3" fill="url(#canvasGradient2)" class="canvas">
+                                            <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite"/>
+                                        </rect>
+
+                                        <!-- Subtle Grid Pattern -->
+                                        <path d="M6 6H18M6 12H18M6 18H18M12 6V18" 
+                                            stroke="rgba(255,255,255,0.15)" 
+                                            stroke-width="0.5" 
+                                            stroke-dasharray="2 2"/>
+                                    </g>
+
+                                    <!-- Interactive Drawing Elements -->
+                                    <g class="drawing-elements">
+                                        <!-- Animated Brush Stroke -->
+                                        <path class="brush-stroke" 
+                                            d="M7,8 C10,6 14,12 17,8" 
+                                            stroke="url(#brushGradient2)" 
+                                            stroke-width="2" 
+                                            stroke-linecap="round"
+                                            fill="none">
+                                            <animate attributeName="stroke-dasharray" 
+                                                values="0 30;30 0" 
+                                                dur="1.5s" 
+                                                begin="0s" 
+                                                fill="freeze"/>
+                                            <animate attributeName="stroke-dashoffset" 
+                                                values="30;0" 
+                                                dur="1.5s" 
+                                                begin="0s" 
+                                                fill="freeze"/>
+                                        </path>
+
+                                        <!-- Geometric Shapes -->
+                                        <g class="shapes">
+                                            <!-- Circle -->
+                                            <circle cx="8" cy="14" r="1.5" 
+                                                stroke="url(#shapeGradient1_2)" 
+                                                stroke-width="1.5" 
+                                                fill="none">
+                                                <animate attributeName="r" 
+                                                    values="0;1.5" 
+                                                    dur="1s" 
+                                                    begin="0.5s" 
+                                                    fill="freeze"/>
+                                                <animate attributeName="stroke-opacity" 
+                                                    values="0;1" 
+                                                    dur="1s" 
+                                                    begin="0.5s" 
+                                                    fill="freeze"/>
+                                            </circle>
+
+                                            <!-- Rectangle -->
+                                            <rect x="12" y="13" width="0" height="0" 
+                                                stroke="url(#shapeGradient2_2)" 
+                                                stroke-width="1.5" 
+                                                fill="none">
+                                                <animate attributeName="width" 
+                                                    values="0;3" 
+                                                    dur="1s" 
+                                                    begin="0.7s" 
+                                                    fill="freeze"/>
+                                                <animate attributeName="height" 
+                                                    values="0;3" 
+                                                    dur="1s" 
+                                                    begin="0.7s" 
+                                                    fill="freeze"/>
+                                                <animate attributeName="x" 
+                                                    values="13.5;12" 
+                                                    dur="1s" 
+                                                    begin="0.7s" 
+                                                    fill="freeze"/>
+                                                <animate attributeName="y" 
+                                                    values="14.5;13" 
+                                                    dur="1s" 
+                                                    begin="0.7s" 
+                                                    fill="freeze"/>
+                                            </rect>
+
+                                            <!-- Triangle -->
+                                            <path d="M16,16 L16,16 L16,16" 
+                                                stroke="url(#shapeGradient3_2)" 
+                                                stroke-width="1.5" 
+                                                stroke-linejoin="round" 
+                                                fill="none">
+                                                <animate attributeName="d" 
+                                                    values="M16,16 L16,16 L16,16;M15,16 L17,16 L16,14" 
+                                                    dur="1s" 
+                                                    begin="0.9s" 
+                                                    fill="freeze"/>
+                                            </path>
+                                        </g>
+
+                                        <!-- Interactive Cursor -->
+                                        <g class="cursor">
+                                            <circle cx="12" cy="12" r="0.5" fill="white">
+                                                <animateMotion 
+                                                    path="M0,0 C5,-8 15,8 0,0" 
+                                                    dur="3s" 
+                                                    repeatCount="indefinite"/>
+                                                <animate attributeName="r" 
+                                                    values="0.3;0.5;0.3" 
+                                                    dur="1.5s" 
+                                                    repeatCount="indefinite"/>
+                                            </circle>
+                                            <circle cx="12" cy="12" r="1" 
+                                                stroke="white" 
+                                                stroke-width="0.5" 
+                                                fill="none" 
+                                                opacity="0.5">
+                                                <animateMotion 
+                                                    path="M0,0 C5,-8 15,8 0,0" 
+                                                    dur="3s" 
+                                                    repeatCount="indefinite"/>
+                                                <animate attributeName="r" 
+                                                    values="1;1.5;1" 
+                                                    dur="1.5s" 
+                                                    repeatCount="indefinite"/>
+                                            </circle>
+                                        </g>
+                                    </g>
+                                </svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-white mb-4 font-space tracking-tight text-center">VBoard</h2>
+                            <p class="text-gray-400 font-inter font-light text-center">
+                                Visualize your ideas with our interactive VBoard canvas.
+                            </p>
+                            <div class="mt-4 text-center">
+                                <span class="text-cyan-400 font-space font-medium tracking-wide animate-pulse">Create →</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-info-popup">
+                        <div class="info-title">Interactive Whiteboard</div>
+                        <div class="info-description">Unleash your creativity with our powerful digital canvas and collaboration tools.</div>
+                        <div class="info-features">
+                            <span class="info-feature">Infinite Canvas</span>
+                            <span class="info-feature">Drawing Tools</span>
+                            <span class="info-feature">Live Collaboration</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Resources Card -->
+                <a href="Fundamentals/Resources_page.html" class="transform perspective-1000 relative group">
+                    <div class="card-border-gradient">
+                        <div class="glass-card p-8 rounded-2xl card-animate card-glow" style="animation-delay: 0.4s;">
+                            <div class="text-5xl transition-all duration-300 flex justify-center items-center">
+                                <svg class="w-16 h-16 mx-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g class="book-stack">
+                                        <path d="M4 18L4 6C4 5.44772 4.44772 5 5 5H19C19.5523 5 20 5.44772 20 6V18C20 18.5523 19.5523 19 19 19H5C4.44772 19 4 18.5523 4 18Z" 
+                                            fill="url(#bottomBookGradient)"
+                                            class="book bottom">
+                                            <animate attributeName="d" 
+                                                values="M4 18L4 6C4 5.44772 4.44772 5 5 5H19C19.5523 5 20 5.44772 20 6V18C20 18.5523 19.5523 19 19 19H5C4.44772 19 4 18.5523 4 18Z;
+                                                        M4 18.2L4 6.2C4 5.64772 4.44772 5.2 5 5.2H19C19.5523 5.2 20 5.64772 20 6.2V18.2C20 18.7523 19.5523 19.2 19 19.2H5C4.44772 19.2 4 18.7523 4 18.2Z;
+                                                        M4 18L4 6C4 5.44772 4.44772 5 5 5H19C19.5523 5 20 5.44772 20 6V18C20 18.5523 19.5523 19 19 19H5C4.44772 19 4 18.5523 4 18Z"
+                                                dur="3s"
+                                                repeatCount="indefinite"/>
+                                        </path>
+                                        <path d="M5 14L5 4C5 3.44772 5.44772 3 6 3H18C18.5523 3 19 3.44772 19 4V14C19 14.5523 18.5523 15 18 15H6C5.44772 15 5 14.5523 5 14Z" 
+                                            fill="url(#middleBookGradient)"
+                                            class="book middle">
+                                            <animate attributeName="d" 
+                                                values="M5 14L5 4C5 3.44772 5.44772 3 6 3H18C18.5523 3 19 3.44772 19 4V14C19 14.5523 18.5523 15 18 15H6C5.44772 15 5 14.5523 5 14Z;
+                                                        M5 14.2L5 4.2C5 3.64772 5.44772 3.2 6 3.2H18C18.5523 3.2 19 3.64772 19 4.2V14.2C19 14.7523 18.5523 15.2 18 15.2H6C5.44772 15.2 5 14.7523 5 14.2Z;
+                                                        M5 14L5 4C5 3.44772 5.44772 3 6 3H18C18.5523 3 19 3.44772 19 4V14C19 14.5523 18.5523 15 18 15H6C5.44772 15 5 14.5523 5 14Z"
+                                                dur="3s"
+                                                repeatCount="indefinite"
+                                                begin="0.2s"/>
+                                        </path>
+                                        <path d="M6 10L6 2C6 1.44772 6.44772 1 7 1H17C17.5523 1 18 1.44772 18 2V10C18 10.5523 17.5523 11 17 11H7C6.44772 11 6 10.5523 6 10Z" 
+                                            fill="url(#topBookGradient)"
+                                            class="book top">
+                                            <animate attributeName="d" 
+                                                values="M6 10L6 2C6 1.44772 6.44772 1 7 1H17C17.5523 1 18 1.44772 18 2V10C18 10.5523 17.5523 11 17 11H7C6.44772 11 6 10.5523 6 10Z;
+                                                        M6 10.2L6 2.2C6 1.64772 6.44772 1.2 7 1.2H17C17.5523 1.2 18 1.64772 18 2.2V10.2C18 10.7523 17.5523 11.2 17 11.2H7C6.44772 11.2 6 10.7523 6 10.2Z;
+                                                        M6 10L6 2C6 1.44772 6.44772 1 7 1H17C17.5523 1 18 1.44772 18 2V10C18 10.5523 17.5523 11 17 11H7C6.44772 11 6 10.5523 6 10Z"
+                                                dur="3s"
+                                                repeatCount="indefinite"
+                                                begin="0.4s"/>
+                                        </path>
+                                        <path d="M14 1L16 1C16.5523 1 17 1.44772 17 2V4L15.5 5.5L14 4V2C14 1.44772 14.4477 1 14 1Z"
+                                            fill="url(#bookmarkGradient)"
+                                            class="bookmark">
+                                            <animate attributeName="d"
+                                                values="M14 1L16 1C16.5523 1 17 1.44772 17 2V4L15.5 5.5L14 4V2C14 1.44772 14.4477 1 14 1Z;
+                                                        M14 1.2L16 1.2C16.5523 1.2 17 1.64772 17 2.2V4.2L15.5 5.7L14 4.2V2.2C14 1.64772 14.4477 1.2 14 1.2Z;
+                                                        M14 1L16 1C16.5523 1 17 1.44772 17 2V4L15.5 5.5L14 4V2C14 1.44772 14.4477 1 14 1Z"
+                                                dur="3s"
+                                                repeatCount="indefinite"
+                                                begin="0.4s"/>
+                                        </path>
+                                        <path d="M7 8H17M7 11H17M7 14H17" 
+                                            stroke="rgba(255,255,255,0.3)" 
+                                            stroke-width="0.5"
+                                            stroke-linecap="round">
+                                            <animate attributeName="stroke-dasharray"
+                                                values="0 20;20 0"
+                                                dur="2s"
+                                                repeatCount="indefinite"/>
+                                        </path>
+                                    </g>
+                                    <defs>
+                                        <linearGradient id="bottomBookGradient" x1="0" y1="0" x2="1" y2="1">
+                                            <stop offset="0%" stop-color="#F59E0B"/>
+                                            <stop offset="100%" stop-color="#D97706"/>
+                                        </linearGradient>
+                                        <linearGradient id="middleBookGradient" x1="0" y1="0" x2="1" y2="1">
+                                            <stop offset="0%" stop-color="#FBBF24"/>
+                                            <stop offset="100%" stop-color="#F59E0B"/>
+                                        </linearGradient>
+                                        <linearGradient id="topBookGradient" x1="0" y1="0" x2="1" y2="1">
+                                            <stop offset="0%" stop-color="#FCD34D"/>
+                                            <stop offset="100%" stop-color="#FBBF24"/>
+                                        </linearGradient>
+                                        <linearGradient id="bookmarkGradient" x1="0" y1="0" x2="1" y2="1">
+                                            <stop offset="0%" stop-color="#EF4444"/>
+                                            <stop offset="100%" stop-color="#DC2626"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-white mb-4 font-space tracking-tight text-center">Resources</h2>
+                            <p class="text-gray-400 font-inter font-light text-center">
+                                Explore curated learning materials and educational resources.
+                            </p>
+                            <div class="mt-4 text-center">
+                                <span class="text-amber-400 font-space font-medium tracking-wide animate-pulse">Browse →</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-info-popup">
+                        <div class="info-title flex items-center gap-2">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                                <g class="book-stack">
+                                    <path d="M4 18L4 6C4 5.44772 4.44772 5 5 5H19C19.5523 5 20 5.44772 20 6V18C20 18.5523 19.5523 19 19 19H5C4.44772 19 4 18.5523 4 18Z" fill="url(#bottomBookGradient)"/>
+                                    <path d="M5 14L5 4C5 3.44772 5.44772 3 6 3H18C18.5523 3 19 3.44772 19 4V14C19 14.5523 18.5523 15 18 15H6C5.44772 15 5 14.5523 5 14Z" fill="url(#middleBookGradient)"/>
+                                    <path d="M6 10L6 2C6 1.44772 6.44772 1 7 1H17C17.5523 1 18 1.44772 18 2V10C18 10.5523 17.5523 11 17 11H7C6.44772 11 6 10.5523 6 10Z" fill="url(#topBookGradient)"/>
+                                    <path d="M14 1L16 1C16.5523 1 17 1.44772 17 2V4L15.5 5.5L14 4V2C14 1.44772 14.4477 1 14 1Z" fill="url(#bookmarkGradient)"/>
+                                    <path d="M7 8H17M7 11H17M7 14H17" stroke="rgba(255,255,255,0.3)" stroke-width="0.5" stroke-linecap="round"/>
+                                </g>
+                            </svg>
+                            Learning Hub
+                        </div>
+                        <div class="info-description">Access a vast library of curated educational content and learning materials.</div>
+                        <div class="info-features">
+                            <span class="info-feature">Curated Content</span>
+                            <span class="info-feature">Multiple Topics</span>
+                            <span class="info-feature">Regular Updates</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- AI Assistant Card -->
+                <a href="http://localhost:5000" class="transform perspective-1000 relative group">
+                    <div class="card-border-gradient">
+                        <div class="glass-card p-8 rounded-2xl card-animate card-glow" style="animation-delay: 0.6s;">
+                            <div class="flex flex-col items-center justify-center text-5xl mb-4" style="animation-delay: 0.2s;">
+                                <!-- LATMOv1 Logo -->
+                                <svg class="w-20 h-20 mx-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- Enhanced Quantum Field Background with Dynamic Waves -->
+                                    <g class="quantum-field" filter="url(#quantumGlow)">
+                                        <!-- Outer Field -->
+                                        <circle cx="12" cy="12" r="11" fill="url(#quantumFieldGradient)" opacity="0.15">
+                                            <animate attributeName="opacity" values="0.15;0.25;0.15" dur="4s" repeatCount="indefinite"/>
+                                            <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="30s" repeatCount="indefinite"/>
+                                        </circle>
+                                        <!-- Inner Field with Wave Effect -->
+                                        <circle cx="12" cy="12" r="9" fill="url(#innerFieldGradient)" opacity="0.2">
+                                            <animate attributeName="r" values="8.5;9;8.5" dur="3s" repeatCount="indefinite"/>
+                                            <animate attributeName="opacity" values="0.2;0.3;0.2" dur="3s" repeatCount="indefinite"/>
+                                            <animateTransform attributeName="transform" type="rotate" from="360 12 12" to="0 12 12" dur="20s" repeatCount="indefinite"/>
+                                        </circle>
+                                    </g>
+
+                                    <!-- Enhanced Energy Grid with Dynamic Flow -->
+                                    <g class="energy-grid" opacity="0.15">
+                                        <!-- Horizontal Lines -->
+                                        <path d="M4,8 h16 M4,12 h16 M4,16 h16" stroke="url(#gridGradient)" stroke-width="0.5" stroke-dasharray="1,2">
+                                            <animate attributeName="stroke-dashoffset" values="0;3" dur="2s" repeatCount="indefinite"/>
+                                            <animate attributeName="opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite"/>
+                                        </path>
+                                        <!-- Vertical Lines -->
+                                        <path d="M8,4 v16 M12,4 v16 M16,4 v16" stroke="url(#gridGradient)" stroke-width="0.5" stroke-dasharray="1,2">
+                                            <animate attributeName="stroke-dashoffset" values="0;3" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+                                            <animate attributeName="opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite" begin="0.5s"/>
+                                        </path>
+                                    </g>
+
+                                    <!-- Enhanced Quantum Core -->
+                                    <g class="quantum-core" filter="url(#coreGlow)">
+                                        <!-- Core Rings with Dynamic Rotation -->
+                                        <g class="core-rings">
+                                            <!-- Outer Ring -->
+                                            <circle cx="12" cy="12" r="6" stroke="url(#ringGradient1)" stroke-width="0.5" fill="none">
+                                                <animate attributeName="r" values="5.8;6.2;5.8" dur="3s" repeatCount="indefinite"/>
+                                                <animate attributeName="stroke-opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite"/>
+                                                <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="10s" repeatCount="indefinite"/>
+                                            </circle>
+                                            <!-- Middle Ring -->
+                                            <circle cx="12" cy="12" r="5" stroke="url(#ringGradient2)" stroke-width="0.5" fill="none">
+                                                <animate attributeName="r" values="4.8;5.2;4.8" dur="3s" repeatCount="indefinite"/>
+                                                <animate attributeName="stroke-opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite"/>
+                                                <animateTransform attributeName="transform" type="rotate" from="360 12 12" to="0 12 12" dur="8s" repeatCount="indefinite"/>
+                                            </circle>
+                                            <!-- Inner Ring -->
+                                            <circle cx="12" cy="12" r="4" stroke="url(#ringGradient3)" stroke-width="0.5" fill="none">
+                                                <animate attributeName="r" values="3.8;4.2;3.8" dur="3s" repeatCount="indefinite"/>
+                                                <animate attributeName="stroke-opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite"/>
+                                                <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="12s" repeatCount="indefinite"/>
+                                            </circle>
+                                        </g>
+
+                                        <!-- Enhanced Core Hexagon -->
+                                        <path d="M12,7 L15.5,9 L15.5,13 L12,15 L8.5,13 L8.5,9 Z" 
+                                              fill="url(#coreGradient)"
+                                              filter="url(#innerGlow)">
+                                            <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+                                            <animateTransform attributeName="transform" 
+                                                            type="rotate"
+                                                            from="0 12 12"
+                                                            to="360 12 12"
+                                                            dur="15s"
+                                                            repeatCount="indefinite"/>
+                                        </path>
+                                    </g>
+
+                                    <!-- Enhanced Quantum Particles -->
+                                    <g class="quantum-particles" filter="url(#particleGlow)">
+                                        <!-- Orbital Particles -->
+                                        <g class="orbital-particles">
+                                            <!-- Primary Orbital -->
+                                            <circle r="0.4" fill="url(#particleGradient1)">
+                                                <animateMotion path="M12,6 A6,6 0 1,1 12,18 A6,6 0 1,1 12,6" 
+                                                              dur="4s" 
+                                                              repeatCount="indefinite"/>
+                                                <animate attributeName="r" values="0.3;0.5;0.3" dur="2s" repeatCount="indefinite"/>
+                                                <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+                                            </circle>
+                                            <!-- Secondary Orbital -->
+                                            <circle r="0.4" fill="url(#particleGradient2)">
+                                                <animateMotion path="M6,12 A6,6 0 1,1 18,12 A6,6 0 1,1 6,12" 
+                                                              dur="4s" 
+                                                              repeatCount="indefinite"
+                                                              begin="1s"/>
+                                                <animate attributeName="r" values="0.3;0.5;0.3" dur="2s" repeatCount="indefinite" begin="1s"/>
+                                                <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" begin="1s"/>
+                                            </circle>
+                                            <!-- Tertiary Orbital -->
+                                            <circle r="0.35" fill="url(#particleGradient3)">
+                                                <animateMotion path="M12,8 A4,4 0 1,1 12,16 A4,4 0 1,1 12,8" 
+                                                              dur="3s" 
+                                                              repeatCount="indefinite"
+                                                              begin="0.5s"/>
+                                                <animate attributeName="r" values="0.25;0.45;0.25" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+                                                <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+                                            </circle>
+                                        </g>
+
+                                        <!-- Enhanced Energy Bursts -->
+                                        <g class="energy-bursts">
+                                            <!-- Primary Burst -->
+                                            <circle cx="12" cy="12" r="0.1" fill="url(#burstGradient1)">
+                                                <animate attributeName="r" values="0.1;4;0.1" dur="3s" repeatCount="indefinite"/>
+                                                <animate attributeName="opacity" values="0.8;0;0.8" dur="3s" repeatCount="indefinite"/>
+                                            </circle>
+                                            <!-- Secondary Burst -->
+                                            <circle cx="12" cy="12" r="0.1" fill="url(#burstGradient2)">
+                                                <animate attributeName="r" values="0.1;3;0.1" dur="3s" repeatCount="indefinite" begin="1.5s"/>
+                                                <animate attributeName="opacity" values="0.6;0;0.6" dur="3s" repeatCount="indefinite" begin="1.5s"/>
+                                            </circle>
+                                        </g>
+
+                                        <!-- Enhanced Quantum Entanglement Lines -->
+                                        <g class="entanglement-lines">
+                                            <!-- Primary Entanglement -->
+                                            <path d="M9,9 Q12,12 15,15" stroke="url(#entanglementGradient1)" stroke-width="0.3" fill="none">
+                                                <animate attributeName="d" 
+                                                        values="M9,9 Q12,12 15,15;M15,9 Q12,12 9,15;M9,9 Q12,12 15,15" 
+                                                        dur="6s" 
+                                                        repeatCount="indefinite"/>
+                                                <animate attributeName="stroke-opacity" values="0.2;0.8;0.2" dur="6s" repeatCount="indefinite"/>
+                                            </path>
+                                            <!-- Secondary Entanglement -->
+                                            <path d="M15,9 Q12,12 9,15" stroke="url(#entanglementGradient2)" stroke-width="0.3" fill="none">
+                                                <animate attributeName="d" 
+                                                        values="M15,9 Q12,12 9,15;M9,9 Q12,12 15,15;M15,9 Q12,12 9,15" 
+                                                        dur="6s" 
+                                                        repeatCount="indefinite"/>
+                                                <animate attributeName="stroke-opacity" values="0.2;0.8;0.2" dur="6s" repeatCount="indefinite"/>
+                                            </path>
+                                        </g>
+                                    </g>
+
+                                    <!-- Enhanced Gradients and Filters -->
+                                    <defs>
+                                        <!-- Enhanced Field Gradients -->
+                                        <radialGradient id="quantumFieldGradient" cx="0.5" cy="0.5" r="0.5">
+                                            <stop offset="0%" stop-color="#C084FC" stop-opacity="0.4">
+                                                <animate attributeName="stop-color" 
+                                                    values="#C084FC;#8B5CF6;#C084FC" 
+                                                    dur="6s" 
+                                                    repeatCount="indefinite"/>
+                                            </stop>
+                                            <stop offset="100%" stop-color="#6366F1" stop-opacity="0">
+                                                <animate attributeName="stop-color" 
+                                                    values="#6366F1;#4F46E5;#6366F1" 
+                                                    dur="6s" 
+                                                    repeatCount="indefinite"/>
+                                            </stop>
+                                        </radialGradient>
+
+                                        <radialGradient id="innerFieldGradient" cx="0.5" cy="0.5" r="0.5">
+                                            <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.3">
+                                                <animate attributeName="stop-opacity" 
+                                                    values="0.3;0.5;0.3" 
+                                                    dur="4s" 
+                                                    repeatCount="indefinite"/>
+                                            </stop>
+                                            <stop offset="100%" stop-color="#4F46E5" stop-opacity="0"/>
+                                        </radialGradient>
+
+                                        <!-- Enhanced Ring Gradients -->
+                                        <linearGradient id="ringGradient1" x1="0" y1="0" x2="1" y2="1">
+                                            <stop offset="0%" stop-color="#C084FC">
+                                                <animate attributeName="stop-color" 
+                                                    values="#C084FC;#818CF8;#C084FC" 
+                                                    dur="4s" 
+                                                    repeatCount="indefinite"/>
+                                            </stop>
+                                            <stop offset="100%" stop-color="#818CF8">
+                                                <animate attributeName="stop-color" 
+                                                    values="#818CF8;#C084FC;#818CF8" 
+                                                    dur="4s" 
+                                                    repeatCount="indefinite"/>
+                                            </stop>
+                                        </linearGradient>
+
+                                        <linearGradient id="ringGradient2" x1="0" y1="0" x2="1" y2="1">
+                                            <stop offset="0%" stop-color="#A78BFA"/>
+                                            <stop offset="100%" stop-color="#6366F1"/>
+                                        </linearGradient>
+
+                                        <linearGradient id="ringGradient3" x1="0" y1="0" x2="1" y2="1">
+                                            <stop offset="0%" stop-color="#818CF8"/>
+                                            <stop offset="100%" stop-color="#4F46E5"/>
+                                        </linearGradient>
+
+                                        <!-- Enhanced Core Gradient -->
+                                        <linearGradient id="coreGradient" x1="0" y1="0" x2="1" y2="1">
+                                            <stop offset="0%" stop-color="#9333EA">
+                                                <animate attributeName="stop-color" 
+                                                    values="#9333EA;#7C3AED;#9333EA" 
+                                                    dur="3s" 
+                                                    repeatCount="indefinite"/>
+                                            </stop>
+                                            <stop offset="100%" stop-color="#6366F1">
+                                                <animate attributeName="stop-color" 
+                                                    values="#6366F1;#818CF8;#6366F1" 
+                                                    dur="3s" 
+                                                    repeatCount="indefinite"/>
+                                            </stop>
+                                        </linearGradient>
+
+                                        <!-- Enhanced Particle Gradients -->
+                                        <linearGradient id="particleGradient1">
+                                            <stop offset="0%" stop-color="#F0ABFC"/>
+                                            <stop offset="100%" stop-color="#C084FC"/>
+                                        </linearGradient>
+
+                                        <linearGradient id="particleGradient2">
+                                            <stop offset="0%" stop-color="#818CF8"/>
+                                            <stop offset="100%" stop-color="#6366F1"/>
+                                        </linearGradient>
+
+                                        <linearGradient id="particleGradient3">
+                                            <stop offset="0%" stop-color="#A78BFA"/>
+                                            <stop offset="100%" stop-color="#7C3AED"/>
+                                        </linearGradient>
+
+                                        <!-- Enhanced Burst Gradients -->
+                                        <radialGradient id="burstGradient1">
+                                            <stop offset="0%" stop-color="#C084FC" stop-opacity="0.8"/>
+                                            <stop offset="100%" stop-color="#6366F1" stop-opacity="0"/>
+                                        </radialGradient>
+
+                                        <radialGradient id="burstGradient2">
+                                            <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.6"/>
+                                            <stop offset="100%" stop-color="#4F46E5" stop-opacity="0"/>
+                                        </radialGradient>
+
+                                        <!-- Enhanced Entanglement Gradients -->
+                                        <linearGradient id="entanglementGradient1">
+                                            <stop offset="0%" stop-color="#C084FC"/>
+                                            <stop offset="100%" stop-color="#6366F1"/>
+                                        </linearGradient>
+
+                                        <linearGradient id="entanglementGradient2">
+                                            <stop offset="0%" stop-color="#A78BFA"/>
+                                            <stop offset="100%" stop-color="#4F46E5"/>
+                                        </linearGradient>
+
+                                        <!-- Enhanced Grid Gradient -->
+                                        <linearGradient id="gridGradient">
+                                            <stop offset="0%" stop-color="#C084FC" stop-opacity="0.3"/>
+                                            <stop offset="100%" stop-color="#6366F1" stop-opacity="0.1"/>
+                                        </linearGradient>
+
+                                        <!-- Enhanced Filters -->
+                                        <filter id="quantumGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                            <feGaussianBlur stdDeviation="1.5" result="blur"/>
+                                            <feFlood flood-color="#C084FC" flood-opacity="0.3" result="color"/>
+                                            <feComposite in="color" in2="blur" operator="in" result="glow"/>
+                                            <feMerge>
+                                                <feMergeNode in="glow"/>
+                                                <feMergeNode in="SourceGraphic"/>
+                                            </feMerge>
+                                        </filter>
+
+                                        <filter id="coreGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                            <feGaussianBlur stdDeviation="1" result="blur"/>
+                                            <feFlood flood-color="#C084FC" flood-opacity="0.5" result="color"/>
+                                            <feComposite in="color" in2="blur" operator="in" result="glow"/>
+                                            <feMerge>
+                                                <feMergeNode in="glow"/>
+                                                <feMergeNode in="glow"/>
+                                                <feMergeNode in="SourceGraphic"/>
+                                            </feMerge>
+                                        </filter>
+
+                                        <filter id="innerGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                            <feGaussianBlur stdDeviation="0.5" result="blur"/>
+                                            <feFlood flood-color="#C084FC" flood-opacity="0.8" result="color"/>
+                                            <feComposite in="color" in2="blur" operator="in" result="glow"/>
+                                            <feMerge>
+                                                <feMergeNode in="glow"/>
+                                                <feMergeNode in="SourceGraphic"/>
+                                            </feMerge>
+                                        </filter>
+
+                                        <filter id="particleGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                            <feGaussianBlur stdDeviation="0.3" result="blur"/>
+                                            <feFlood flood-color="#C084FC" flood-opacity="0.3" result="color"/>
+                                            <feComposite in="color" in2="blur" operator="in" result="glow"/>
+                                            <feMerge>
+                                                <feMergeNode in="glow"/>
+                                                <feMergeNode in="SourceGraphic"/>
+                                            </feMerge>
+                                        </filter>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-white mb-4 font-space tracking-tight text-center">LATMOv1</h2>
+                            <p class="text-gray-400 font-inter font-light text-center">
+                                Get intelligent help and answers with our AI-powered assistant.
+                            </p>
+                            <div class="mt-4 text-center">
+                                <span class="text-violet-400 font-space font-medium tracking-wide animate-pulse">Chat →</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-info-popup">
+                        <div class="info-title">AI Assistant</div>
+                        <div class="info-description">Your personal AI tutor that provides intelligent answers and guidance.</div>
+                        <div class="info-features">
+                            <span class="info-feature">Smart Responses</span>
+                            <span class="info-feature">24/7 Available</span>
+                            <span class="info-feature">Personalized Help</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- New Information Sections -->
+            <div class="mt-24 space-y-16 max-w-5xl mx-auto">
+                <!-- Notes Section -->
+                <div class="glass-card rounded-2xl p-8 hover:scale-[1.02] transition-all duration-500 group">
+                    <div class="flex items-center gap-6 mb-8">
+                        <div class="text-5xl transition-all duration-300">
+                            <!-- Notex Logo -->
+                            <svg class="w-16 h-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Enhanced Paper Background with Dynamic Gradient -->
+                                <rect x="2" y="2" width="20" height="20" rx="3" fill="url(#noteGradient)" class="paper">
+                                    <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+                                    <animateTransform attributeName="transform" 
+                                        type="scale" 
+                                        values="1;1.02;1" 
+                                        dur="2s" 
+                                        repeatCount="indefinite"
+                                        additive="sum"/>
+                                </rect>
+
+                                <!-- Enhanced Animated Lines with Glow Effect -->
+                                <g class="lines" filter="url(#glow)">
+                                    <!-- First line with wave effect -->
+                                    <path d="M6 8H18" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" stroke-linecap="round">
+                                        <animate id="line1" attributeName="d" 
+                                            values="M6 8H18;M6 8 Q12 7 18 8;M6 8H18" 
+                                            dur="2s" 
+                                            begin="0s;line3.end+0.5s" 
+                                            fill="freeze"/>
+                                        <animate attributeName="stroke-dasharray" from="0 12" to="12 0" dur="0.8s" begin="0s;line3.end+0.5s" fill="freeze"/>
+                                        <animate attributeName="stroke-dashoffset" from="12" to="0" dur="0.8s" begin="0s;line3.end+0.5s" fill="freeze"/>
+                                    </path>
+                                    <!-- Second line with wave effect -->
+                                    <path d="M6 12H18" stroke="rgba(255,255,255,0.8)" stroke-width="1.5" stroke-linecap="round">
+                                        <animate id="line2" attributeName="d" 
+                                            values="M6 12H18;M6 12 Q12 11 18 12;M6 12H18" 
+                                            dur="2s" 
+                                            begin="line1.end+0.2s" 
+                                            fill="freeze"/>
+                                        <animate attributeName="stroke-dasharray" from="0 12" to="12 0" dur="0.8s" begin="line1.end+0.2s" fill="freeze"/>
+                                        <animate attributeName="stroke-dashoffset" from="12" to="0" dur="0.8s" begin="line1.end+0.2s" fill="freeze"/>
+                                    </path>
+                                    <!-- Third line with wave effect -->
+                                    <path d="M6 16H14" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round">
+                                        <animate id="line3" attributeName="d" 
+                                            values="M6 16H14;M6 16 Q10 15 14 16;M6 16H14" 
+                                            dur="2s" 
+                                            begin="line2.end+0.2s" 
+                                            fill="freeze"/>
+                                        <animate attributeName="stroke-dasharray" from="0 8" to="8 0" dur="0.6s" begin="line2.end+0.2s" fill="freeze"/>
+                                        <animate attributeName="stroke-dashoffset" from="8" to="0" dur="0.6s" begin="line2.end+0.2s" fill="freeze"/>
+                                    </path>
+                                </g>
+
+                                <!-- Copy the rest of the Notex logo components with _2 suffix for IDs -->
+                                <!-- ... (copy the pen, ink drops, and other elements with modified IDs) ... -->
+                            </svg>
+                        </div>
+                        <h3 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 font-space animate-gradient-slow">
+                            NO effort NOTE - taking
+                        </h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-emerald-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Rich Text Formatting</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Advanced markdown support with real-time preview and custom styling options.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-emerald-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Nested Organization</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Create hierarchical structures with unlimited nesting.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-emerald-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Real-time Collaboration</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Work together with live updates and presence indicators.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-emerald-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Custom Templates</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Start quickly with pre-built templates.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex justify-end">
+                        <a href="notion.html" class="group inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors px-4 py-2 rounded-lg hover:bg-white/5">
+                            <span class="font-medium">Explore Features</span>
+                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Whiteboard Section -->
+                <div class="glass-card rounded-2xl p-8 hover:scale-[1.02] transition-all duration-500 group">
+                    <div class="flex items-center gap-6 mb-8">
+                        <div class="text-5xl transition-all duration-300">
+                            <!-- VBoard Custom Logo -->
+                            <svg class="w-16 h-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Background Canvas with 3D Effect -->
+                                <g class="canvas-container">
+                                    <!-- Back panel for 3D effect -->
+                                    <rect x="3" y="3" width="18" height="18" rx="2" fill="url(#backPanelGradient2)" 
+                                        filter="url(#shadowEffect2)"/>
+                                    
+                                    <!-- Main canvas -->
+                                    <rect x="2" y="2" width="20" height="20" rx="3" fill="url(#canvasGradient2)" 
+                                        class="canvas" filter="url(#mainGlow2)">
+                                        <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite"/>
+                                    </rect>
+
+                                    <!-- Subtle Grid Pattern -->
+                                    <path d="M6 6H18M6 12H18M6 18H18M12 6V18" 
+                                        stroke="rgba(255,255,255,0.15)" 
+                                        stroke-width="0.5" 
+                                        stroke-dasharray="2 2"
+                                        filter="url(#softGlow2)"/>
+                                </g>
+
+                                <!-- Interactive Drawing Elements -->
+                                <g class="drawing-elements" filter="url(#drawingGlow2)">
+                                    <!-- Animated Brush Stroke -->
+                                    <path class="brush-stroke" 
+                                        d="M7,8 C10,6 14,12 17,8" 
+                                        stroke="url(#brushGradient2)" 
+                                        stroke-width="2" 
+                                        stroke-linecap="round"
+                                        fill="none">
+                                        <animate attributeName="stroke-dasharray" 
+                                            values="0 30;30 0" 
+                                            dur="1.5s" 
+                                            begin="0s" 
+                                            fill="freeze"/>
+                                        <animate attributeName="stroke-dashoffset" 
+                                            values="30;0" 
+                                            dur="1.5s" 
+                                            begin="0s" 
+                                            fill="freeze"/>
+                                    </path>
+
+                                    <!-- Geometric Shapes -->
+                                    <g class="shapes">
+                                        <!-- Circle -->
+                                        <circle cx="8" cy="14" r="1.5" 
+                                            stroke="url(#shapeGradient1_2)" 
+                                            stroke-width="1.5" 
+                                            fill="none">
+                                            <animate attributeName="r" 
+                                                values="0;1.5" 
+                                                dur="1s" 
+                                                begin="0.5s" 
+                                                fill="freeze"/>
+                                            <animate attributeName="stroke-opacity" 
+                                                values="0;1" 
+                                                dur="1s" 
+                                                begin="0.5s" 
+                                                fill="freeze"/>
+                                        </circle>
+
+                                        <!-- Rectangle -->
+                                        <rect x="12" y="13" width="0" height="0" 
+                                            stroke="url(#shapeGradient2_2)" 
+                                            stroke-width="1.5" 
+                                            fill="none">
+                                            <animate attributeName="width" 
+                                                values="0;3" 
+                                                dur="1s" 
+                                                begin="0.7s" 
+                                                fill="freeze"/>
+                                            <animate attributeName="height" 
+                                                values="0;3" 
+                                                dur="1s" 
+                                                begin="0.7s" 
+                                                fill="freeze"/>
+                                            <animate attributeName="x" 
+                                                values="13.5;12" 
+                                                dur="1s" 
+                                                begin="0.7s" 
+                                                fill="freeze"/>
+                                            <animate attributeName="y" 
+                                                values="14.5;13" 
+                                                dur="1s" 
+                                                begin="0.7s" 
+                                                fill="freeze"/>
+                                        </rect>
+
+                                        <!-- Triangle -->
+                                        <path d="M16,16 L16,16 L16,16" 
+                                            stroke="url(#shapeGradient3_2)" 
+                                            stroke-width="1.5" 
+                                            stroke-linejoin="round" 
+                                            fill="none">
+                                            <animate attributeName="d" 
+                                                values="M16,16 L16,16 L16,16;M15,16 L17,16 L16,14" 
+                                                dur="1s" 
+                                                begin="0.9s" 
+                                                fill="freeze"/>
+                                        </path>
+                                    </g>
+
+                                    <!-- Interactive Cursor -->
+                                    <g class="cursor" filter="url(#cursorGlow2)">
+                                        <circle cx="12" cy="12" r="0.5" fill="white">
+                                            <animateMotion 
+                                                path="M0,0 C5,-8 15,8 0,0" 
+                                                dur="3s" 
+                                                repeatCount="indefinite"/>
+                                            <animate attributeName="r" 
+                                                values="0.3;0.5;0.3" 
+                                                dur="1.5s" 
+                                                repeatCount="indefinite"/>
+                                        </circle>
+                                        <circle cx="12" cy="12" r="1" 
+                                            stroke="white" 
+                                            stroke-width="0.5" 
+                                            fill="none" 
+                                            opacity="0.5">
+                                            <animateMotion 
+                                                path="M0,0 C5,-8 15,8 0,0" 
+                                                dur="3s" 
+                                                repeatCount="indefinite"/>
+                                            <animate attributeName="r" 
+                                                values="1;1.5;1" 
+                                                dur="1.5s" 
+                                                repeatCount="indefinite"/>
+                                        </circle>
+                                    </g>
+                                </g>
+
+                                <!-- Enhanced Gradients and Filters -->
+                                <defs>
+                                    <!-- Canvas Gradients -->
+                                    <linearGradient id="backPanelGradient2" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#1E40AF"/>
+                                        <stop offset="100%" stop-color="#1E3A8A"/>
+                                    </linearGradient>
+
+                                    <linearGradient id="canvasGradient2" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#3B82F6">
+                                            <animate attributeName="stop-color" 
+                                                values="#3B82F6;#60A5FA;#3B82F6" 
+                                                dur="3s" 
+                                                repeatCount="indefinite"/>
+                                        </stop>
+                                        <stop offset="100%" stop-color="#2563EB">
+                                            <animate attributeName="stop-color" 
+                                                values="#2563EB;#3B82F6;#2563EB" 
+                                                dur="3s" 
+                                                repeatCount="indefinite"/>
+                                        </stop>
+                                    </linearGradient>
+
+                                    <!-- Drawing Element Gradients -->
+                                    <linearGradient id="brushGradient2" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#F472B6"/>
+                                        <stop offset="100%" stop-color="#EC4899"/>
+                                    </linearGradient>
+
+                                    <linearGradient id="shapeGradient1_2" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#34D399"/>
+                                        <stop offset="100%" stop-color="#10B981"/>
+                                    </linearGradient>
+
+                                    <linearGradient id="shapeGradient2_2" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#A78BFA"/>
+                                        <stop offset="100%" stop-color="#8B5CF6"/>
+                                    </linearGradient>
+
+                                    <linearGradient id="shapeGradient3_2" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#FCD34D"/>
+                                        <stop offset="100%" stop-color="#F59E0B"/>
+                                    </linearGradient>
+
+                                    <!-- Enhanced Filters -->
+                                    <filter id="shadowEffect2" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feGaussianBlur stdDeviation="1" result="shadow"/>
+                                        <feComposite in="SourceGraphic" in2="shadow" operator="over"/>
+                                    </filter>
+
+                                    <filter id="mainGlow2" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feGaussianBlur stdDeviation="2" result="glow"/>
+                                        <feComposite in="SourceGraphic" in2="glow" operator="over"/>
+                                    </filter>
+
+                                    <filter id="softGlow2" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feGaussianBlur stdDeviation="0.5" result="softglow"/>
+                                        <feComposite in="SourceGraphic" in2="softglow" operator="over"/>
+                                    </filter>
+
+                                    <filter id="drawingGlow2" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feGaussianBlur stdDeviation="0.5" result="drawing"/>
+                                        <feComposite in="SourceGraphic" in2="drawing" operator="over"/>
+                                    </filter>
+
+                                    <filter id="cursorGlow2" x="-50%" y="-50%" width="200%" height="200%">
+                                        <feGaussianBlur stdDeviation="0.3" result="cursor"/>
+                                        <feComposite in="SourceGraphic" in2="cursor" operator="over"/>
+                                    </filter>
+                                </defs>
+                            </svg>
+                        </div>
+                        <h3 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 font-space animate-gradient-slow">
+                            Visualize in Whiteboard
+                        </h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-blue-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Infinite Canvas</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Boundless space with intuitive zoom and pan controls.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-blue-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Drawing Tools</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Professional-grade tools with customizable styles and presets.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-blue-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Media Integration</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Seamlessly import and manipulate images and documents.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-blue-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Live Collaboration</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Work together in real-time with cursor presence and changes sync.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex justify-end">
+                        <a href="whiteboard.html" class="group inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors px-4 py-2 rounded-lg hover:bg-white/5">
+                            <span class="font-medium">Try Whiteboard</span>
+                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- AI Assistant Section -->
+                <div class="glass-card rounded-2xl p-8 hover:scale-[1.02] transition-all duration-500 group">
+                    <div class="flex items-center gap-6 mb-8">
+                        <div class="text-5xl transition-all duration-300">
+                            <!-- Enhanced LATMOv1 Logo -->
+                            <svg class="w-16 h-16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Enhanced Quantum Field Background with Dynamic Waves -->
+                                <g class="quantum-field" filter="url(#quantumGlowInfo)">
+                                    <!-- Outer Field -->
+                                    <circle cx="12" cy="12" r="11" fill="url(#quantumFieldGradientInfo)" opacity="0.15">
+                                        <animate attributeName="opacity" values="0.15;0.25;0.15" dur="4s" repeatCount="indefinite"/>
+                                        <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="30s" repeatCount="indefinite"/>
+                                </circle>
+                                    <!-- Inner Field with Wave Effect -->
+                                    <circle cx="12" cy="12" r="9" fill="url(#innerFieldGradientInfo)" opacity="0.2">
+                                        <animate attributeName="r" values="8.5;9;8.5" dur="3s" repeatCount="indefinite"/>
+                                        <animate attributeName="opacity" values="0.2;0.3;0.2" dur="3s" repeatCount="indefinite"/>
+                                        <animateTransform attributeName="transform" type="rotate" from="360 12 12" to="0 12 12" dur="20s" repeatCount="indefinite"/>
+                                </circle>
+                                </g>
+
+                                <!-- Enhanced Energy Grid with Dynamic Flow -->
+                                <g class="energy-grid" opacity="0.15">
+                                    <!-- Horizontal Lines -->
+                                    <path d="M4,8 h16 M4,12 h16 M4,16 h16" stroke="url(#gridGradientInfo)" stroke-width="0.5" stroke-dasharray="1,2">
+                                        <animate attributeName="stroke-dashoffset" values="0;3" dur="2s" repeatCount="indefinite"/>
+                                        <animate attributeName="opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite"/>
+                                    </path>
+                                    <!-- Vertical Lines -->
+                                    <path d="M8,4 v16 M12,4 v16 M16,4 v16" stroke="url(#gridGradientInfo)" stroke-width="0.5" stroke-dasharray="1,2">
+                                        <animate attributeName="stroke-dashoffset" values="0;3" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+                                        <animate attributeName="opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite" begin="0.5s"/>
+                                    </path>
+                                </g>
+
+                                <!-- Enhanced Quantum Core -->
+                                <g class="quantum-core" filter="url(#coreGlowInfo)">
+                                    <!-- Core Rings with Dynamic Rotation -->
+                                    <g class="core-rings">
+                                        <!-- Outer Ring -->
+                                        <circle cx="12" cy="12" r="6" stroke="url(#ringGradient1Info)" stroke-width="0.5" fill="none">
+                                            <animate attributeName="r" values="5.8;6.2;5.8" dur="3s" repeatCount="indefinite"/>
+                                            <animate attributeName="stroke-opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite"/>
+                                            <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="10s" repeatCount="indefinite"/>
+                                    </circle>
+                                        <!-- Middle Ring -->
+                                        <circle cx="12" cy="12" r="5" stroke="url(#ringGradient2Info)" stroke-width="0.5" fill="none">
+                                            <animate attributeName="r" values="4.8;5.2;4.8" dur="3s" repeatCount="indefinite"/>
+                                            <animate attributeName="stroke-opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite"/>
+                                            <animateTransform attributeName="transform" type="rotate" from="360 12 12" to="0 12 12" dur="8s" repeatCount="indefinite"/>
+                                    </circle>
+                                        <!-- Inner Ring -->
+                                        <circle cx="12" cy="12" r="4" stroke="url(#ringGradient3Info)" stroke-width="0.5" fill="none">
+                                            <animate attributeName="r" values="3.8;4.2;3.8" dur="3s" repeatCount="indefinite"/>
+                                            <animate attributeName="stroke-opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite"/>
+                                            <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="12s" repeatCount="indefinite"/>
+                                    </circle>
+                                </g>
+
+                                    <!-- Enhanced Core Hexagon -->
+                                    <path d="M12,7 L15.5,9 L15.5,13 L12,15 L8.5,13 L8.5,9 Z" 
+                                          fill="url(#coreGradientInfo)"
+                                          filter="url(#innerGlowInfo)">
+                                        <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+                                        <animateTransform attributeName="transform" 
+                                                        type="rotate"
+                                                        from="0 12 12"
+                                                        to="360 12 12"
+                                                        dur="15s"
+                                                        repeatCount="indefinite"/>
+                                    </path>
+                                </g>
+
+                                <!-- Enhanced Quantum Particles -->
+                                <g class="quantum-particles" filter="url(#particleGlowInfo)">
+                                    <!-- Orbital Particles -->
+                                    <g class="orbital-particles">
+                                        <!-- Primary Orbital -->
+                                        <circle r="0.4" fill="url(#particleGradient1Info)">
+                                            <animateMotion path="M12,6 A6,6 0 1,1 12,18 A6,6 0 1,1 12,6" 
+                                                          dur="4s" 
+                                            repeatCount="indefinite"/>
+                                            <animate attributeName="r" values="0.3;0.5;0.3" dur="2s" repeatCount="indefinite"/>
+                                            <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+                                    </circle>
+                                        <!-- Secondary Orbital -->
+                                        <circle r="0.4" fill="url(#particleGradient2Info)">
+                                            <animateMotion path="M6,12 A6,6 0 1,1 18,12 A6,6 0 1,1 6,12" 
+                                                          dur="4s" 
+                                            repeatCount="indefinite"
+                                            begin="1s"/>
+                                            <animate attributeName="r" values="0.3;0.5;0.3" dur="2s" repeatCount="indefinite" begin="1s"/>
+                                            <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" begin="1s"/>
+                                        </circle>
+                                        <!-- Tertiary Orbital -->
+                                        <circle r="0.35" fill="url(#particleGradient3Info)">
+                                            <animateMotion path="M12,8 A4,4 0 1,1 12,16 A4,4 0 1,1 12,8" 
+                                                          dur="3s" 
+                                            repeatCount="indefinite"
+                                                          begin="0.5s"/>
+                                            <animate attributeName="r" values="0.25;0.45;0.25" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+                                            <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+                                    </circle>
+                                </g>
+
+                                    <!-- Enhanced Energy Bursts -->
+                                    <g class="energy-bursts">
+                                        <!-- Primary Burst -->
+                                        <circle cx="12" cy="12" r="0.1" fill="url(#burstGradient1Info)">
+                                            <animate attributeName="r" values="0.1;4;0.1" dur="3s" repeatCount="indefinite"/>
+                                            <animate attributeName="opacity" values="0.8;0;0.8" dur="3s" repeatCount="indefinite"/>
+                                        </circle>
+                                        <!-- Secondary Burst -->
+                                        <circle cx="12" cy="12" r="0.1" fill="url(#burstGradient2Info)">
+                                            <animate attributeName="r" values="0.1;3;0.1" dur="3s" repeatCount="indefinite" begin="1.5s"/>
+                                            <animate attributeName="opacity" values="0.6;0;0.6" dur="3s" repeatCount="indefinite" begin="1.5s"/>
+                                        </circle>
+                                    </g>
+
+                                    <!-- Enhanced Quantum Entanglement Lines -->
+                                    <g class="entanglement-lines">
+                                        <!-- Primary Entanglement -->
+                                        <path d="M9,9 Q12,12 15,15" stroke="url(#entanglementGradient1Info)" stroke-width="0.3" fill="none">
+                                            <animate attributeName="d" 
+                                                    values="M9,9 Q12,12 15,15;M15,9 Q12,12 9,15;M9,9 Q12,12 15,15" 
+                                                    dur="6s" 
+                                                    repeatCount="indefinite"/>
+                                            <animate attributeName="stroke-opacity" values="0.2;0.8;0.2" dur="6s" repeatCount="indefinite"/>
+                                        </path>
+                                        <!-- Secondary Entanglement -->
+                                        <path d="M15,9 Q12,12 9,15" stroke="url(#entanglementGradient2Info)" stroke-width="0.3" fill="none">
+                                            <animate attributeName="d" 
+                                                    values="M15,9 Q12,12 9,15;M9,9 Q12,12 15,15;M15,9 Q12,12 9,15" 
+                                                    dur="6s" 
+                                                    repeatCount="indefinite"/>
+                                            <animate attributeName="stroke-opacity" values="0.2;0.8;0.2" dur="6s" repeatCount="indefinite"/>
+                                        </path>
+                                    </g>
+                                </g>
+
+                                <!-- Enhanced Gradients and Filters -->
+                                <defs>
+                                    <!-- Enhanced Field Gradients -->
+                                    <radialGradient id="quantumFieldGradientInfo" cx="0.5" cy="0.5" r="0.5">
+                                        <stop offset="0%" stop-color="#C084FC" stop-opacity="0.4">
+                                            <animate attributeName="stop-color" 
+                                                values="#C084FC;#8B5CF6;#C084FC" 
+                                                dur="6s" 
+                                                repeatCount="indefinite"/>
+                                        </stop>
+                                        <stop offset="100%" stop-color="#6366F1" stop-opacity="0">
+                                            <animate attributeName="stop-color" 
+                                                values="#6366F1;#4F46E5;#6366F1" 
+                                                dur="6s" 
+                                                repeatCount="indefinite"/>
+                                        </stop>
+                                    </radialGradient>
+
+                                    <radialGradient id="innerFieldGradientInfo" cx="0.5" cy="0.5" r="0.5">
+                                        <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.3">
+                                            <animate attributeName="stop-opacity" 
+                                                values="0.3;0.5;0.3" 
+                                                dur="4s" 
+                                                repeatCount="indefinite"/>
+                                        </stop>
+                                        <stop offset="100%" stop-color="#4F46E5" stop-opacity="0"/>
+                                    </radialGradient>
+
+                                    <!-- Enhanced Ring Gradients -->
+                                    <linearGradient id="ringGradient1Info" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#C084FC">
+                                            <animate attributeName="stop-color" 
+                                                values="#C084FC;#818CF8;#C084FC" 
+                                                dur="4s" 
+                                                repeatCount="indefinite"/>
+                                        </stop>
+                                        <stop offset="100%" stop-color="#818CF8">
+                                            <animate attributeName="stop-color" 
+                                                values="#818CF8;#C084FC;#818CF8" 
+                                                dur="4s" 
+                                                repeatCount="indefinite"/>
+                                        </stop>
+                                    </linearGradient>
+
+                                    <linearGradient id="ringGradient2Info" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#A78BFA"/>
+                                        <stop offset="100%" stop-color="#6366F1"/>
+                                    </linearGradient>
+
+                                    <linearGradient id="ringGradient3Info" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#818CF8"/>
+                                        <stop offset="100%" stop-color="#4F46E5"/>
+                                    </linearGradient>
+
+                                    <!-- Enhanced Core Gradient -->
+                                    <linearGradient id="coreGradientInfo" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#9333EA">
+                                            <animate attributeName="stop-color" 
+                                                values="#9333EA;#7C3AED;#9333EA" 
+                                                dur="3s" 
+                                                repeatCount="indefinite"/>
+                                        </stop>
+                                        <stop offset="100%" stop-color="#6366F1">
+                                            <animate attributeName="stop-color" 
+                                                values="#6366F1;#818CF8;#6366F1" 
+                                                dur="3s" 
+                                                repeatCount="indefinite"/>
+                                        </stop>
+                                    </linearGradient>
+
+                                    <!-- Enhanced Particle Gradients -->
+                                    <linearGradient id="particleGradient1Info">
+                                        <stop offset="0%" stop-color="#F0ABFC"/>
+                                        <stop offset="100%" stop-color="#C084FC"/>
+                                    </linearGradient>
+
+                                    <linearGradient id="particleGradient2Info">
+                                        <stop offset="0%" stop-color="#818CF8"/>
+                                        <stop offset="100%" stop-color="#6366F1"/>
+                                    </linearGradient>
+
+                                    <linearGradient id="particleGradient3Info">
+                                        <stop offset="0%" stop-color="#A78BFA"/>
+                                        <stop offset="100%" stop-color="#7C3AED"/>
+                                    </linearGradient>
+
+                                    <!-- Enhanced Burst Gradients -->
+                                    <radialGradient id="burstGradient1Info">
+                                        <stop offset="0%" stop-color="#C084FC" stop-opacity="0.8"/>
+                                        <stop offset="100%" stop-color="#6366F1" stop-opacity="0"/>
+                                    </radialGradient>
+
+                                    <radialGradient id="burstGradient2Info">
+                                        <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.6"/>
+                                        <stop offset="100%" stop-color="#4F46E5" stop-opacity="0"/>
+                                    </radialGradient>
+
+                                    <!-- Enhanced Entanglement Gradients -->
+                                    <linearGradient id="entanglementGradient1Info">
+                                        <stop offset="0%" stop-color="#C084FC"/>
+                                        <stop offset="100%" stop-color="#6366F1"/>
+                                    </linearGradient>
+
+                                    <linearGradient id="entanglementGradient2Info">
+                                        <stop offset="0%" stop-color="#A78BFA"/>
+                                        <stop offset="100%" stop-color="#4F46E5"/>
+                                    </linearGradient>
+
+                                    <!-- Enhanced Grid Gradient -->
+                                    <linearGradient id="gridGradientInfo">
+                                        <stop offset="0%" stop-color="#C084FC" stop-opacity="0.3"/>
+                                        <stop offset="100%" stop-color="#6366F1" stop-opacity="0.1"/>
+                                    </linearGradient>
+
+                                    <!-- Enhanced Filters -->
+                                    <filter id="quantumGlowInfo" x="-50%" y="-50%" width="200%" height="200%">
+                                        <feGaussianBlur stdDeviation="1.5" result="blur"/>
+                                        <feFlood flood-color="#C084FC" flood-opacity="0.3" result="color"/>
+                                        <feComposite in="color" in2="blur" operator="in" result="glow"/>
+                                        <feMerge>
+                                            <feMergeNode in="glow"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
+
+                                    <filter id="coreGlowInfo" x="-50%" y="-50%" width="200%" height="200%">
+                                        <feGaussianBlur stdDeviation="1" result="blur"/>
+                                        <feFlood flood-color="#C084FC" flood-opacity="0.5" result="color"/>
+                                        <feComposite in="color" in2="blur" operator="in" result="glow"/>
+                                        <feMerge>
+                                            <feMergeNode in="glow"/>
+                                            <feMergeNode in="glow"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
+
+                                    <filter id="innerGlowInfo" x="-50%" y="-50%" width="200%" height="200%">
+                                        <feGaussianBlur stdDeviation="0.5" result="blur"/>
+                                        <feFlood flood-color="#C084FC" flood-opacity="0.8" result="color"/>
+                                        <feComposite in="color" in2="blur" operator="in" result="glow"/>
+                                        <feMerge>
+                                            <feMergeNode in="glow"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
+
+                                    <filter id="particleGlowInfo" x="-50%" y="-50%" width="200%" height="200%">
+                                        <feGaussianBlur stdDeviation="0.3" result="blur"/>
+                                        <feFlood flood-color="#C084FC" flood-opacity="0.3" result="color"/>
+                                        <feComposite in="color" in2="blur" operator="in" result="glow"/>
+                                        <feMerge>
+                                            <feMergeNode in="glow"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
+                                </defs>
+                            </svg>
+                        </div>
+                        <h3 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-purple-400 font-space animate-gradient-slow">
+                            LATMOv1
+                        </h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-violet-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Instant Answers</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Get immediate, accurate responses to your questions with AI.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-violet-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Detailed Explanations</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Receive comprehensive breakdowns of complex topics.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-violet-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Practice Exercises</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Get personalized practice problems tailored to your level.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-violet-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Language Support</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Learn and communicate in your preferred language.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex justify-end">
+                        <a href="http://localhost:5000" class="group inline-flex items-center gap-2 text-violet-400 hover:text-violet-300 transition-colors px-4 py-2 rounded-lg hover:bg-white/5">
+                            <span class="font-medium">Start Chatting</span>
+                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Resources Section -->
+                <div class="glass-card rounded-2xl p-8 hover:scale-[1.02] transition-all duration-500 group">
+                    <div class="flex items-center gap-6 mb-8">
+                        <div class="text-5xl transition-all duration-300">
+                            <!-- Enhanced Book Stack Logo -->
+                            <svg class="w-16 h-16 mx-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g class="book-stack">
+                                    <path d="M4 18L4 6C4 5.44772 4.44772 5 5 5H19C19.5523 5 20 5.44772 20 6V18C20 18.5523 19.5523 19 19 19H5C4.44772 19 4 18.5523 4 18Z" 
+                                        fill="url(#bottomBookGradientInfo)"
+                                        class="book bottom">
+                                        <animate attributeName="d" 
+                                            values="M4 18L4 6C4 5.44772 4.44772 5 5 5H19C19.5523 5 20 5.44772 20 6V18C20 18.5523 19.5523 19 19 19H5C4.44772 19 4 18.5523 4 18Z;
+                                                    M4 18.2L4 6.2C4 5.64772 4.44772 5.2 5 5.2H19C19.5523 5.2 20 5.64772 20 6.2V18.2C20 18.7523 19.5523 19.2 19 19.2H5C4.44772 19.2 4 18.7523 4 18.2Z;
+                                                    M4 18L4 6C4 5.44772 4.44772 5 5 5H19C19.5523 5 20 5.44772 20 6V18C20 18.5523 19.5523 19 19 19H5C4.44772 19 4 18.5523 4 18Z"
+                                            dur="3s"
+                                            repeatCount="indefinite"/>
+                                    </path>
+                                    <path d="M5 14L5 4C5 3.44772 5.44772 3 6 3H18C18.5523 3 19 3.44772 19 4V14C19 14.5523 18.5523 15 18 15H6C5.44772 15 5 14.5523 5 14Z" 
+                                        fill="url(#middleBookGradientInfo)"
+                                        class="book middle">
+                                        <animate attributeName="d" 
+                                            values="M5 14L5 4C5 3.44772 5.44772 3 6 3H18C18.5523 3 19 3.44772 19 4V14C19 14.5523 18.5523 15 18 15H6C5.44772 15 5 14.5523 5 14Z;
+                                                    M5 14.2L5 4.2C5 3.64772 5.44772 3.2 6 3.2H18C18.5523 3.2 19 3.64772 19 4.2V14.2C19 14.7523 18.5523 15.2 18 15.2H6C5.44772 15.2 5 14.7523 5 14.2Z;
+                                                    M5 14L5 4C5 3.44772 5.44772 3 6 3H18C18.5523 3 19 3.44772 19 4V14C19 14.5523 18.5523 15 18 15H6C5.44772 15 5 14.5523 5 14Z"
+                                            dur="3s"
+                                            repeatCount="indefinite"
+                                            begin="0.2s"/>
+                                    </path>
+                                    <path d="M6 10L6 2C6 1.44772 6.44772 1 7 1H17C17.5523 1 18 1.44772 18 2V10C18 10.5523 17.5523 11 17 11H7C6.44772 11 6 10.5523 6 10Z" 
+                                        fill="url(#topBookGradientInfo)"
+                                        class="book top">
+                                        <animate attributeName="d" 
+                                            values="M6 10L6 2C6 1.44772 6.44772 1 7 1H17C17.5523 1 18 1.44772 18 2V10C18 10.5523 17.5523 11 17 11H7C6.44772 11 6 10.5523 6 10Z;
+                                                    M6 10.2L6 2.2C6 1.64772 6.44772 1.2 7 1.2H17C17.5523 1.2 18 1.64772 18 2.2V10.2C18 10.7523 17.5523 11.2 17 11.2H7C6.44772 11.2 6 10.7523 6 10.2Z;
+                                                    M6 10L6 2C6 1.44772 6.44772 1 7 1H17C17.5523 1 18 1.44772 18 2V10C18 10.5523 17.5523 11 17 11H7C6.44772 11 6 10.5523 6 10Z"
+                                            dur="3s"
+                                            repeatCount="indefinite"
+                                            begin="0.4s"/>
+                                    </path>
+                                    <path d="M14 1L16 1C16.5523 1 17 1.44772 17 2V4L15.5 5.5L14 4V2C14 1.44772 14.4477 1 14 1Z"
+                                        fill="url(#bookmarkGradientInfo)"
+                                        class="bookmark">
+                                        <animate attributeName="d"
+                                            values="M14 1L16 1C16.5523 1 17 1.44772 17 2V4L15.5 5.5L14 4V2C14 1.44772 14.4477 1 14 1Z;
+                                                    M14 1.2L16 1.2C16.5523 1.2 17 1.64772 17 2.2V4.2L15.5 5.7L14 4.2V2.2C14 1.64772 14.4477 1.2 14 1.2Z;
+                                                    M14 1L16 1C16.5523 1 17 1.44772 17 2V4L15.5 5.5L14 4V2C14 1.44772 14.4477 1 14 1Z"
+                                            dur="3s"
+                                            repeatCount="indefinite"
+                                            begin="0.4s"/>
+                                    </path>
+                                    <path d="M7 8H17M7 11H17M7 14H17" 
+                                        stroke="rgba(255,255,255,0.3)" 
+                                        stroke-width="0.5"
+                                        stroke-linecap="round">
+                                        <animate attributeName="stroke-dasharray"
+                                            values="0 20;20 0"
+                                            dur="2s"
+                                            repeatCount="indefinite"/>
+                                    </path>
+                                </g>
+                                <defs>
+                                    <linearGradient id="bottomBookGradientInfo" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#F59E0B"/>
+                                        <stop offset="100%" stop-color="#D97706"/>
+                                    </linearGradient>
+                                    <linearGradient id="middleBookGradientInfo" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#FBBF24"/>
+                                        <stop offset="100%" stop-color="#F59E0B"/>
+                                    </linearGradient>
+                                    <linearGradient id="topBookGradientInfo" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#FCD34D"/>
+                                        <stop offset="100%" stop-color="#FBBF24"/>
+                                    </linearGradient>
+                                    <linearGradient id="bookmarkGradientInfo" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#EF4444"/>
+                                        <stop offset="100%" stop-color="#DC2626"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <h3 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-400 font-space animate-gradient-slow">
+                            Educational Resources Hub
+                        </h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-amber-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Curated Content</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Hand-picked educational materials across various subjects and topics.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-amber-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Interactive Learning</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Engage with multimedia content and interactive learning modules.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-amber-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Topic Categories</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Organized sections for finance, technology, health, and more.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-xl hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex items-start gap-3">
+                                <span class="text-amber-400">✨</span>
+                                <div>
+                                    <p class="text-white font-medium mb-2">Regular Updates</p>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Fresh content and resources added regularly to keep you learning.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex justify-end">
+                        <a href="Fundamentals/Resources_page.html" class="group inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors px-4 py-2 rounded-lg hover:bg-white/5">
+                            <span class="font-medium">Browse Resources</span>
+                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-16 text-gray-400 text-sm glass-morphism py-3 px-6 rounded-full inline-block animate-pulse-slow">
+                <span class="font-space tracking-wide font-medium uppercase">Enhance The Way Of Learning</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="ai-section" class="hidden bg-gradient-to-br from-purple-900 via-indigo-800 to-blue-900 text-white">
+        <div class="container mx-auto px-4 py-16">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-4xl font-bold mb-6 font-space text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">
+                        AI-Powered Learning
+                    </h2>
+                    <p class="text-xl mb-8 text-gray-200">
+                        Unlock the potential of artificial intelligence in your educational journey. Our AI tools provide personalized learning experiences, intelligent tutoring, and adaptive content recommendations.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4 bg-white/10 p-4 rounded-lg hover:bg-white/20 transition">
+                            <svg class="w-10 h-10 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-lg">Intelligent Tutoring System</span>
+                        </div>
+                        <div class="flex items-center space-x-4 bg-white/10 p-4 rounded-lg hover:bg-white/20 transition">
+                            <svg class="w-10 h-10 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-lg">Adaptive Learning Paths</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="bg-white/10 p-8 rounded-2xl shadow-2xl backdrop-blur-lg">
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="bg-purple-600/30 h-24 rounded-lg animate-pulse"></div>
+                            <div class="bg-blue-600/30 h-24 rounded-lg animate-pulse delay-150"></div>
+                            <div class="bg-indigo-600/30 h-24 rounded-lg animate-pulse delay-300"></div>
+                            <div class="bg-blue-600/30 h-24 rounded-lg animate-pulse delay-75"></div>
+                            <div class="bg-purple-600/30 h-24 rounded-lg animate-pulse"></div>
+                            <div class="bg-indigo-600/30 h-24 rounded-lg animate-pulse delay-200"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cursor elements
+        const cursor = document.querySelector('.custom-cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+
+        // Mouse position variables
+        let mouseX = 0;
+        let mouseY = 0;
+        let cursorX = 0;
+        let cursorY = 0;
+
+        // Smooth cursor movement
+        function updateCursorPosition(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        }
+
+        function animateCursor() {
+            // Smooth interpolation
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+
+            // Update cursor positions with smooth movement
+            requestAnimationFrame(() => {
+                cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+                cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+            });
+
+            requestAnimationFrame(animateCursor);
+        }
+
+        // Start animation loop
+        animateCursor();
+
+        // Mouse movement listener
+        document.addEventListener('mousemove', updateCursorPosition);
+
+        // Hover effects for different elements
+        const interactiveElements = document.querySelectorAll('a, button, input, [role="button"]');
+        const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span');
+
+        // Add hover effects for interactive elements
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('hover');
+                cursorDot.classList.add('hover');
+
+                // Magnetic effect
+                el.addEventListener('mousemove', (e) => {
+                    const rect = el.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    const distanceX = e.clientX - centerX;
+                    const distanceY = e.clientY - centerY;
+
+                    mouseX = centerX + distanceX * 0.3;
+                    mouseY = centerY + distanceY * 0.3;
+                });
+            });
+
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hover');
+                cursorDot.classList.remove('hover');
+            });
+        });
+
+        // Add text hover effect
+        textElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('text');
+                cursorDot.classList.add('text');
+            });
+
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('text');
+                cursorDot.classList.remove('text');
+            });
+        });
+
+        // Click effects
+        document.addEventListener('mousedown', () => {
+            cursor.classList.add('clicking');
+            cursorDot.classList.add('clicking');
+        });
+
+        document.addEventListener('mouseup', () => {
+            cursor.classList.remove('clicking');
+            cursorDot.classList.remove('clicking');
+        });
+
+        // Cursor visibility
+        let cursorTimeout;
+
+        function showCursor() {
+            cursor.classList.remove('inactive');
+            cursorDot.classList.remove('inactive');
+        }
+
+        function hideCursor() {
+            cursor.classList.add('inactive');
+            cursorDot.classList.add('inactive');
+        }
+
+        // Hide cursor after 3 seconds of inactivity
+        document.addEventListener('mousemove', () => {
+            showCursor();
+            clearTimeout(cursorTimeout);
+            cursorTimeout = setTimeout(hideCursor, 3000);
+        });
+
+        // Hide when leaving window
+        document.addEventListener('mouseleave', hideCursor);
+        document.addEventListener('mouseenter', showCursor);
+
+        // Initialize cursor position
+        updateCursorPosition({
+            clientX: window.innerWidth / 2,
+            clientY: window.innerHeight / 2
+        });
+
+        // AI Section Toggle
+        function toggleAISection() {
+            const aiSection = document.getElementById('ai-section');
+            const mainSections = document.querySelectorAll('body > div:not(#ai-section):not(.custom-cursor)');
+
+            if (aiSection.classList.contains('hidden')) {
+                // Show AI Section
+                aiSection.classList.remove('hidden');
+                mainSections.forEach(section => section.classList.add('hidden'));
+            } else {
+                // Hide AI Section
+                aiSection.classList.add('hidden');
+                mainSections.forEach(section => section.classList.remove('hidden'));
+            }
+        }
+
+        // Add AI Section Navigation Button
+        function createAINavButton() {
+            const navContainer = document.querySelector('.nav-container'); // Adjust selector as needed
+            if (navContainer) {
+                const aiButton = document.createElement('button');
+                aiButton.innerHTML = `
+                    <span class="flex items-center space-x-2 text-white hover:text-purple-300 transition">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                        </svg>
+                        <span>AI Tools</span>
+                    </span>
+                `;
+                aiButton.classList.add('nav-button', 'ai-nav-button');
+                aiButton.addEventListener('click', toggleAISection);
+                navContainer.appendChild(aiButton);
+            }
+        }
+
+        // Call function to create AI nav button when DOM is ready
+        document.addEventListener('DOMContentLoaded', createAINavButton);
+
+        // Add this after your existing script
+        document.addEventListener('DOMContentLoaded', () => {
+            // Feature cards hover effect
+            const featureCards = document.querySelectorAll('.glass-morphism');
+
+            featureCards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    // Add subtle glow effect
+                    card.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.1)';
+                    // Scale up slightly
+                    card.style.transform = 'scale(1.02) translateY(-4px)';
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.boxShadow = '';
+                    card.style.transform = '';
+                });
+            });
+
+            // Section cards parallax effect
+            const sections = document.querySelectorAll('.glass-card');
+
+            window.addEventListener('mousemove', (e) => {
+                const {
+                    clientX,
+                    clientY
+                } = e;
+
+                sections.forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+
+                    const deltaX = (clientX - centerX) * 0.01;
+                    const deltaY = (clientY - centerY) * 0.01;
+
+                    section.style.transform = `perspective(1000px) rotateX(${-deltaY}deg) rotateY(${deltaX}deg)`;
+                });
+            });
+
+            // Reset transform on mouse leave
+            sections.forEach(section => {
+                section.addEventListener('mouseleave', () => {
+                    section.style.transform = '';
+                });
+            });
+        });
+
+        // Welcome popup animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const userData = JSON.parse(sessionStorage.getItem('userData'));
+            if (userData && userData.name) {
+                const firstName = userData.name.split(' ')[0];
+                document.getElementById('userName').textContent = firstName;
+                
+                const popup = document.querySelector('.welcome-popup');
+                popup.classList.add('active');
+
+                // Remove popup after animation
+                setTimeout(() => {
+                    popup.remove();
+                }, 4000);
+
+                // Add sparkle effect
+                const content = document.querySelector('.welcome-content');
+                for (let i = 0; i < 20; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle';
+                    sparkle.style.cssText = `
+                        position: absolute;
+                        width: 4px;
+                        height: 4px;
+                        background: white;
+                        border-radius: 50%;
+                        opacity: 0;
+                        left: ${Math.random() * 100}%;
+                        top: ${Math.random() * 100}%;
+                        animation: sparkleAnim ${0.5 + Math.random() * 1}s linear ${Math.random() * 2}s;
+                    `;
+                    content.appendChild(sparkle);
+                }
+            }
+        });
+
+        // Add sparkle animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes sparkleAnim {
+                0% {
+                    transform: scale(0) rotate(0deg);
+                    opacity: 0;
+                }
+                50% {
+                    transform: scale(1) rotate(180deg);
+                    opacity: 0.8;
+                }
+                100% {
+                    transform: scale(0) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Card info popup handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.transform.perspective-1000');
+            
+            cards.forEach(card => {
+                const popup = card.querySelector('.card-info-popup');
+                let popupTimeout;
+
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    // Position popup near cursor but ensure it stays within viewport
+                    popup.style.left = `${x}px`;
+                    popup.style.top = `${y + 20}px`; // 20px offset from cursor
+
+                    // Clear any existing timeout
+                    clearTimeout(popupTimeout);
+                    
+                    // Add active class with a small delay
+                    popupTimeout = setTimeout(() => {
+                        popup.classList.add('active');
+                    }, 100);
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    clearTimeout(popupTimeout);
+                    popup.classList.remove('active');
+                });
+            });
+        });
+
+        // Add this function for logout handling
+        function handleLogout() {
+            // Clear session storage
+            sessionStorage.clear();
+            // Redirect to login page
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+
+</html>

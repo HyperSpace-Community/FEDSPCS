@@ -1,0 +1,1946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FuturED - Your Digital Workspace for notes and tasks">
+    <meta name="keywords" content="notes, tasks, digital workspace, productivity">
+    <meta name="author" content="FuturED">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; 
+        script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; 
+        style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline';
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        img-src 'self' data: https:;
+        connect-src 'self';">
+    <title>FuturED - Your Digital Workspace</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="cursor-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Poppins:wght@400;500;600&family=Montserrat:wght@400;500;600&family=Lato:wght@400;700&family=Source+Sans+Pro:wght@400;600&family=Ubuntu:wght@400;500;700&family=Playfair+Display:wght@400;600&family=Merriweather:wght@400;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prismjs/1.24.1/themes/prism.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prismjs/1.24.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    <style>
+        /* Update color scheme with modern variables */
+        
+         :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary: #6366f1;
+            --accent: #8b5cf6;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --border-light: #e2e8f0;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        /* Enhanced toolbar design */
+        
+        .toolbar {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.95);
+            margin-left: 240px;
+        }
+        
+        .toolbar button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            background: var(--bg-white);
+            color: var(--text-light);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        
+        .toolbar button:hover {
+            background: var(--bg-light);
+            color: var(--primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+        /* Improved sidebar design */
+        
+        .sidebar {
+            width: 240px;
+            background: var(--bg-white);
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: var(--shadow-md);
+            z-index: 101;
+            transition: transform 0.3s ease, width 0.3s ease;
+            transform-origin: left top;
+        }
+        
+        .sidebar.collapsed {
+            transform: translateX(-240px);
+        }
+        
+        .main-content.expanded {
+            margin-left: 0;
+        }
+        
+        .toolbar.expanded {
+            margin-left: 0;
+        }
+        
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-light);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            position: relative;
+        }
+        
+        .sidebar-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 75%, transparent 75%, transparent);
+            background-size: 3rem 3rem;
+            opacity: 0.1;
+        }
+        
+        .sidebar-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.025em;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .sidebar-header h1::before {
+            content: 'ED';
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 900;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            margin-left: 2px;
+        }
+        
+        .sidebar-header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 40%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+        /* Enhanced search box */
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 16px;
+            transition: all 0.2s ease;
+        }
+        
+        .search-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background: var(--bg-white);
+        }
+        /* Improved add page button */
+        
+        .add-page {
+            margin: 16px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .add-page:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        /* Enhanced editor area */
+        
+        .editor {
+            padding: 40px 120px;
+            margin-left: 240px;
+            max-width: 1200px;
+            margin-right: auto;
+            min-height: calc(100vh - 60px);
+            background: var(--bg-white);
+            line-height: 1.7;
+            color: var(--text-dark);
+            transition: margin-left 0.3s ease;
+        }
+        
+        .editor.expanded {
+            margin-left: 0;
+        }
+        
+        .editor h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.025em;
+            background: linear-gradient(135deg, var(--text-dark), var(--primary));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Improved code block styling */
+        
+        .code-block-wrapper {
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            background: #1e1e1e;
+        }
+        
+        .code-block-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #2d2d2d;
+            border-bottom: 1px solid #3d3d3d;
+        }
+        /* Add smooth animations */
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .page {
+            animation: fadeIn 0.3s ease-out;
+        }
+        /* Enhanced font selectors */
+        
+        #fontSelector,
+        #fontSizeSelector {
+            height: 40px;
+            padding: 0 16px;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            background: var(--bg-white);
+            color: var(--text-dark);
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        #fontSelector:hover,
+        #fontSizeSelector:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .sidebar-toggle {
+            position: fixed;
+            left: 240px;
+            top: 20px;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border: none;
+            border-radius: 0 10px 10px 0;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 102;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .sidebar-toggle:hover {
+            background: var(--primary-hover);
+            transform: translateX(2px);
+        }
+        
+        .sidebar-toggle i {
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar.collapsed .sidebar-toggle {
+            left: 0;
+        }
+        /* Enhanced table styles */
+        
+        .table-wrapper {
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .table-toolbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .table-controls-left,
+        .table-controls-right {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .table-controls-group {
+            display: flex;
+            gap: 4px;
+            padding: 0 8px;
+            border-right: 1px solid var(--border-light);
+        }
+        
+        .table-controls-group:last-child {
+            border-right: none;
+        }
+        
+        .table-control {
+            padding: 6px 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            background: var(--bg-white);
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .table-control:hover {
+            background: var(--bg-light);
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+        
+        .table-style-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .table-style-select {
+            padding: 6px;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            background: var(--bg-white);
+        }
+        
+        .cell-color-picker {
+            width: 32px;
+            height: 32px;
+            padding: 2px;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .editable-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-white);
+        }
+        
+        .editable-table th,
+        .editable-table td {
+            padding: 12px;
+            border: 1px solid var(--border-light);
+            transition: all 0.2s ease;
+        }
+        
+        .editable-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+        }
+        
+        .editable-table td.selected,
+        .editable-table th.selected {
+            background: rgba(37, 99, 235, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .editable-table td:focus,
+        .editable-table th:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: -2px;
+        }
+        
+        .delete-control {
+            color: #ef4444;
+        }
+        
+        .delete-control:hover {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        /* Add these styles to the existing table styles */
+        
+        .editable-table td,
+        .editable-table th {
+            position: relative;
+            min-width: 100px;
+            cursor: pointer;
+        }
+        
+        .editable-table td[contenteditable="true"],
+        .editable-table th[contenteditable="true"] {
+            cursor: text;
+            outline: 2px solid var(--primary);
+            outline-offset: -2px;
+            background-color: var(--bg-white);
+            z-index: 1;
+        }
+        
+        .editable-table td:hover,
+        .editable-table th:hover {
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+        
+        .editable-table td:empty::before,
+        .editable-table th:empty::before {
+            content: 'Click to edit';
+            color: var(--text-light);
+            font-style: italic;
+            opacity: 0.6;
+        }
+        /* Custom Scrollbar Styles */
+        
+         ::-webkit-scrollbar {
+            width: 16px;
+            height: 16px;
+        }
+        
+         ::-webkit-scrollbar-track {
+            background: var(--bg-light);
+            border-radius: 0;
+        }
+        
+         ::-webkit-scrollbar-thumb {
+            background: linear-gradient( to bottom, #FFD700 0%, /* Gold pencil tip */
+            #FFD700 5%, #4B4B4B 5%, /* Metal band */
+            #4B4B4B 15%, #F4D03F 15%, /* Pencil body */
+            #F4D03F 90%, #E9BC0F 90%/* Pencil end */
+            );
+            border: 3px solid var(--bg-light);
+            border-radius: 8px;
+            position: relative;
+        }
+        
+         ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient( to bottom, #FFE44D 0%, /* Lighter gold tip */
+            #FFE44D 5%, #666666 5%, /* Lighter metal band */
+            #666666 15%, #F7DC6F 15%, /* Lighter pencil body */
+            #F7DC6F 90%, #F1C40F 90%/* Lighter pencil end */
+            );
+        }
+        /* Add pencil texture effect */
+        
+         ::-webkit-scrollbar-thumb::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            bottom: 10%;
+            left: 0;
+            right: 0;
+            background: repeating-linear-gradient( 90deg, transparent, transparent 2px, rgba(0, 0, 0, 0.1) 2px, rgba(0, 0, 0, 0.1) 4px);
+            pointer-events: none;
+        }
+        /* Firefox scrollbar styles */
+        
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #F4D03F var(--bg-light);
+        }
+        /* Enhanced scrollbar for specific containers */
+        
+        .sidebar,
+        .editor {
+            scrollbar-gutter: stable;
+        }
+        /* Smooth scroll behavior */
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Hide scrollbar when not hovering (optional) */
+        
+        .sidebar:not(:hover)::-webkit-scrollbar-thumb,
+        .editor:not(:hover)::-webkit-scrollbar-thumb {
+            opacity: 0.7;
+            transform: scale(0.9);
+        }
+        /* Show scrollbar on hover */
+        
+        .sidebar:hover::-webkit-scrollbar-thumb,
+        .editor:hover::-webkit-scrollbar-thumb {
+            opacity: 1;
+            transform: scale(1);
+        }
+        /* Add responsive adjustments */
+        
+        @media (max-width: 1400px) {
+            .editor {
+                padding: 40px 80px;
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .editor {
+                padding: 40px 60px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .editor {
+                padding: 40px 20px;
+            }
+        }
+
+        /* Add styles for new features */
+        .editor-stats {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-white);
+            padding: 8px 16px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+            font-size: 14px;
+            color: var(--text-light);
+            z-index: 100;
+        }
+
+        .search-replace-panel {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: var(--bg-white);
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            display: none;
+        }
+
+        .search-replace-panel.active {
+            display: block;
+        }
+
+        .search-replace-panel input {
+            width: 200px;
+            padding: 8px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+        }
+
+        .search-replace-panel button {
+            margin: 4px;
+            padding: 6px 12px;
+        }
+
+        .keyboard-shortcuts {
+            position: fixed;
+            bottom: 60px;
+            right: 20px;
+            background: var(--bg-white);
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            display: none;
+        }
+
+        .keyboard-shortcuts.active {
+            display: block;
+        }
+
+        .shortcut-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 4px 0;
+        }
+
+        .shortcut-key {
+            background: var(--bg-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="custom-cursor">
+        <div class="cursor-ring"></div>
+        <div class="cursor-gradient"></div>
+    </div>
+    <div class="cursor-dot"></div>
+    <div class="container">
+        <div class="sidebar" role="navigation" aria-label="Main navigation">
+            <div class="sidebar-header">
+                <h1>Notex</h1>
+            </div>
+            <div class="pages">
+                <div class="search-container">
+                    <div class="search-box" role="search">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                        <input type="text" placeholder="Search pages and content..." id="pageSearch" aria-label="Search pages and content">
+                        <div class="search-options">
+                            <button id="searchOptions" title="Search Options" aria-label="Toggle search options">
+                                <i class="fas fa-sliders" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="search-filters" style="display: none;" role="group" aria-label="Search filters">
+                        <fieldset>
+                            <legend>Search Options</legend>
+                            <div class="filter-option">
+                                <input type="checkbox" id="searchTitles" checked>
+                                <label for="searchTitles">Search in titles</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="searchContent" checked>
+                                <label for="searchContent">Search in content</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="caseSensitive">
+                                <label for="caseSensitive">Case sensitive</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="wholeWord">
+                                <label for="wholeWord">Whole words only</label>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div id="searchResults" class="search-results" role="region" aria-live="polite"></div>
+                </div>
+                <button class="add-page" onclick="addNewPage()" aria-label="Add new page">
+                    <i class="fas fa-plus" aria-hidden="true"></i>
+                    <span>Add Page</span>
+                </button>
+            </div>
+        </div>
+        <main class="main-content" role="main">
+            <div class="toolbar" role="toolbar" aria-label="Formatting tools">
+                <button id="sidebarToggle" title="Toggle sidebar" aria-label="Toggle sidebar">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+                <select id="fontSelector" title="Change font" aria-label="Change font">
+                    <!-- Sans-serif fonts -->
+                    <optgroup label="Modern Sans-serif">
+                        <option value="Inter">Inter</option>
+                        <option value="Poppins">Poppins</option>
+                        <option value="Roboto">Roboto</option>
+                        <option value="Open Sans">Open Sans</option>
+                        <option value="Montserrat">Montserrat</option>
+                        <option value="Lato">Lato</option>
+                        <option value="Source Sans Pro">Source Sans Pro</option>
+                        <option value="Ubuntu">Ubuntu</option>
+                    </optgroup>
+                    <!-- Serif fonts -->
+                    <optgroup label="Elegant Serif">
+                        <option value="Playfair Display">Playfair Display</option>
+                        <option value="Merriweather">Merriweather</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                    </optgroup>
+                    <!-- Monospace fonts -->
+                    <optgroup label="Monospace">
+                        <option value="Fira Code">Fira Code</option>
+                        <option value="Consolas">Consolas</option>
+                        <option value="Monaco">Monaco</option>
+                    </optgroup>
+                    <!-- System fonts -->
+                    <optgroup label="System">
+                        <option value="Arial">Arial</option>
+                        <option value="Helvetica">Helvetica</option>
+                        <option value="Verdana">Verdana</option>
+                        <option value="-apple-system">System UI</option>
+                    </optgroup>
+                </select>
+                <select id="fontSizeSelector" title="Change font size" aria-label="Change font size">
+                    <option value="1">Small</option>
+                    <option value="2">Medium</option>
+                    <option value="3" selected>Normal</option>
+                    <option value="4">Large</option>
+                    <option value="5">X-Large</option>
+                    <option value="6">XX-Large</option>
+                </select>
+                <button title="Bold (Ctrl+B)" onclick="formatText('bold')" aria-label="Bold">
+                    <i class="fas fa-bold" aria-hidden="true"></i>
+                </button>
+                <button title="Italic (Ctrl+I)" onclick="formatText('italic')" aria-label="Italic">
+                    <i class="fas fa-italic" aria-hidden="true"></i>
+                </button>
+                <button title="Underline (Ctrl+U)" onclick="formatText('underline')" aria-label="Underline">
+                    <i class="fas fa-underline" aria-hidden="true"></i>
+                </button>
+                <button title="Heading" onclick="addHeading()" aria-label="Add heading">
+                    <i class="fas fa-heading" aria-hidden="true"></i>
+                </button>
+                <button title="Bullet List" onclick="addList('bullet')" aria-label="Add bullet list">
+                    <i class="fas fa-list-ul" aria-hidden="true"></i>
+                </button>
+                <button title="Numbered List" onclick="addList('number')" aria-label="Add numbered list">
+                    <i class="fas fa-list-ol" aria-hidden="true"></i>
+                </button>
+                <button title="Code Block" onclick="addCodeBlock()" aria-label="Add code block">
+                    <i class="fas fa-code" aria-hidden="true"></i>
+                </button>
+                <button title="Insert Link" onclick="addLink()" aria-label="Insert link">
+                    <i class="fas fa-link" aria-hidden="true"></i>
+                </button>
+                <button title="Insert Table" onclick="insertTable()" aria-label="Insert table">
+                    <i class="fas fa-table" aria-hidden="true"></i>
+                </button>
+                <button title="Insert Image" onclick="triggerImageUpload()" aria-label="Insert image">
+                    <i class="fas fa-image" aria-hidden="true"></i>
+                </button>
+                <button title="Voice Input" onclick="toggleSpeechInput()" id="micButton" aria-label="Toggle voice input">
+                    <i class="fas fa-microphone" aria-hidden="true"></i>
+                </button>
+                <button title="Find and Replace (Ctrl+F)" onclick="toggleSearchPanel()" aria-label="Find and Replace">
+                    <i class="fas fa-search-replace"></i>
+                </button>
+                <button title="Show Keyboard Shortcuts (Ctrl+/)" onclick="toggleShortcutsPanel()" aria-label="Show Keyboard Shortcuts">
+                    <i class="fas fa-keyboard"></i>
+                </button>
+            </div>
+
+            <!-- Add new UI elements -->
+            <div class="search-replace-panel">
+                <input type="text" id="searchInput" placeholder="Find..." aria-label="Search text">
+                <input type="text" id="replaceInput" placeholder="Replace with..." aria-label="Replace text">
+                <button onclick="findNext()">Find Next</button>
+                <button onclick="replace()">Replace</button>
+                <button onclick="replaceAll()">Replace All</button>
+                <button onclick="toggleSearchPanel()">Close</button>
+            </div>
+
+            <div class="keyboard-shortcuts">
+                <h3>Keyboard Shortcuts</h3>
+                <div class="shortcut-row">
+                    <span>Save</span>
+                    <span class="shortcut-key">Ctrl + S</span>
+                </div>
+                <div class="shortcut-row">
+                    <span>Find and Replace</span>
+                    <span class="shortcut-key">Ctrl + F</span>
+                </div>
+                <div class="shortcut-row">
+                    <span>Show Shortcuts</span>
+                    <span class="shortcut-key">Ctrl + /</span>
+                </div>
+                <!-- Add more shortcuts as needed -->
+            </div>
+
+            <div class="editor-stats">
+                <span id="wordCount">Words: 0</span>
+                <span id="charCount">Characters: 0</span>
+            </div>
+
+            <div class="editor" contenteditable="true" id="editor" role="textbox" aria-label="Main editor" aria-multiline="true">
+                <h1>Welcome to FuturED! 🚀</h1>
+                <p>Your all-in-one digital workspace for notes and tasks.</p>
+
+                <h2>Quick Start Guide:</h2>
+                <ul>
+                    <li>Use the toolbar above to format your text and add various elements</li>
+                    <li>Create new pages using the "+ Add Page" button in the sidebar</li>
+                    <li>Search through your content using the search bar</li>
+                    <li>Try voice input by clicking the microphone icon</li>
+                </ul>
+
+                <h2>Key Features:</h2>
+                <ul>
+                    <li> Rich Text Editing</li>
+                    <li> Tables and Lists</li>
+                    <li>💻 Code Blocks with Syntax Highlighting</li>
+                    <li>🎯 Task Management</li>
+                    <li>🔍 Advanced Search</li>
+                    <li>🎤 Voice Input Support</li>
+                </ul>
+
+                <p>Start by editing this page or create a new one to begin your journey!</p>
+            </div>
+
+            <!-- Task Template -->
+            <template id="taskTemplate">
+                <div class="task-item" role="listitem">
+                    <div class="task-checkbox">
+                        <input type="checkbox" aria-label="Mark task as complete">
+                        <div class="custom-checkbox" aria-hidden="true"></div>
+                    </div>
+                    <div class="task-content">
+                        <div class="task-title" contenteditable="true"></div>
+                        <div class="task-details">
+                            <span class="task-due-date"></span>
+                            <span class="task-priority"></span>
+                            <span class="task-category"></span>
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="task-edit" title="Edit Task" aria-label="Edit task">
+                            <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                        </button>
+                        <button class="task-delete" title="Delete Task" aria-label="Delete task">
+                            <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Note Template -->
+            <template id="noteTemplate">
+                <div class="note-item">
+                    <div class="note-header">
+                        <div class="note-title" contenteditable="true"></div>
+                        <div class="note-category"></div>
+                        <div class="note-date"></div>
+                    </div>
+                    <div class="note-content" contenteditable="true"></div>
+                    <div class="note-footer">
+                        <div class="note-tags"></div>
+                        <div class="note-actions">
+                            <button class="note-edit" title="Edit Note" aria-label="Edit note">
+                                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                            </button>
+                            <button class="note-delete" title="Delete Note" aria-label="Delete note">
+                                <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Add error handling for image upload -->
+            <div id="imageUploadError" class="error-message" role="alert" style="display: none;">
+                Failed to upload image. Please try again.
+            </div>
+            <input type="file" id="imageUpload" accept="image/*" style="display: none;" aria-label="Upload image">
+        </main>
+    </div>
+    <script>
+        // Add these functions before the cursor initialization code
+
+        // Text formatting functions
+        function formatText(command) {
+            // Save current selection
+            const selection = window.getSelection();
+            const range = selection.getRangeAt(0);
+
+            // Handle special formatting cases
+            switch (command) {
+                case 'bold':
+                    document.execCommand('bold', false, null);
+                    break;
+                case 'italic':
+                    document.execCommand('italic', false, null);
+                    break;
+                case 'underline':
+                    document.execCommand('underline', false, null);
+                    break;
+                default:
+                    document.execCommand(command, false, null);
+            }
+
+            // Restore selection
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+
+        function addHeading() {
+            const selection = window.getSelection();
+            const range = selection.getRangeAt(0);
+            const container = range.commonAncestorContainer.parentElement;
+
+            if (container.tagName === 'H1') {
+                document.execCommand('formatBlock', false, 'p');
+            } else {
+                document.execCommand('formatBlock', false, 'h1');
+            }
+        }
+
+        function addList(type) {
+            const command = type === 'bullet' ? 'insertUnorderedList' : 'insertOrderedList';
+            document.execCommand(command, false, null);
+        }
+
+        function addCodeBlock() {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'code-block-wrapper';
+
+            const toolbar = document.createElement('div');
+            toolbar.className = 'code-block-toolbar';
+
+            // Enhanced language selector with more options
+            const languageSelect = document.createElement('select');
+            languageSelect.className = 'language-selector';
+            const languages = [
+                'javascript', 'python', 'html', 'css', 'java', 'cpp', 'csharp',
+                'php', 'ruby', 'sql', 'typescript', 'bash', 'json', 'xml'
+            ];
+
+            languages.forEach(lang => {
+                const option = document.createElement('option');
+                option.value = lang;
+                option.textContent = lang.charAt(0).toUpperCase() + lang.slice(1);
+                languageSelect.appendChild(option);
+            });
+
+            // Add toolbar buttons
+            const copyButton = document.createElement('button');
+            copyButton.innerHTML = '<i class="fas fa-copy"></i>';
+            copyButton.title = 'Copy code';
+
+            const formatButton = document.createElement('button');
+            formatButton.innerHTML = '<i class="fas fa-indent"></i>';
+            formatButton.title = 'Format code';
+
+            toolbar.appendChild(languageSelect);
+            toolbar.appendChild(copyButton);
+            toolbar.appendChild(formatButton);
+
+            const pre = document.createElement('pre');
+            const code = document.createElement('code');
+            pre.classList.add('line-numbers');
+            pre.appendChild(code);
+
+            wrapper.appendChild(toolbar);
+            wrapper.appendChild(pre);
+
+            const selection = window.getSelection();
+            const range = selection.getRangeAt(0);
+
+            code.contentEditable = 'true';
+            pre.contentEditable = 'false';
+            code.textContent = '// Enter your code here';
+
+            range.deleteContents();
+            range.insertNode(wrapper);
+
+            // Enhanced event listeners
+            languageSelect.addEventListener('change', () => {
+                code.className = `language-${languageSelect.value}`;
+                Prism.highlightElement(code);
+            });
+
+            copyButton.addEventListener('click', () => {
+                navigator.clipboard.writeText(code.textContent)
+                    .then(() => {
+                        copyButton.innerHTML = '<i class="fas fa-check"></i>';
+                        setTimeout(() => {
+                            copyButton.innerHTML = '<i class="fas fa-copy"></i>';
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy:', err);
+                        copyButton.innerHTML = '<i class="fas fa-times"></i>';
+                        setTimeout(() => {
+                            copyButton.innerHTML = '<i class="fas fa-copy"></i>';
+                        }, 2000);
+                    });
+            });
+
+            formatButton.addEventListener('click', () => {
+                try {
+                    const formatted = prettier.format(code.textContent, {
+                        parser: languageSelect.value,
+                        plugins: prettierPlugins
+                    });
+                    code.textContent = formatted;
+                    Prism.highlightElement(code);
+                } catch (err) {
+                    console.warn('Could not format code:', err);
+                }
+            });
+
+            // Improved code editing experience
+            code.addEventListener('input', () => {
+                requestAnimationFrame(() => {
+                    Prism.highlightElement(code);
+                });
+            });
+
+            code.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    document.execCommand('insertText', false, '    ');
+                }
+            });
+
+            // Set initial language and highlight
+            code.className = 'language-javascript';
+            Prism.highlightElement(code);
+        }
+
+        function addLink() {
+            const url = prompt('Enter URL:', 'https://');
+            if (url) {
+                document.execCommand('createLink', false, url);
+            }
+        }
+
+        // Find the insertTable function and replace it with this enhanced version
+        function insertTable() {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'table-wrapper';
+
+            const toolbar = document.createElement('div');
+            toolbar.className = 'table-toolbar';
+
+            // Enhanced toolbar with more features
+            const controls = `
+                <div class="table-controls-left">
+                    <div class="table-controls-group">
+                        <button title="Add row above" class="table-control" data-action="row-above">
+                            <i class="fas fa-arrow-up"></i> Row
+                        </button>
+                        <button title="Add row below" class="table-control" data-action="row-below">
+                            <i class="fas fa-arrow-down"></i> Row
+                        </button>
+                        <button title="Delete row" class="table-control delete-control" data-action="delete-row">
+                            <i class="fas fa-minus"></i> Row
+                        </button>
+                    </div>
+                    <div class="table-controls-group">
+                        <button title="Add column left" class="table-control" data-action="col-left">
+                            <i class="fas fa-arrow-left"></i> Col
+                        </button>
+                        <button title="Add column right" class="table-control" data-action="col-right">
+                            <i class="fas fa-arrow-right"></i> Col
+                        </button>
+                        <button title="Delete column" class="table-control delete-control" data-action="delete-col">
+                            <i class="fas fa-minus"></i> Col
+                        </button>
+                    </div>
+                </div>
+                <div class="table-controls-right">
+                    <div class="table-controls-group">
+                        <button title="Merge cells" class="table-control" data-action="merge-cells">
+                            <i class="fas fa-object-group"></i>
+                        </button>
+                        <button title="Split cell" class="table-control" data-action="split-cell">
+                            <i class="fas fa-object-ungroup"></i>
+                        </button>
+                    </div>
+                    <div class="table-controls-group">
+                        <button title="Sort ascending" class="table-control" data-action="sort-asc">
+                            <i class="fas fa-sort-amount-down-alt"></i>
+                        </button>
+                        <button title="Sort descending" class="table-control" data-action="sort-desc">
+                            <i class="fas fa-sort-amount-down"></i>
+                        </button>
+                    </div>
+                    <div class="table-style-controls">
+                        <select class="table-style-select" title="Cell alignment">
+                            <option value="left">Left align</option>
+                            <option value="center">Center align</option>
+                            <option value="right">Right align</option>
+                        </select>
+                        <input type="color" class="cell-color-picker" title="Cell background color">
+                        <button title="Toggle header row" class="table-control" data-action="toggle-header">
+                            <i class="fas fa-heading"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            toolbar.innerHTML = controls;
+
+            const rows = prompt('Enter number of rows:', '3');
+            const cols = prompt('Enter number of columns:', '3');
+
+            if (rows && cols) {
+                let table = document.createElement('table');
+                table.className = 'editable-table';
+
+                // Add header row by default
+                let thead = document.createElement('thead');
+                let headerRow = document.createElement('tr');
+
+                for (let j = 0; j < cols; j++) {
+                    let th = document.createElement('th');
+                    th.textContent = `Header ${j + 1}`;
+                    th.setAttribute('contenteditable', 'false'); // Initially not editable
+                    headerRow.appendChild(th);
+                }
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+
+                let tbody = document.createElement('tbody');
+
+                for (let i = 0; i < rows - 1; i++) {
+                    let tr = document.createElement('tr');
+                    for (let j = 0; j < cols; j++) {
+                        let td = document.createElement('td');
+                        td.textContent = 'Click to edit';
+                        td.setAttribute('contenteditable', 'false'); // Initially not editable
+                        tr.appendChild(td);
+                    }
+                    tbody.appendChild(tr);
+                }
+
+                table.appendChild(tbody);
+                wrapper.appendChild(toolbar);
+                wrapper.appendChild(table);
+
+                const selection = window.getSelection();
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(wrapper);
+
+                setupEnhancedTableControls(wrapper);
+            }
+        }
+
+        // Add this new function for enhanced table controls
+        function setupEnhancedTableControls(wrapper) {
+            const table = wrapper.querySelector('table');
+            const toolbar = wrapper.querySelector('.table-toolbar');
+            let selectedCells = new Set();
+            let isEditing = false;
+
+            // Handle cell selection and editing
+            table.addEventListener('mousedown', (e) => {
+                const cell = e.target.closest('td, th');
+                if (!cell) return;
+
+                if (!e.ctrlKey) {
+                    selectedCells.clear();
+                    clearCellSelection(table);
+                }
+                cell.classList.add('selected');
+                selectedCells.add(cell);
+            });
+
+            // Handle cell double-click for editing
+            table.addEventListener('dblclick', (e) => {
+                const cell = e.target.closest('td, th');
+                if (!cell) return;
+
+                isEditing = true;
+                cell.contentEditable = true;
+                cell.focus();
+
+                // Select all text in the cell
+                const range = document.createRange();
+                range.selectNodeContents(cell);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            });
+
+            // Handle cell blur (when focus is lost)
+            table.addEventListener('blur', (e) => {
+                const cell = e.target.closest('td, th');
+                if (!cell || !isEditing) return;
+
+                isEditing = false;
+                cell.contentEditable = false;
+            }, true);
+
+            // Handle keyboard navigation
+            table.addEventListener('keydown', (e) => {
+                const cell = e.target.closest('td, th');
+                if (!cell) return;
+
+                switch (e.key) {
+                    case 'Tab':
+                        e.preventDefault();
+                        navigateTable(cell, e.shiftKey ? 'previous' : 'next');
+                        break;
+                    case 'Enter':
+                        if (!isEditing) {
+                            e.preventDefault();
+                            navigateTable(cell, 'down');
+                        }
+                        break;
+                    case 'Escape':
+                        if (isEditing) {
+                            isEditing = false;
+                            cell.contentEditable = false;
+                            cell.blur();
+                        }
+                        break;
+                }
+            });
+
+            // Handle toolbar actions
+            toolbar.addEventListener('click', (e) => {
+                const button = e.target.closest('.table-control');
+                if (!button) return;
+
+                const action = button.dataset.action;
+                handleTableAction(action, table, selectedCells);
+            });
+
+            // Handle style controls
+            const alignSelect = toolbar.querySelector('.table-style-select');
+            alignSelect.addEventListener('change', (e) => {
+                selectedCells.forEach(cell => {
+                    cell.style.textAlign = e.target.value;
+                });
+            });
+
+            const colorPicker = toolbar.querySelector('.cell-color-picker');
+            colorPicker.addEventListener('input', (e) => {
+                selectedCells.forEach(cell => {
+                    cell.style.backgroundColor = e.target.value;
+                });
+            });
+        }
+
+        // Add this helper function for table navigation
+        function navigateTable(currentCell, direction) {
+            const table = currentCell.closest('table');
+            const currentRow = currentCell.parentElement;
+            const rows = Array.from(table.rows);
+            const rowIndex = rows.indexOf(currentRow);
+            const cellIndex = Array.from(currentRow.cells).indexOf(currentCell);
+
+            let nextCell;
+            switch (direction) {
+                case 'next':
+                    if (cellIndex < currentRow.cells.length - 1) {
+                        nextCell = currentRow.cells[cellIndex + 1];
+                    } else if (rowIndex < rows.length - 1) {
+                        nextCell = rows[rowIndex + 1].cells[0];
+                    }
+                    break;
+                case 'previous':
+                    if (cellIndex > 0) {
+                        nextCell = currentRow.cells[cellIndex - 1];
+                    } else if (rowIndex > 0) {
+                        const previousRow = rows[rowIndex - 1];
+                        nextCell = previousRow.cells[previousRow.cells.length - 1];
+                    }
+                    break;
+                case 'down':
+                    if (rowIndex < rows.length - 1) {
+                        nextCell = rows[rowIndex + 1].cells[cellIndex];
+                    }
+                    break;
+            }
+
+            if (nextCell) {
+                nextCell.focus();
+                // Trigger double click to start editing
+                nextCell.dispatchEvent(new MouseEvent('dblclick', {
+                    bubbles: true,
+                    cancelable: true
+                }));
+            }
+        }
+
+        // Add this function to handle table actions
+        function handleTableAction(action, table, selectedCells) {
+            switch (action) {
+                case 'merge-cells':
+                    mergeCells(selectedCells);
+                    break;
+                case 'split-cell':
+                    splitCell(selectedCells);
+                    break;
+                case 'sort-asc':
+                case 'sort-desc':
+                    sortTable(table, action === 'sort-asc', getSelectedColumnIndex(selectedCells));
+                    break;
+                case 'toggle-header':
+                    toggleHeaderRow(table);
+                    break;
+                    // ... existing actions (row-above, row-below, etc.) ...
+            }
+        }
+
+        // Add these helper functions for new table features
+        function mergeCells(selectedCells) {
+            if (selectedCells.size < 2) return;
+
+            const cells = Array.from(selectedCells);
+            const firstCell = cells[0];
+            const content = cells.map(cell => cell.textContent).join(' ');
+
+            firstCell.textContent = content;
+            firstCell.colSpan = cells.length;
+
+            cells.slice(1).forEach(cell => cell.remove());
+        }
+
+        function splitCell(selectedCells) {
+            selectedCells.forEach(cell => {
+                if (cell.colSpan > 1) {
+                    const content = cell.textContent;
+                    cell.colSpan = 1;
+
+                    for (let i = 1; i < cell.colSpan; i++) {
+                        const newCell = document.createElement(cell.tagName);
+                        newCell.setAttribute('contenteditable', 'true');
+                        newCell.textContent = content;
+                        cell.parentNode.insertBefore(newCell, cell.nextSibling);
+                    }
+                }
+            });
+        }
+
+        function sortTable(table, ascending, columnIndex) {
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.rows);
+
+            rows.sort((a, b) => {
+                const aValue = a.cells[columnIndex].textContent;
+                const bValue = b.cells[columnIndex].textContent;
+
+                // Try numeric sort first
+                const aNum = parseFloat(aValue);
+                const bNum = parseFloat(bValue);
+
+                if (!isNaN(aNum) && !isNaN(bNum)) {
+                    return ascending ? aNum - bNum : bNum - aNum;
+                }
+
+                // Fall back to string sort
+                return ascending ?
+                    aValue.localeCompare(bValue) :
+                    bValue.localeCompare(aValue);
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        function toggleHeaderRow(table) {
+            const firstRow = table.rows[0];
+            const isHeader = firstRow.parentElement.tagName === 'THEAD';
+
+            if (isHeader) {
+                const tbody = table.querySelector('tbody');
+                tbody.insertBefore(firstRow, tbody.firstChild);
+                firstRow.querySelectorAll('th').forEach(th => {
+                    const td = document.createElement('td');
+                    td.setAttribute('contenteditable', 'true');
+                    td.textContent = th.textContent;
+                    th.parentNode.replaceChild(td, th);
+                });
+            } else {
+                const thead = table.createTHead();
+                thead.appendChild(firstRow);
+                firstRow.querySelectorAll('td').forEach(td => {
+                    const th = document.createElement('th');
+                    th.setAttribute('contenteditable', 'true');
+                    th.textContent = td.textContent;
+                    td.parentNode.replaceChild(th, td);
+                });
+            }
+        }
+
+        function getSelectedColumnIndex(selectedCells) {
+            if (selectedCells.size === 0) return 0;
+            const cell = selectedCells.values().next().value;
+            return Array.from(cell.parentNode.children).indexOf(cell);
+        }
+
+        function clearCellSelection(table) {
+            table.querySelectorAll('td.selected, th.selected').forEach(cell => {
+                cell.classList.remove('selected');
+            });
+        }
+
+        function triggerImageUpload() {
+            document.getElementById('imageUpload').click();
+        }
+
+        // Add image upload handler
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.alt = file.name;
+                    img.style.maxWidth = '100%';
+
+                    const selection = window.getSelection();
+                    const range = selection.getRangeAt(0);
+                    range.deleteContents();
+                    range.insertNode(img);
+                };
+                reader.onerror = function() {
+                    document.getElementById('imageUploadError').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('imageUploadError').style.display = 'none';
+                    }, 3000);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Initialize pages object and currentPageId
+        let pages = {
+            'welcome': {
+                name: 'Welcome Page',
+                content: document.querySelector('.editor').innerHTML
+            }
+        };
+        let currentPageId = 'welcome';
+
+        // Update addNewPage function
+        function addNewPage() {
+            const pageTitle = prompt('Enter page title:', 'New Page');
+            if (pageTitle) {
+                const pageId = `page_${Date.now()}`;
+                
+                // Create page data
+                pages[pageId] = {
+                    name: pageTitle,
+                    content: '<h1>New Page</h1><p>Start typing here...</p>'
+                };
+                
+                // Create page element
+                const pageDiv = document.createElement('div');
+                pageDiv.className = 'page';
+                pageDiv.setAttribute('data-id', pageId);
+                pageDiv.innerHTML = `
+                    <i class="fas fa-file-alt"></i>
+                    <span>${pageTitle}</span>
+                    <div class="page-actions">
+                        <i class="fas fa-edit" title="Rename"></i>
+                        <i class="fas fa-trash" title="Delete"></i>
+                    </div>
+                `;
+                
+                // Add to sidebar
+                document.querySelector('.pages').insertBefore(
+                    pageDiv,
+                    document.querySelector('.add-page')
+                );
+                
+                // Initialize events and switch to new page
+                initializePageEvents(pageDiv);
+                switchPage(pageId);
+                saveToLocalStorage();
+            }
+        }
+
+        // Add page event initialization
+        function initializePageEvents(pageElement) {
+            pageElement.addEventListener('click', (e) => {
+                if (e.target.classList.contains('fa-trash')) {
+                    deletePage(pageElement);
+                } else if (e.target.classList.contains('fa-edit')) {
+                    renamePage(pageElement);
+                } else {
+                    const pageId = pageElement.getAttribute('data-id');
+                    switchPage(pageId);
+                }
+            });
+        }
+
+        // Add page switching functionality
+        function switchPage(pageId) {
+            // Save current page content
+            const editor = document.querySelector('.editor');
+            pages[currentPageId].content = editor.innerHTML;
+            
+            // Update active page styling
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.querySelector(`[data-id="${pageId}"]`).classList.add('active');
+            
+            // Load new page content
+            editor.innerHTML = pages[pageId].content;
+            currentPageId = pageId;
+            saveToLocalStorage();
+        }
+
+        // Add page deletion
+        function deletePage(pageElement) {
+            const pageId = pageElement.getAttribute('data-id');
+            if (pageId === 'welcome') {
+                alert('Cannot delete the welcome page!');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to delete this page?')) {
+                delete pages[pageId];
+                pageElement.remove();
+                if (currentPageId === pageId) {
+                    switchPage('welcome');
+                }
+                saveToLocalStorage();
+            }
+        }
+
+        // Add page renaming
+        function renamePage(pageElement) {
+            const pageId = pageElement.getAttribute('data-id');
+            if (pageId === 'welcome') {
+                alert('Cannot rename the welcome page!');
+                return;
+            }
+            
+            const span = pageElement.querySelector('span');
+            const currentName = span.textContent;
+            const newName = prompt('Enter new page name:', currentName);
+            
+            if (newName && newName.trim() !== '') {
+                span.textContent = newName;
+                pages[pageId].name = newName;
+                saveToLocalStorage();
+            }
+        }
+
+        // Add storage functions
+        function saveToLocalStorage() {
+            localStorage.setItem('futurED_pages', JSON.stringify(pages));
+            localStorage.setItem('futurED_currentPage', currentPageId);
+        }
+
+        function loadFromLocalStorage() {
+            const savedPages = localStorage.getItem('futurED_pages');
+            const savedCurrentPage = localStorage.getItem('futurED_currentPage');
+            
+            if (savedPages) {
+                pages = JSON.parse(savedPages);
+                
+                // Recreate page elements
+                const pagesContainer = document.querySelector('.pages');
+                const addPageButton = pagesContainer.querySelector('.add-page');
+                
+                Object.entries(pages).forEach(([pageId, pageData]) => {
+                    if (document.querySelector(`[data-id="${pageId}"]`)) return;
+                    
+                    const pageElement = document.createElement('div');
+                    pageElement.className = 'page';
+                    pageElement.setAttribute('data-id', pageId);
+                    pageElement.innerHTML = `
+                        <i class="fas fa-file-alt"></i>
+                        <span>${pageData.name}</span>
+                        <div class="page-actions">
+                            <i class="fas fa-edit" title="Rename"></i>
+                            <i class="fas fa-trash" title="Delete"></i>
+                        </div>
+                    `;
+                    
+                    pagesContainer.insertBefore(pageElement, addPageButton);
+                    initializePageEvents(pageElement);
+                });
+                
+                if (savedCurrentPage && pages[savedCurrentPage]) {
+                    switchPage(savedCurrentPage);
+                }
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize page events
+            document.querySelectorAll('.page').forEach(initializePageEvents);
+            
+            // Load saved data
+            loadFromLocalStorage();
+            
+            // Auto-save on editor changes
+            const editor = document.querySelector('.editor');
+            editor.addEventListener('input', () => {
+                if (currentPageId && pages[currentPageId]) {
+                    pages[currentPageId].content = editor.innerHTML;
+                    saveToLocalStorage();
+                }
+            });
+        });
+
+        // Initialize search functionality
+        document.getElementById('searchOptions').addEventListener('click', function() {
+            const filters = document.querySelector('.search-filters');
+            filters.style.display = filters.style.display === 'none' ? 'block' : 'none';
+        });
+
+        document.getElementById('pageSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const searchResults = document.getElementById('searchResults');
+
+            if (!searchTerm) {
+                searchResults.style.display = 'none';
+                return;
+            }
+
+            const caseSensitive = document.getElementById('caseSensitive').checked;
+            const wholeWord = document.getElementById('wholeWord').checked;
+            const searchInTitles = document.getElementById('searchTitles').checked;
+            const searchInContent = document.getElementById('searchContent').checked;
+
+            // Perform search (simplified version)
+            const results = performSearch(searchTerm, {
+                caseSensitive,
+                wholeWord,
+                searchInTitles,
+                searchInContent
+            });
+
+            displaySearchResults(results);
+        });
+
+        function performSearch(term, options) {
+            // This is a simplified search implementation
+            const pages = document.querySelectorAll('.page');
+            const results = [];
+
+            pages.forEach(page => {
+                const title = page.querySelector('span').textContent;
+                if (title.toLowerCase().includes(term)) {
+                    results.push({
+                        title: title,
+                        type: 'page'
+                    });
+                }
+            });
+
+            return results;
+        }
+
+        function displaySearchResults(results) {
+            const searchResults = document.getElementById('searchResults');
+            searchResults.style.display = 'block';
+
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="no-results">No results found</div>';
+                return;
+            }
+
+            searchResults.innerHTML = results.map(result => `
+                <div class="search-result">
+                    <i class="fas fa-file-alt"></i>
+                    <span>${result.title}</span>
+                </div>
+            `).join('');
+        }
+
+        // Update cursor functionality with proper error handling and performance optimization
+        const initCursor = () => {
+            try {
+                const cursor = document.querySelector('.custom-cursor');
+                const cursorDot = document.querySelector('.cursor-dot');
+                if (!cursor || !cursorDot) {
+                    throw new Error('Cursor elements not found');
+                }
+
+                let isInactive = false;
+                let inactivityTimer;
+                let rafId;
+                let lastX = 0;
+                let lastY = 0;
+
+                const updateCursorPosition = (x, y) => {
+                    cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+                    cursorDot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+                    lastX = x;
+                    lastY = y;
+                };
+
+                const handleMouseMove = (e) => {
+                    if (rafId) {
+                        cancelAnimationFrame(rafId);
+                    }
+
+                    rafId = requestAnimationFrame(() => {
+                        updateCursorPosition(e.clientX, e.clientY);
+
+                        if (isInactive) {
+                            cursor.classList.remove('inactive');
+                            cursorDot.classList.remove('inactive');
+                            isInactive = false;
+                        }
+
+                        clearTimeout(inactivityTimer);
+                        inactivityTimer = setTimeout(() => {
+                            cursor.classList.add('inactive');
+                            cursorDot.classList.add('inactive');
+                            isInactive = true;
+                        }, 5000);
+                    });
+                };
+
+                document.addEventListener('mousemove', handleMouseMove, {
+                    passive: true
+                });
+
+                // Initialize cursor position
+                updateCursorPosition(window.innerWidth / 2, window.innerHeight / 2);
+
+                return () => {
+                    document.removeEventListener('mousemove', handleMouseMove);
+                    clearTimeout(inactivityTimer);
+                    if (rafId) {
+                        cancelAnimationFrame(rafId);
+                    }
+                };
+            } catch (error) {
+                console.error('Error initializing cursor:', error);
+                return () => {};
+            }
+        };
+
+        // Initialize cursor and other event listeners when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            const cleanupCursor = initCursor();
+
+            // Cleanup on page unload
+            window.addEventListener('unload', cleanupCursor);
+
+            const cursor = document.querySelector('.custom-cursor');
+            const cursorDot = document.querySelector('.cursor-dot');
+
+            // Click effects with error handling
+            document.addEventListener('mousedown', () => {
+                try {
+                    cursor.classList.add('clicking');
+                    cursorDot.classList.add('clicking');
+                } catch (error) {
+                    console.error('Error handling mousedown:', error);
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                try {
+                    cursor.classList.remove('clicking');
+                    cursorDot.classList.remove('clicking');
+                } catch (error) {
+                    console.error('Error handling mouseup:', error);
+                }
+            });
+
+            // Interactive elements hover effects
+            try {
+                const interactiveElements = document.querySelectorAll('button, a, .page, .add-page, [contenteditable="true"]');
+                interactiveElements.forEach(el => {
+                    el.addEventListener('mouseenter', () => {
+                        cursor.classList.add('hover');
+                        cursorDot.classList.add('hover');
+                        if (el.matches('[contenteditable="true"]')) {
+                            cursor.classList.add('text');
+                            cursorDot.classList.add('text');
+                        }
+                    });
+
+                    el.addEventListener('mouseleave', () => {
+                        cursor.classList.remove('hover', 'text');
+                        cursorDot.classList.remove('hover', 'text');
+                    });
+                });
+            } catch (error) {
+                console.error('Error setting up interactive elements:', error);
+            }
+        });
+
+        // Add this new function for handling page operations
+        function handlePageOperations() {
+            const pages = document.querySelector('.pages');
+
+            // Add context menu for pages
+            pages.addEventListener('contextmenu', (e) => {
+                const page = e.target.closest('.page');
+                if (page) {
+                    e.preventDefault();
+                    showPageContextMenu(e, page);
+                }
+            });
+
+            // Add drag and drop functionality
+            let draggedPage = null;
+
+            pages.addEventListener('dragstart', (e) => {
+                draggedPage = e.target.closest('.page');
+                e.target.classList.add('dragging');
+            });
+
+            pages.addEventListener('dragend', (e) => {
+                e.target.classList.remove('dragging');
+            });
+
+            pages.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const page = e.target.closest('.page');
+                if (page && page !== draggedPage) {
+                    const rect = page.getBoundingClientRect();
+                    const mid = rect.top + rect.height / 2;
+                    if (e.clientY < mid) {
+                        page.parentNode.insertBefore(draggedPage, page);
+                    } else {
+                        page.parentNode.insertBefore(draggedPage, page.nextSibling);
+                    }
+                }
+            });
+        }
+
+        // Add this function to show page context menu
+        function showPageContextMenu(e, page) {
+            const menu = document.createElement('div');
+            menu.className = 'context-menu';
+            menu.innerHTML = `
+                <div class="menu-item" data-action="rename">
+                    <i class="fas fa-edit"></i> Rename
+                </div>
+                <div class="menu-item" data-action="duplicate">
+                    <i class="fas fa-copy"></i> Duplicate
+                </div>
+                <div class="menu-item" data-action="delete">
+                    <i class="fas fa-trash"></i> Delete
+                </div>
+            `;
+
+            menu.style.position = 'fixed';
+            menu.style.left = `${e.clientX}px`;
+            menu.style.top = `${e.clientY}px`;
+
+            document.body.appendChild(menu);
+
+            menu.addEventListener('click', (e) => {
+                const action = e.target.closest('.menu-item').dataset.action;
+                handlePageAction(action, page);
+                menu.remove();
+            });
+
+            document.addEventListener('click', () => menu.remove(), {
+                once: true
+            });
+        }
+
+        // Font handling functions
+        function initializeFontControls() {
+            const fontSelector = document.getElementById('fontSelector');
+            const fontSizeSelector = document.getElementById('fontSizeSelector');
+            const editor = document.getElementById('editor');
+
+            // Font family change handler
+            fontSelector.addEventListener('change', (e) => {
+                const selectedFont = e.target.value;
+                const selection = window.getSelection();
+
+                if (selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    if (!range.collapsed) {
+                        // Apply to selection
+                        document.execCommand('fontName', false, selectedFont);
+                    } else {
+                        // Apply to paragraph or current element
+                        const currentElement = range.startContainer.parentElement;
+                        currentElement.style.fontFamily = selectedFont;
+                    }
+                } else {
+                    // No selection, apply to whole editor
+                    editor.style.fontFamily = selectedFont;
+                }
+            });
+
+            // Font size change handler
+            fontSizeSelector.addEventListener('change', (e) => {
+                const selectedSize = e.target.value;
+                document.execCommand('fontSize', false, selectedSize);
+            });
+
+            // Initialize with default font
+            editor.style.fontFamily = fontSelector.value;
+        }
+
+        // Add font initialization to DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeFontControls();
+            // ... existing DOMContentLoaded code ...
+        });
+
+        function initializeSidebarToggle() {
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+            const editor = document.querySelector('.editor');
+            const toolbar = document.querySelector('.toolbar');
+            const toggleButton = document.getElementById('sidebarToggle');
+            const toggleIcon = toggleButton.querySelector('i');
+
+            toggleButton.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+                editor.classList.toggle('expanded');
+                toolbar.classList.toggle('expanded');
+
+                // Save sidebar state to localStorage
+                localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+            });
+
+            // Restore sidebar state on page load
+            const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            if (sidebarCollapsed) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('expanded');
+                editor.classList.add('expanded');
+                toolbar.classList.add('expanded');
+            }
+        }
+
+        // Add this to the DOMContentLoaded event listener
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeSidebarToggle();
+            initializeFontControls();
+            // ... existing DOMContentLoaded code ...
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prismjs/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prismjs/1.24.1/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="app.js"></script>
+    <script src="speech.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prettier/2.5.1/prettier.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prettier/2.5.1/parser-babel.min.js"></script>
+    <script src="page-operations.js"></script>
+</body>
+
+</html>

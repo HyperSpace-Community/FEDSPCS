@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FuturED Whiteboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/cursor-styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.clerk.dev/clerk.browser.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Check authentication before loading the page
+        (async() => {
+            const isAuthenticated = await requireAuth();
+            if (!isAuthenticated) {
+                return; // Page will redirect to index.html
+            }
+        })();
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        space: ['Space Grotesk', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'gradient': 'gradient 8s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'tilt': 'tilt 10s infinite linear',
+                    },
+                    keyframes: {
+                        gradient: {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            }
+                        },
+                        tilt: {
+                            '0%, 100%': {
+                                transform: 'rotate(-1deg)'
+                            },
+                            '50%': {
+                                transform: 'rotate(1deg)'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            cursor: none !important;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+        
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .cursor-gradient {
+            width: 24px;
+            height: 24px;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.05s ease-out;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z'%3E%3C/path%3E%3C/svg%3E");
+            transform: translate(-3px, -3px);
+            filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.5));
+            mix-blend-mode: difference;
+        }
+        
+        .eraser-cursor {
+            border: 2px solid #000;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+            mix-blend-mode: difference;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .eraser-cursor::after {
+            content: '';
+            width: 50%;
+            height: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+        }
+        
+        #canvas {
+            touch-action: none;
+            background: transparent;
+            image-rendering: optimizeQuality;
+        }
+        
+        .toolbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .toolbar button {
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .toolbar button:hover {
+            transform: translateY(-2px);
+            background: rgba(59, 130, 246, 0.8);
+        }
+        
+        .toolbar button:active {
+            transform: translateY(0px);
+        }
+        /* Tool button active state */
+        
+        .toolbar button.active {
+            background: rgba(59, 130, 246, 0.8);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+        /* Dividers */
+        
+        .toolbar .border-r {
+            opacity: 0.2;
+        }
+        /* Brush size slider styling */
+        
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #3B82F6;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+        }
+        
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        /* Color picker enhancement */
+        
+        .color-picker {
+            transition: all 0.2s ease;
+        }
+        
+        .color-picker::-webkit-color-swatch {
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .color-picker:hover::-webkit-color-swatch {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+        /* Modal styling improvements */
+        
+        .modal {
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .modal input[type="text"] {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.2s ease;
+        }
+        
+        .modal input[type="text"]:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+        }
+        /* Tool tooltips */
+        
+        .toolbar button::after {
+            content: attr(title);
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+        }
+        
+        .toolbar button:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+        /* Responsive improvements */
+        
+        @media (max-width: 768px) {
+            .toolbar {
+                top: auto;
+                bottom: 20px;
+                padding: 8px;
+                flex-wrap: wrap;
+                justify-content: center;
+                max-width: 90%;
+            }
+            .toolbar button {
+                padding: 6px;
+            }
+            .toolbar .border-r {
+                display: none;
+            }
+            input[type="range"] {
+                width: 100px;
+            }
+        }
+        /* Animation for modals */
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal>div {
+            animation: modalFadeIn 0.3s ease forwards;
+        }
+        
+        .color-picker {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 40px;
+            height: 40px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .color-picker::-webkit-color-swatch {
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .color-picker::-moz-color-swatch {
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        /* Responsive Design Enhancements */
+        
+        @media (max-width: 768px) {
+            .toolbar {
+                top: 10px;
+                flex-direction: column;
+                gap: 2px;
+            }
+            .color-picker {
+                width: 30px;
+                height: 30px;
+            }
+        }
+        /* Improve Accessibility */
+        
+        button {
+            outline: none;
+            transition: outline 0.3s ease-in-out;
+        }
+        
+        button:focus {
+            outline: 2px solid #4CAF50;
+        }
+        /* Enhance Visual Elements */
+        
+        button:hover {
+            transform: scale(1.1);
+            transition: transform 0.2s ease-in-out;
+        }
+        /* Improve Color Contrast */
+        
+        .bg-blue-500 {
+            background-color: #1E40AF;
+        }
+        
+        .bg-blue-600 {
+            background-color: #1E3A8A;
+        }
+        /* Smoother Edges Enhancements */
+        
+        .rounded-full {
+            border-radius: 9999px;
+        }
+        
+        .rounded-lg {
+            border-radius: 12px;
+        }
+        
+        .glass-morphism,
+        .glass-card {
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        canvas {
+            touch-action: none;
+            cursor: crosshair;
+        }
+        
+        canvas.panning {
+            cursor: grab;
+        }
+        
+        canvas.panning:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
+    <div class="cursor-gradient"></div>
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\" 20\ " height=\"20\ " xmlns=\"http://www.w3.org/2000/svg\ "%3E%3Cpath d=\"M0 0h1v1H0z\ " fill=\"rgba(255,255,255,0.03)\ "%3E%3C/path%3E%3C/svg%3E')] opacity-20"></div>
+
+    <div class="toolbar glass-morphism p-4 rounded-full flex items-center gap-4">
+        <a href="index.html" class="p-2 rounded-full hover:bg-blue-600 text-white" title="Home" aria-label="Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+        </a>
+        <div class="border-r border-gray-600 h-8 mx-2"></div>
+        <div class="flex items-center gap-2 border-r border-gray-600 pr-4">
+            <button class="p-2 rounded-full bg-blue-500 hover:bg-blue-600 text-white" id="pencilBtn" title="Pencil" aria-label="Pencil">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+            </button>
+            <button class="p-2 rounded-full hover:bg-blue-600 text-white" id="squareBtn" title="Square" aria-label="Square">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+            </button>
+            <button class="p-2 rounded-full hover:bg-blue-600 text-white" id="circleBtn" title="Circle" aria-label="Circle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
+            </button>
+            <button class="p-2 rounded-full hover:bg-blue-600 text-white" id="triangleBtn" title="Triangle" aria-label="Triangle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18L12 4z"></path></svg>
+            </button>
+            <button class="p-2 rounded-full hover:bg-blue-600 text-white" id="lineBtn" title="Line" aria-label="Line">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="19" x2="19" y2="5"></line></svg>
+            </button>
+        </div>
+        <input type="color" class="color-picker" id="colorPicker" value="#FFFFFF">
+        <input type="range" min="1" max="20" value="2" class="w-32 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" id="brushSize">
+        <button class="px-4 py-2 rounded-full bg-blue-500 hover:bg-blue-600 text-white text-sm" id="clearBtn">Clear</button>
+        <button class="px-4 py-2 rounded-full bg-blue-500 hover:bg-blue-600 text-white text-sm" id="eraseBtn">Eraser</button>
+        <div class="flex items-center gap-2 border-l border-gray-600 pl-4">
+            <button class="p-2 rounded-full hover:bg-blue-600 text-white" id="textBtn" title="Add Text" aria-label="Text">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </button>
+            <button class="p-2 rounded-full hover:bg-blue-600 text-white" id="undoBtn" title="Undo" aria-label="Undo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M3 17a9 9 0 1 0 3-7.7L3 11"/></svg>
+            </button>
+            <button class="p-2 rounded-full hover:bg-blue-600 text-white" id="redoBtn" title="Redo" aria-label="Redo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"/><path d="M21 17a9 9 0 1 1-3-7.7L21 11"/></svg>
+            </button>
+            <button class="p-2 rounded-full hover:bg-blue-600 text-white" id="saveBtn" title="Save Whiteboard" aria-label="Save">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            </button>
+            <button class="p-2 rounded-full hover:bg-blue-600 text-white" id="zoomInBtn" title="Zoom In" aria-label="Zoom In">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+            </button>
+            <button class="p-2 rounded-full hover:bg-blue-600 text-white" id="zoomOutBtn" title="Zoom Out" aria-label="Zoom Out">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+            </button>
+            <button class="p-2 rounded-full hover:bg-blue-600 text-white" id="gridBtn" title="Toggle Grid" aria-label="Toggle Grid">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            </button>
+        </div>
+        <div class="border-r border-gray-600 h-8 mx-2"></div>
+        <div class="flex items-center gap-2">
+            <button class="p-2 rounded-full hover:bg-blue-600 text-white" id="dashedBtn" title="Dashed Line">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" stroke-dasharray="4"></path></svg>
+            </button>
+            <button class="p-2 rounded-full hover:bg-blue-600 text-white" id="arrowBtn" title="Arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+            <button class="p-2 rounded-full hover:bg-blue-600 text-white" id="gradientBtn" title="Gradient Fill">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h6m-6-4h16M4 18h16"></path></svg>
+            </button>
+            <button class="p-2 rounded-full hover:bg-blue-600 text-white" id="shadowBtn" title="Shadow Effect">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal for text input -->
+    <div id="textModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center modal">
+        <div class="p-6 rounded-lg shadow-xl w-96">
+            <h2 class="text-xl font-bold mb-4 text-white">Add Text</h2>
+            <input type="text" id="textInput" class="w-full p-2 rounded mb-4" placeholder="Enter text">
+            <input type="range" id="textSizeInput" min="12" max="72" value="24" class="w-full mb-4">
+            <div class="flex justify-end space-x-2">
+                <button id="cancelTextBtn" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded transition-all duration-200">Cancel</button>
+                <button id="confirmTextBtn" class="px-4 py-2 bg-blue-500 hover:bg-blue-400 text-white rounded transition-all duration-200">Add Text</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collaboration Modal -->
+    <div id="collaborationModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-96">
+            <h2 class="text-xl font-bold mb-4">Collaboration</h2>
+            <input type="text" id="collaborationLink" class="w-full p-2 border rounded mb-4" readonly>
+            <div class="flex justify-end space-x-2">
+                <button id="copyLinkBtn" class="px-4 py-2 bg-blue-500 text-white rounded">Copy Link</button>
+                <button id="closeCollabBtn" class="px-4 py-2 bg-gray-200 rounded">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="canvas" class="absolute inset-0 w-full h-full"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d', {
+            alpha: true
+        });
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        const colorPicker = document.getElementById('colorPicker');
+        const brushSize = document.getElementById('brushSize');
+        const clearBtn = document.getElementById('clearBtn');
+        const eraseBtn = document.getElementById('eraseBtn');
+        const pencilBtn = document.getElementById('pencilBtn');
+        const squareBtn = document.getElementById('squareBtn');
+        const circleBtn = document.getElementById('circleBtn');
+        const triangleBtn = document.getElementById('triangleBtn');
+        const lineBtn = document.getElementById('lineBtn');
+
+        let isDrawing = false;
+        let isErasing = false;
+        let currentTool = 'pencil';
+        let startX = 0;
+        let startY = 0;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Store all shapes and paths
+        let shapes = [];
+        let currentPath = [];
+        let tempShape = null;
+        let eraserPath = [];
+
+        let scale = 1;
+        let offsetX = 0;
+        let offsetY = 0;
+        let showGrid = false;
+        const GRID_SIZE = 20;
+
+        let ws = null;
+        let roomId = null;
+        let collaborators = new Map(); // Store collaborator cursors and states
+
+        // Collaboration setup
+        function initializeCollaboration() {
+            // Generate or get room ID from URL
+            roomId = new URLSearchParams(window.location.search).get('room') || generateRoomId();
+
+            // Update URL with room ID
+            if (!window.location.search.includes('room')) {
+                window.history.pushState({}, '', `?room=${roomId}`);
+            }
+
+            // Connect to WebSocket server
+            ws = new WebSocket(`wss://your-websocket-server.com/whiteboard/${roomId}`);
+
+            ws.onopen = () => {
+                console.log('Connected to collaboration server');
+                // Send initial state to new participants
+                sendWhiteboardState();
+            };
+
+            ws.onmessage = handleCollaborationMessage;
+
+            ws.onclose = () => {
+                console.log('Disconnected from collaboration server');
+                // Attempt to reconnect
+                setTimeout(initializeCollaboration, 3000);
+            };
+        }
+
+        function generateRoomId() {
+            return Math.random().toString(36).substring(2, 10);
+        }
+
+        function handleCollaborationMessage(event) {
+            const message = JSON.parse(event.data);
+
+            switch (message.type) {
+                case 'cursor':
+                    updateCollaboratorCursor(message);
+                    break;
+                case 'draw':
+                    handleCollaboratorDraw(message);
+                    break;
+                case 'clear':
+                    handleCollaboratorClear();
+                    break;
+                case 'state':
+                    handleCollaboratorState(message);
+                    break;
+                case 'join':
+                    handleCollaboratorJoin(message);
+                    break;
+                case 'leave':
+                    handleCollaboratorLeave(message);
+                    break;
+            }
+        }
+
+        function sendWhiteboardState() {
+            if (!ws) return;
+
+            ws.send(JSON.stringify({
+                type: 'state',
+                shapes: shapes,
+                userId: clerk.user.id,
+                username: clerk.user.username
+            }));
+        }
+
+        // Update cursor positions
+        function updateCollaboratorCursor(message) {
+            let cursor = collaborators.get(message.userId);
+
+            if (!cursor) {
+                cursor = createCollaboratorCursor(message.username);
+                collaborators.set(message.userId, cursor);
+                document.body.appendChild(cursor);
+            }
+
+            cursor.style.left = `${message.x}px`;
+            cursor.style.top = `${message.y}px`;
+        }
+
+        function createCollaboratorCursor(username) {
+            const cursor = document.createElement('div');
+            cursor.className = 'collaborator-cursor';
+
+            const nameTag = document.createElement('span');
+            nameTag.className = 'collaborator-name';
+            nameTag.textContent = username;
+
+            cursor.appendChild(nameTag);
+            return cursor;
+        }
+
+        function handleCollaboratorDraw(message) {
+            if (message.userId === clerk.user.id) return;
+
+            if (message.shape) {
+                shapes.push(message.shape);
+            }
+            redrawCanvas();
+        }
+
+        function handleCollaboratorClear() {
+            shapes = [];
+            currentPath = [];
+            tempShape = null;
+            redrawCanvas();
+        }
+
+        function handleCollaboratorState(message) {
+            if (message.userId === clerk.user.id) return;
+            shapes = message.shapes;
+            redrawCanvas();
+        }
+
+        function handleCollaboratorJoin(message) {
+            // Show notification of new collaborator
+            showNotification(`${message.username} joined the whiteboard`);
+        }
+
+        function handleCollaboratorLeave(message) {
+            // Remove collaborator cursor and show notification
+            const cursor = collaborators.get(message.userId);
+            if (cursor) {
+                cursor.remove();
+                collaborators.delete(message.userId);
+            }
+            showNotification(`${message.username} left the whiteboard`);
+        }
+
+        // Add notification system
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Update the existing drawing functions to broadcast changes
+        function broadcastDraw(shape) {
+            if (!ws) return;
+
+            ws.send(JSON.stringify({
+                type: 'draw',
+                shape: shape,
+                userId: clerk.user.id,
+                username: clerk.user.username
+            }));
+        }
+
+        // Update mouse position for collaborators
+        document.addEventListener('mousemove', (e) => {
+            if (!ws) return;
+
+            ws.send(JSON.stringify({
+                type: 'cursor',
+                x: e.clientX,
+                y: e.clientY,
+                userId: clerk.user.id,
+                username: clerk.user.username
+            }));
+        });
+
+        // Add styles for collaboration features
+        const styles = document.createElement('style');
+        styles.textContent = `
+        .collaborator-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            z-index: 1000;
+            transform: translate(-50%, -50%);
+        }
+
+        .collaborator-cursor::before {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #FF4081;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .collaborator-name {
+            position: absolute;
+            left: 15px;
+            top: -20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        `;
+
+        document.head.appendChild(styles);
+
+        // Initialize collaboration when the page loads
+        initializeCollaboration();
+
+        // Update existing event handlers to broadcast changes
+        clearBtn.addEventListener('click', () => {
+            shapes = [];
+            currentPath = [];
+            tempShape = null;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (ws) {
+                ws.send(JSON.stringify({
+                    type: 'clear',
+                    userId: clerk.user.id,
+                    username: clerk.user.username
+                }));
+            }
+        });
+
+        // Update the shape drawing completion to broadcast
+        canvas.addEventListener('mouseup', (e) => {
+            if (e.button === 1) {
+                isPanning = false;
+                return;
+            }
+            if (!isDrawing) return;
+            isDrawing = false;
+
+            if (currentTool === 'pencil') {
+                if (currentPath.length > 0) {
+                    const newShape = {
+                        type: 'pencil',
+                        path: [...currentPath],
+                        color: colorPicker.value,
+                        lineWidth: brushSize.value
+                    };
+                    shapes.push(newShape);
+                    broadcastDraw(newShape);
+                    currentPath = [];
+                }
+            } else if (tempShape) {
+                shapes.push(tempShape);
+                broadcastDraw(tempShape);
+                tempShape = null;
+            }
+        });
+
+        function resizeCanvas() {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(canvas, 0, 0);
+
+            const dpr = setupHighDPI();
+
+            // Scale the old content properly
+            ctx.drawImage(tempCanvas, 0, 0, canvas.width / dpr, canvas.height / dpr);
+            redrawCanvas();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function isPointInPath(x, y, path, lineWidth) {
+            for (let i = 0; i < path.length; i++) {
+                const point = path[i];
+                const distance = Math.sqrt((x - point.x) ** 2 + (y - point.y) ** 2);
+                if (distance <= lineWidth) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function isPointInShape(x, y, shape) {
+            const tolerance = shape.lineWidth;
+
+            switch (shape.type) {
+                case 'pencil':
+                    return isPointInPath(x, y, shape.path, tolerance);
+                case 'square':
+                    const left = Math.min(shape.startX, shape.endX);
+                    const right = Math.max(shape.startX, shape.endX);
+                    const top = Math.min(shape.startY, shape.endY);
+                    const bottom = Math.max(shape.startY, shape.endY);
+
+                    // Check if point is near the border
+                    return (
+                        (Math.abs(x - left) <= tolerance && y >= top - tolerance && y <= bottom + tolerance) ||
+                        (Math.abs(x - right) <= tolerance && y >= top - tolerance && y <= bottom + tolerance) ||
+                        (Math.abs(y - top) <= tolerance && x >= left - tolerance && x <= right + tolerance) ||
+                        (Math.abs(y - bottom) <= tolerance && x >= left - tolerance && x <= right + tolerance)
+                    );
+                case 'circle':
+                    const centerX = shape.startX + (shape.endX - shape.startX) / 2;
+                    const centerY = shape.startY + (shape.endY - shape.startY) / 2;
+                    const radiusX = Math.abs(shape.endX - shape.startX) / 2;
+                    const radiusY = Math.abs(shape.endY - shape.startY) / 2;
+
+                    // Normalize point to ellipse coordinates
+                    const normalizedX = (x - centerX) / radiusX;
+                    const normalizedY = (y - centerY) / radiusY;
+                    const distance = Math.sqrt(normalizedX ** 2 + normalizedY ** 2);
+
+                    return Math.abs(1 - distance) <= tolerance / Math.min(radiusX, radiusY);
+                case 'triangle':
+                    function distanceToLine(x1, y1, x2, y2, px, py) {
+                        const A = px - x1;
+                        const B = py - y1;
+                        const C = x2 - x1;
+                        const D = y2 - y1;
+                        const dot = A * C + B * D;
+                        const lenSq = C * C + D * D;
+                        let param = -1;
+                        if (lenSq !== 0) param = dot / lenSq;
+                        let xx, yy;
+                        if (param < 0) {
+                            xx = x1;
+                            yy = y1;
+                        } else if (param > 1) {
+                            xx = x2;
+                            yy = y2;
+                        } else {
+                            xx = x1 + param * C;
+                            yy = y1 + param * D;
+                        }
+                        const dx = px - xx;
+                        const dy = py - yy;
+                        return Math.sqrt(dx * dx + dy * dy);
+                    }
+
+                    const p1 = {
+                        x: shape.startX,
+                        y: shape.endY
+                    };
+                    const p2 = {
+                        x: shape.startX + (shape.endX - shape.startX) / 2,
+                        y: shape.startY
+                    };
+                    const p3 = {
+                        x: shape.endX,
+                        y: shape.endY
+                    };
+
+                    return (
+                        distanceToLine(p1.x, p1.y, p2.x, p2.y, x, y) <= tolerance ||
+                        distanceToLine(p2.x, p2.y, p3.x, p3.y, x, y) <= tolerance ||
+                        distanceToLine(p3.x, p3.y, p1.x, p1.y, x, y) <= tolerance
+                    );
+                case 'line':
+                    return distanceToLine(shape.startX, shape.startY, shape.endX, shape.endY, x, y) <= tolerance;
+            }
+            return false;
+        }
+
+        function eraseAt(x, y) {
+            const eraserSize = brushSize.value * 2;
+            eraserPath.push({ x, y });
+
+            // Filter out shapes that intersect with the eraser
+            shapes = shapes.filter(shape => {
+                if (shape.type === 'pencil') {
+                    // Filter out points within eraser radius
+                    shape.path = shape.path.filter(point => {
+                        const distance = Math.sqrt(
+                            Math.pow((x - point.x), 2) + 
+                            Math.pow((y - point.y), 2)
+                        );
+                        return distance > eraserSize;
+                    });
+                    return shape.path.length > 0;
+                } else {
+                    // For other shapes, check if they're under eraser
+                    return !isShapeUnderEraser(shape, x, y, eraserSize);
+                }
+            });
+
+            // Redraw canvas to show erased state
+            redrawCanvas();
+            saveCanvasState(); // Save the state after erasing
+        }
+
+        // Add helper function for shape eraser collision
+        function isShapeUnderEraser(shape, x, y, radius) {
+            const points = getShapePoints(shape);
+            return points.some(point => {
+                const distance = Math.sqrt(
+                    Math.pow((x - point.x), 2) + 
+                    Math.pow((y - point.y), 2)
+                );
+                return distance <= radius;
+            });
+        }
+
+        // Add helper function to get shape points
+        function getShapePoints(shape) {
+            const points = [];
+            switch (shape.type) {
+                case 'line':
+                    // Sample points along the line
+                    for (let t = 0; t <= 1; t += 0.1) {
+                        points.push({
+                            x: shape.startX + t * (shape.endX - shape.startX),
+                            y: shape.startY + t * (shape.endY - shape.startY)
+                        });
+                    }
+                    break;
+                case 'square':
+                    // Add corner points
+                    points.push(
+                        {x: shape.startX, y: shape.startY},
+                        {x: shape.endX, y: shape.startY},
+                        {x: shape.endX, y: shape.endY},
+                        {x: shape.startX, y: shape.endY}
+                    );
+                    break;
+                case 'circle':
+                    // Sample points around the circle
+                    const centerX = (shape.startX + shape.endX) / 2;
+                    const centerY = (shape.startY + shape.endY) / 2;
+                    const radius = Math.abs(shape.endX - shape.startX) / 2;
+                    for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 8) {
+                        points.push({
+                            x: centerX + radius * Math.cos(angle),
+                            y: centerY + radius * Math.sin(angle)
+                        });
+                    }
+                    break;
+                case 'triangle':
+                    points.push(
+                        {x: shape.startX, y: shape.endY},
+                        {x: (shape.startX + shape.endX) / 2, y: shape.startY},
+                        {x: shape.endX, y: shape.endY}
+                    );
+                    break;
+            }
+            return points;
+        }
+
+        function drawShape(e) {
+            if (!isDrawing) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            if (isErasing) {
+                eraseAt(x, y);
+                return;
+            }
+
+            if (currentTool === 'pencil') {
+                currentPath.push({
+                    x,
+                    y
+                });
+                redrawCanvas();
+            } else {
+                tempShape = createShape(startX, startY, x, y);
+                redrawCanvas();
+            }
+
+            [lastX, lastY] = [x, y];
+        }
+
+        function createShape(startX, startY, endX, endY) {
+            return {
+                type: currentTool,
+                startX,
+                startY,
+                endX,
+                endY,
+                color: colorPicker.value,
+                lineWidth: brushSize.value
+            };
+        }
+
+        function drawPath(path, color, lineWidth) {
+            if (path.length < 2) return;
+
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            // Start from the first point
+            ctx.moveTo(path[0].x, path[0].y);
+
+            // If there are only 2 points, draw a line
+            if (path.length === 2) {
+                ctx.lineTo(path[1].x, path[1].y);
+            } else {
+                // Use quadratic curves for smoother lines
+                for (let i = 1; i < path.length - 1; i++) {
+                    const xc = (path[i].x + path[i + 1].x) / 2;
+                    const yc = (path[i].y + path[i + 1].y) / 2;
+                    ctx.quadraticCurveTo(path[i].x, path[i].y, xc, yc);
+                }
+                // For the last two points
+                ctx.lineTo(path[path.length - 1].x, path[path.length - 1].y);
+            }
+
+            ctx.stroke();
+        }
+
+        function drawSingleShape(shape) {
+            ctx.beginPath();
+            ctx.strokeStyle = shape.color;
+            ctx.lineWidth = shape.lineWidth;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.fillStyle = shape.color;
+
+            // Apply shadow if enabled
+            if (shape.useShadow) {
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetX = 5;
+                ctx.shadowOffsetY = 5;
+            } else {
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+            }
+
+            // Set dashed line if enabled
+            if (shape.isDashed) {
+                ctx.setLineDash([5, 5]);
+            } else {
+                ctx.setLineDash([]);
+            }
+
+            // Create gradient if enabled
+            if (shape.useGradient) {
+                const gradient = ctx.createLinearGradient(
+                    shape.startX,
+                    shape.startY,
+                    shape.endX,
+                    shape.endY
+                );
+                gradient.addColorStop(0, shape.color);
+                gradient.addColorStop(1, adjustColor(shape.color, -30));
+                ctx.strokeStyle = gradient;
+                ctx.fillStyle = gradient;
+            }
+
+            switch (shape.type) {
+                case 'line':
+                    if (shape.isArrow) {
+                        drawArrow(shape.startX, shape.startY, shape.endX, shape.endY, shape.color);
+                    } else {
+                        ctx.beginPath();
+                        ctx.moveTo(shape.startX, shape.startY);
+                        ctx.lineTo(shape.endX, shape.endY);
+                        ctx.stroke();
+                    }
+                    break;
+                case 'square':
+                case 'circle':
+                case 'triangle':
+                    drawShapeWithStyle(shape);
+                    break;
+            }
+
+            // Reset shadow and dash settings
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.setLineDash([]);
+        }
+
+        // Add helper function for arrows
+        function drawArrow(fromX, fromY, toX, toY, color) {
+            const headLength = 20;
+            const angle = Math.atan2(toY - fromY, toX - fromX);
+
+            // Draw the line
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.stroke();
+
+            // Draw the arrow head
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(
+                toX - headLength * Math.cos(angle - Math.PI / 6),
+                toY - headLength * Math.sin(angle - Math.PI / 6)
+            );
+            ctx.lineTo(
+                toX - headLength * Math.cos(angle + Math.PI / 6),
+                toY - headLength * Math.sin(angle + Math.PI / 6)
+            );
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+        }
+
+        // Add helper function for color adjustment
+        function adjustColor(color, amount) {
+            const hex = color.replace('#', '');
+            const r = Math.max(0, Math.min(255, parseInt(hex.substr(0, 2), 16) + amount));
+            const g = Math.max(0, Math.min(255, parseInt(hex.substr(2, 2), 16) + amount));
+            const b = Math.max(0, Math.min(255, parseInt(hex.substr(4, 2), 16) + amount));
+            return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+        }
+
+        // Update createShape function to include style properties
+        function createShape(startX, startY, endX, endY) {
+            return {
+                type: currentTool,
+                startX,
+                startY,
+                endX,
+                endY,
+                color: colorPicker.value,
+                lineWidth: brushSize.value,
+                isDashed,
+                isArrow: isArrow && currentTool === 'line',
+                useGradient,
+                useShadow
+            };
+        }
+
+        function redrawCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Apply transformations
+            ctx.save();
+            ctx.translate(offsetX, offsetY);
+            ctx.scale(scale, scale);
+
+            // Draw grid first
+            drawGrid();
+
+            // Draw shapes
+            shapes.forEach(shape => {
+                if (shape.type === 'pencil') {
+                    drawPath(shape.path, shape.color, shape.lineWidth);
+                } else {
+                    drawSingleShape(shape);
+                }
+            });
+
+            // Draw current path if any
+            if (currentPath.length > 0) {
+                drawPath(currentPath, colorPicker.value, brushSize.value);
+            }
+
+            // Draw temporary shape if any
+            if (tempShape) {
+                drawSingleShape(tempShape);
+            }
+
+            ctx.restore();
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (e.button === 1) { // Middle mouse button
+                isPanning = true;
+                lastPanX = e.clientX;
+                lastPanY = e.clientY;
+                e.preventDefault();
+                return;
+            }
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            startX = e.clientX - rect.left;
+            startY = e.clientY - rect.top;
+            [lastX, lastY] = [startX, startY];
+
+            if (isErasing) {
+                eraserPath = [];
+                eraseAt(startX, startY);
+            } else if (currentTool === 'pencil') {
+                currentPath = [{
+                    x: startX,
+                    y: startY
+                }];
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isPanning) {
+                const dx = e.clientX - lastPanX;
+                const dy = e.clientY - lastPanY;
+                offsetX += dx;
+                offsetY += dy;
+                lastPanX = e.clientX;
+                lastPanY = e.clientY;
+                redrawCanvas();
+                return;
+            }
+            drawShape(e);
+        });
+
+        canvas.addEventListener('mouseup', (e) => {
+            if (e.button === 1) {
+                isPanning = false;
+                return;
+            }
+            if (!isDrawing) return;
+            isDrawing = false;
+
+            if (currentTool === 'pencil') {
+                if (currentPath.length > 0) {
+                    shapes.push({
+                        type: 'pencil',
+                        path: [...currentPath],
+                        color: colorPicker.value,
+                        lineWidth: brushSize.value
+                    });
+                    currentPath = [];
+                }
+            } else if (tempShape) {
+                shapes.push(tempShape);
+                tempShape = null;
+            }
+        });
+
+        canvas.addEventListener('mouseout', () => {
+            if (isDrawing && currentTool === 'pencil' && currentPath.length > 0) {
+                shapes.push({
+                    type: 'pencil',
+                    path: [...currentPath],
+                    color: colorPicker.value,
+                    lineWidth: brushSize.value
+                });
+                currentPath = [];
+            }
+            isDrawing = false;
+            tempShape = null;
+            redrawCanvas();
+        });
+
+        clearBtn.addEventListener('click', () => {
+            shapes = [];
+            currentPath = [];
+            tempShape = null;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        // Update cursor style
+        function updateCursor() {
+            const cursor = document.querySelector('.cursor-gradient');
+            if (isErasing) {
+                const size = brushSize.value * 2;
+                cursor.style.width = `${size}px`;
+                cursor.style.height = `${size}px`;
+                cursor.style.backgroundImage = 'none';
+                cursor.style.border = '2px solid #000';
+                cursor.style.transform = 'translate(-50%, -50%)';
+                cursor.classList.add('eraser-cursor');
+            } else {
+                cursor.style.width = '24px';
+                cursor.style.height = '24px';
+                cursor.style.border = 'none';
+                cursor.style.transform = 'translate(-3px, -3px)';
+                cursor.style.backgroundImage = 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23ffffff\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z\'%3E%3C/path%3E%3C/svg%3E")';
+                cursor.classList.remove('eraser-cursor');
+            }
+        }
+
+        // Update eraser size when brush size changes
+        brushSize.addEventListener('input', () => {
+            if (isErasing) {
+                updateCursor();
+            }
+        });
+
+        eraseBtn.addEventListener('click', () => {
+            isErasing = !isErasing;
+            currentTool = isErasing ? 'eraser' : 'pencil';
+            eraseBtn.textContent = isErasing ? 'Draw' : 'Eraser';
+            eraseBtn.classList.toggle('bg-red-500');
+            eraseBtn.classList.toggle('hover:bg-red-600');
+            updateCursor();
+            updateToolButtons();
+            
+            // Reset paths
+            eraserPath = [];
+            currentPath = [];
+        });
+
+        // Tool selection handlers
+        function updateToolButtons() {
+            const tools = [pencilBtn, squareBtn, circleBtn, triangleBtn, lineBtn];
+            tools.forEach(btn => {
+                btn.classList.remove('bg-blue-500');
+                if (btn.id === `${currentTool}Btn`) {
+                    btn.classList.add('bg-blue-500');
+                }
+            });
+        }
+
+        pencilBtn.addEventListener('click', () => {
+            currentTool = 'pencil';
+            isErasing = false;
+            eraseBtn.textContent = 'Eraser';
+            eraseBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+            updateToolButtons();
+        });
+
+        squareBtn.addEventListener('click', () => {
+            currentTool = 'square';
+            isErasing = false;
+            eraseBtn.textContent = 'Eraser';
+            eraseBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+            updateToolButtons();
+        });
+
+        circleBtn.addEventListener('click', () => {
+            currentTool = 'circle';
+            isErasing = false;
+            eraseBtn.textContent = 'Eraser';
+            eraseBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+            updateToolButtons();
+        });
+
+        triangleBtn.addEventListener('click', () => {
+            currentTool = 'triangle';
+            isErasing = false;
+            eraseBtn.textContent = 'Eraser';
+            eraseBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+            updateToolButtons();
+        });
+
+        lineBtn.addEventListener('click', () => {
+            currentTool = 'line';
+            isErasing = false;
+            eraseBtn.textContent = 'Eraser';
+            eraseBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+            updateToolButtons();
+        });
+
+        // Initialize the pencil tool as selected
+        updateToolButtons();
+
+        // Custom cursor
+        const cursor = document.querySelector('.cursor-gradient');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Undo/Redo Functionality
+        let history = [];
+        let historyIndex = -1;
+
+        function saveCanvasState() {
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            history = history.slice(0, historyIndex + 1);
+            history.push(imageData);
+            historyIndex++;
+        }
+
+        function undo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                ctx.putImageData(history[historyIndex], 0, 0);
+            }
+        }
+
+        function redo() {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                ctx.putImageData(history[historyIndex], 0, 0);
+            }
+        }
+
+        // Text Tool
+        function addText(text, x, y, size) {
+            ctx.font = `${size}px Inter`;
+            ctx.fillStyle = colorPicker.value;
+            ctx.fillText(text, x, y);
+            saveCanvasState();
+        }
+
+        // Collaboration Simulation (WebSocket/Peer would be real implementation)
+        function generateCollaborationLink() {
+            const collaborationLink = document.getElementById('collaborationLink');
+            const link = `whiteboard://${Math.random().toString(36).substring(7)}`;
+            collaborationLink.value = link;
+        }
+
+        // Event Listeners for New Features
+        const undoBtn = document.getElementById('undoBtn');
+        const redoBtn = document.getElementById('redoBtn');
+        const textBtn = document.getElementById('textBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const textModal = document.getElementById('textModal');
+        const textInput = document.getElementById('textInput');
+        const textSizeInput = document.getElementById('textSizeInput');
+        const confirmTextBtn = document.getElementById('confirmTextBtn');
+        const cancelTextBtn = document.getElementById('cancelTextBtn');
+        const collaborationModal = document.getElementById('collaborationModal');
+        const copyLinkBtn = document.getElementById('copyLinkBtn');
+        const closeCollabBtn = document.getElementById('closeCollabBtn');
+
+        undoBtn.addEventListener('click', undo);
+        redoBtn.addEventListener('click', redo);
+
+        textBtn.addEventListener('click', () => {
+            textModal.classList.remove('hidden');
+        });
+
+        confirmTextBtn.addEventListener('click', () => {
+            const text = textInput.value;
+            const size = textSizeInput.value;
+            addText(text, canvas.width / 2, canvas.height / 2, size);
+            textModal.classList.add('hidden');
+        });
+
+        cancelTextBtn.addEventListener('click', () => {
+            textModal.classList.add('hidden');
+        });
+
+        saveBtn.addEventListener('click', () => {
+            saveToLocalStorage();
+            // Show feedback to user
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = 'Drawing saved!';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        });
+
+        // Initial canvas state
+        saveCanvasState();
+
+        // Add zoom functionality
+        function handleZoom(direction) {
+            const oldScale = scale;
+            scale = Math.min(Math.max(0.5, scale + direction * 0.1), 3);
+
+            // Adjust offset to zoom towards center
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            offsetX = (offsetX - centerX) * (scale / oldScale) + centerX;
+            offsetY = (offsetY - centerY) * (scale / oldScale) + centerY;
+
+            redrawCanvas();
+        }
+
+        // Add grid drawing function
+        function drawGrid() {
+            if (!showGrid) return;
+
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+
+            const gridSize = GRID_SIZE * scale;
+            const startX = (offsetX % gridSize);
+            const startY = (offsetY % gridSize);
+
+            for (let x = startX; x < canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+
+            for (let y = startY; y < canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+
+        // Add pan functionality
+        let isPanning = false;
+        let lastPanX = 0;
+        let lastPanY = 0;
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (e.button === 1) { // Middle mouse button
+                isPanning = true;
+                lastPanX = e.clientX;
+                lastPanY = e.clientY;
+                e.preventDefault();
+                return;
+            }
+            // ... existing mousedown code
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isPanning) {
+                const dx = e.clientX - lastPanX;
+                const dy = e.clientY - lastPanY;
+                offsetX += dx;
+                offsetY += dy;
+                lastPanX = e.clientX;
+                lastPanY = e.clientY;
+                redrawCanvas();
+                return;
+            }
+            // ... existing mousemove code
+        });
+
+        canvas.addEventListener('mouseup', (e) => {
+            if (e.button === 1) {
+                isPanning = false;
+                return;
+            }
+            // ... existing mouseup code
+        });
+
+        // Add event listeners for new buttons
+        document.getElementById('zoomInBtn').addEventListener('click', () => handleZoom(1));
+        document.getElementById('zoomOutBtn').addEventListener('click', () => handleZoom(-1));
+        document.getElementById('gridBtn').addEventListener('click', () => {
+            showGrid = !showGrid;
+            document.getElementById('gridBtn').classList.toggle('active');
+            redrawCanvas();
+        });
+
+        // Add mousewheel zoom
+        canvas.addEventListener('wheel', (e) => {
+            if (e.ctrlKey) {
+                e.preventDefault();
+                handleZoom(e.deltaY > 0 ? -1 : 1);
+            }
+        });
+
+        // Add this function to handle high DPI displays
+        function setupHighDPI() {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+
+            // Set the canvas size accounting for device pixel ratio
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+
+            // Scale the canvas back down with CSS
+            canvas.style.width = `${rect.width}px`;
+            canvas.style.height = `${rect.height}px`;
+
+            // Scale the context to handle the device pixel ratio
+            ctx.scale(dpr, dpr);
+
+            return dpr;
+        }
+
+        // Add this after canvas initialization
+        window.addEventListener('load', () => {
+            setupHighDPI();
+            // Initialize other features...
+        });
+
+        // Add new drawing style states
+        let isDashed = false;
+        let isArrow = false;
+        let useGradient = false;
+        let useShadow = false;
+
+        // Add event listeners for new buttons
+        document.getElementById('dashedBtn').addEventListener('click', () => {
+            isDashed = !isDashed;
+            document.getElementById('dashedBtn').classList.toggle('active');
+        });
+
+        document.getElementById('arrowBtn').addEventListener('click', () => {
+            isArrow = !isArrow;
+            currentTool = 'line';
+            document.getElementById('arrowBtn').classList.toggle('active');
+            updateToolButtons();
+        });
+
+        document.getElementById('gradientBtn').addEventListener('click', () => {
+            useGradient = !useGradient;
+            document.getElementById('gradientBtn').classList.toggle('active');
+        });
+
+        document.getElementById('shadowBtn').addEventListener('click', () => {
+            useShadow = !useShadow;
+            document.getElementById('shadowBtn').classList.toggle('active');
+        });
+
+        // Add this function before drawSingleShape
+        function drawShapeWithStyle(shape) {
+            switch (shape.type) {
+                case 'square':
+                    const width = shape.endX - shape.startX;
+                    const height = shape.endY - shape.startY;
+                    ctx.beginPath();
+                    ctx.rect(shape.startX, shape.startY, width, height);
+                    if (shape.useGradient) {
+                        ctx.fill();
+                    }
+                    ctx.stroke();
+                    break;
+
+                case 'circle':
+                    const radiusX = Math.abs(shape.endX - shape.startX) / 2;
+                    const radiusY = Math.abs(shape.endY - shape.startY) / 2;
+                    const centerX = shape.startX + (shape.endX - shape.startX) / 2;
+                    const centerY = shape.startY + (shape.endY - shape.startY) / 2;
+                    ctx.beginPath();
+                    ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
+                    if (shape.useGradient) {
+                        ctx.fill();
+                    }
+                    ctx.stroke();
+                    break;
+
+                case 'triangle':
+                    ctx.beginPath();
+                    ctx.moveTo(shape.startX + (shape.endX - shape.startX) / 2, shape.startY);
+                    ctx.lineTo(shape.startX, shape.endY);
+                    ctx.lineTo(shape.endX, shape.endY);
+                    ctx.closePath();
+                    if (shape.useGradient) {
+                        ctx.fill();
+                    }
+                    ctx.stroke();
+                    break;
+            }
+        }
+
+        // Add save/load functions for localStorage
+        function saveToLocalStorage() {
+            const whiteboardData = {
+                shapes,
+                scale,
+                offsetX,
+                offsetY
+            };
+            localStorage.setItem('whiteboard-data', JSON.stringify(whiteboardData));
+        }
+
+        function loadFromLocalStorage() {
+            const savedData = localStorage.getItem('whiteboard-data');
+            if (savedData) {
+                const whiteboardData = JSON.parse(savedData);
+                shapes = whiteboardData.shapes;
+                scale = whiteboardData.scale || 1;
+                offsetX = whiteboardData.offsetX || 0;
+                offsetY = whiteboardData.offsetY || 0;
+                redrawCanvas();
+            }
+        }
+
+        // Auto-save when changes are made
+        function autoSave() {
+            saveToLocalStorage();
+        }
+
+        // Modify existing functions to include auto-save
+        canvas.addEventListener('mouseup', (e) => {
+            if (e.button === 1) {
+                isPanning = false;
+                return;
+            }
+            if (!isDrawing) return;
+            isDrawing = false;
+
+            if (currentTool === 'pencil') {
+                if (currentPath.length > 0) {
+                    shapes.push({
+                        type: 'pencil',
+                        path: [...currentPath],
+                        color: colorPicker.value,
+                        lineWidth: brushSize.value
+                    });
+                    currentPath = [];
+                    autoSave(); // Save after adding shape
+                }
+            } else if (tempShape) {
+                shapes.push(tempShape);
+                tempShape = null;
+                autoSave(); // Save after adding shape
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            shapes = [];
+            currentPath = [];
+            tempShape = null;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            autoSave(); // Save after clearing
+        });
+
+        // Modify save button to use localStorage
+        saveBtn.addEventListener('click', () => {
+            saveToLocalStorage();
+            // Show feedback to user
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = 'Drawing saved!';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        });
+
+        // Load saved drawings when page loads
+        window.addEventListener('load', () => {
+            setupHighDPI();
+            loadFromLocalStorage();
+            // Initialize other features...
+        });
+    </script>
+</body>
+
+</html>
